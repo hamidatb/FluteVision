@@ -29,11 +29,14 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 
-def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous"):
+def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous", output_dir=None):
     """
     capture training data for multiple keys using opencv windows
     """
-    data_dir = project_root / "datasets" / "raw"
+    if output_dir is None:
+        data_dir = project_root / "datasets" / "raw"
+    else:
+        data_dir = Path(output_dir)
     data_dir.mkdir(parents=True, exist_ok=True)
     
     print("\n" + "="*60)
@@ -42,6 +45,7 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous")
     print(f"Keys to collect: {', '.join(keys_to_collect)}")
     print(f"Samples per key: {samples_per_key}")
     print(f"User: {user_id}")
+    print(f"Output directory: {data_dir}")
     print("="*60 + "\n")
     
     print("initializing webcam...")
@@ -311,6 +315,9 @@ def main():
         
         # All keys in Bb scale
         python scripts/capture_data.py --keys Bb C D Eb F G A --samples 200 --user john
+        
+        # Custom output directory
+        python scripts/capture_data.py --keys Bb C --samples 100 --output-dir /path/to/my/data
         """
     )
     
@@ -334,10 +341,16 @@ def main():
         help='User identifier (default: anonymous)'
     )
     
+    parser.add_argument(
+        '--output-dir',
+        default=None,
+        help='Output directory for captured images (default: datasets/raw)'
+    )
+    
     args = parser.parse_args()
     
     try:
-        return capture_data_for_keys(args.keys, args.samples, args.user)
+        return capture_data_for_keys(args.keys, args.samples, args.user, args.output_dir)
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
         cv2.destroyAllWindows()

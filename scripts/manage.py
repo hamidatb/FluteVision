@@ -31,6 +31,7 @@ def main():
 Examples:
   python scripts/manage.py train --all
   python scripts/manage.py train --keys Bb C D
+  python scripts/manage.py train --all --input-dir /path/to/my/data
         """
     )
 
@@ -40,6 +41,7 @@ Examples:
     train_parser = subparsers.add_parser('train', help='Train the model')
     train_parser.add_argument('--all', action='store_true', help='Train on all available keys')
     train_parser.add_argument('--keys', nargs='+', help='Specific keys to train on')
+    train_parser.add_argument('--input-dir', default='datasets/raw', help='Input directory for training data (default: datasets/raw)')
 
     args = parser.parse_args()
 
@@ -92,7 +94,7 @@ def handle_train(args, logger):
         result = subprocess.run([
             sys.executable,
             str(project_root / "scripts" / "train_landmark_model.py"),
-            "--raw-dir", "datasets/raw"
+            "--raw-dir", args.input_dir
         ])
         
         return result.returncode
