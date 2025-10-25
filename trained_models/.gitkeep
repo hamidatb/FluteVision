@@ -1,0 +1,2 @@
+# This file ensures the trained_models directory is tracked by git
+# while the actual model files are ignored
