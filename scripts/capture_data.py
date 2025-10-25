@@ -24,6 +24,8 @@ from pathlib import Path
 from datetime import datetime
 import json
 import time
+import tkinter as tk
+from tkinter import filedialog
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -34,9 +36,20 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous",
     capture training data for multiple keys using opencv windows
     """
     if output_dir is None:
-        data_dir = project_root / "datasets" / "raw"
-    else:
-        data_dir = Path(output_dir)
+        # use finder to select output directory
+        root = tk.Tk()
+        root.withdraw()  # hide the main window
+        output_dir = filedialog.askdirectory(
+            title="Select folder to save captured images",
+            initialdir=str(project_root / "datasets")
+        )
+        root.destroy()
+        
+        if not output_dir:
+            print("❌ No folder selected. Exiting.")
+            return 1
+    
+    data_dir = Path(output_dir)
     data_dir.mkdir(parents=True, exist_ok=True)
     
     print("\n" + "="*60)
@@ -318,6 +331,9 @@ def main():
         
         # Custom output directory
         python scripts/capture_data.py --keys Bb C --samples 100 --output-dir /path/to/my/data
+        
+        # Use Finder to select folder (default behavior)
+        python scripts/capture_data.py --keys Bb C --samples 100
         """
     )
     
@@ -344,7 +360,7 @@ def main():
     parser.add_argument(
         '--output-dir',
         default=None,
-        help='Output directory for captured images (default: datasets/raw)'
+        help='Output directory for captured images (default: opens Finder to select)'
     )
     
     args = parser.parse_args()

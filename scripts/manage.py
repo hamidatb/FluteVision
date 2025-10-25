@@ -8,6 +8,8 @@ import sys
 import argparse
 import logging
 from pathlib import Path
+import tkinter as tk
+from tkinter import filedialog
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -32,6 +34,8 @@ Examples:
   python scripts/manage.py train --all
   python scripts/manage.py train --keys Bb C D
   python scripts/manage.py train --all --input-dir /path/to/my/data
+  # Use Finder to select folder (default behavior)
+  python scripts/manage.py train --all
         """
     )
 
@@ -41,7 +45,7 @@ Examples:
     train_parser = subparsers.add_parser('train', help='Train the model')
     train_parser.add_argument('--all', action='store_true', help='Train on all available keys')
     train_parser.add_argument('--keys', nargs='+', help='Specific keys to train on')
-    train_parser.add_argument('--input-dir', default='datasets/raw', help='Input directory for training data (default: datasets/raw)')
+    train_parser.add_argument('--input-dir', default='datasets/raw', help='Input directory for training data (default: opens Finder to select)')
 
     args = parser.parse_args()
 
@@ -59,9 +63,24 @@ Examples:
 
 def handle_train(args, logger):
     """Handle training command."""
+    # get input directory from finder if not specified
+    input_dir = args.input_dir
+    if input_dir == 'datasets/raw':  # default value
+        root = tk.Tk()
+        root.withdraw()  # hide the main window
+        input_dir = filedialog.askdirectory(
+            title="Select folder containing training data",
+            initialdir=str(project_root / "datasets")
+        )
+        root.destroy()
+        
+        if not input_dir:
+            logger.error("❌ No folder selected. Exiting.")
+            return 1
+    
     if args.all:
         # Find all available keys
-        raw_data_path = Path('datasets/raw')
+        raw_data_path = Path(input_dir)
         if not raw_data_path.exists():
             logger.error("No raw data found. Capture data first:")
             logger.error(f"  python scripts/capture_data.py --keys Bb C D --samples 300")
@@ -76,10 +95,11 @@ def handle_train(args, logger):
             return 1
 
     logger.info(f"Starting model training for keys: {keys_to_train}")
+    logger.info(f"Using data from: {input_dir}")
     
     try:
         # Check if raw data exists
-        raw_data_path = Path('datasets/raw')
+        raw_data_path = Path(input_dir)
         
         if not raw_data_path.exists() or not any(raw_data_path.iterdir()):
             logger.error("No raw data found. Capture data first:")
