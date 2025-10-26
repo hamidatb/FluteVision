@@ -45,7 +45,8 @@ Examples:
     train_parser = subparsers.add_parser('train', help='Train the model')
     train_parser.add_argument('--all', action='store_true', help='Train on all available keys')
     train_parser.add_argument('--keys', nargs='+', help='Specific keys to train on')
-    train_parser.add_argument('--input-dir', default='datasets/raw', help='Input directory for training data (default: opens Finder to select)')
+    train_parser.add_argument('--input-dir', '--raw-dir', dest='input_dir', default='datasets/raw', 
+                              help='Input directory for training data (default: opens Finder to select)')
 
     args = parser.parse_args()
 
@@ -114,7 +115,7 @@ def handle_train(args, logger):
         result = subprocess.run([
             sys.executable,
             str(project_root / "scripts" / "train_landmark_model.py"),
-            "--raw-dir", args.input_dir
+            "--raw-dir", input_dir  # Use the actual input_dir, not args.input_dir
         ])
         
         return result.returncode
