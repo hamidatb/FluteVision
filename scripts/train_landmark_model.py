@@ -13,6 +13,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 import cv2
+import os
+
+# suppress tensorflow/mediapipe warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning)
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -42,9 +48,10 @@ def extract_hand_landmarks(image_path):
     """
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(
-        static_image_mode=True,
+        static_image_mode=False,
         max_num_hands=2,
-        min_detection_confidence=0.3
+        min_detection_confidence=0.3,
+        min_tracking_confidence=0.3
     )
     
     img = cv2.imread(str(image_path))
@@ -228,7 +235,10 @@ def load_dataset(raw_data_dir):
             
             for session_dir in key_dir.iterdir():
                 if session_dir.is_dir():
-                    for img_file in session_dir.glob('*.jpg'):
+                    images = list(session_dir.glob('*.jpg'))
+                    print(f"  Found {len(images)} images in {session_dir.name}")
+                    
+                    for img_file in images:
                         landmarks = extract_hand_landmarks(img_file)
                         
                         if landmarks is not None:
@@ -238,8 +248,8 @@ def load_dataset(raw_data_dir):
                         else:
                             skipped += 1
                         
-                        if image_count % 50 == 0:
-                            print(f"  Processed {image_count} images...", end='\r')
+                        if (image_count + skipped) % 100 == 0:
+                            print(f"  Processed {image_count + skipped}/{len(images)} images...", end='\r')
             
             print(f"  ✅ {key_name}: {image_count} samples (skipped {skipped} with no hands)")
     

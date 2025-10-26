@@ -35,22 +35,53 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous",
     """
     capture training data for multiple keys using opencv windows
     """
-    if output_dir is None:
+    if output_dir == 'datasets/raw':  # default value
         # use finder to select output directory
-        root = tk.Tk()
-        root.withdraw()  # hide the main window
-        output_dir = filedialog.askdirectory(
-            title="Select folder to save captured images",
-            initialdir=str(project_root / "datasets")
-        )
-        root.destroy()
-        
-        if not output_dir:
-            print("❌ No folder selected. Exiting.")
+        try:
+            root = tk.Tk()
+            root.withdraw()  # hide the main window
+            output_dir = filedialog.askdirectory(
+                title="Select folder to save captured images",
+                initialdir=str(project_root / "datasets")
+            )
+            root.destroy()
+            
+            if not output_dir:
+                print("❌ No folder selected. Exiting.")
+                return 1
+        except Exception as e:
+            print(f"❌ Error opening folder dialog: {e}")
+            print("Try specifying --output-dir directly")
             return 1
     
     data_dir = Path(output_dir)
-    data_dir.mkdir(parents=True, exist_ok=True)
+    
+    # check if external drive is accessible and has space
+    try:
+        data_dir.mkdir(parents=True, exist_ok=True)
+        
+        # test write permissions by creating a test file
+        test_file = data_dir / "test_write.tmp"
+        test_file.write_text("test")
+        test_file.unlink()  # delete test file
+        
+        # check available space (rough estimate)
+        import shutil
+        total, used, free = shutil.disk_usage(data_dir)
+        free_gb = free // (1024**3)
+        
+        if free_gb < 1:  # less than 1GB free
+            print(f"⚠️  Warning: Only {free_gb}GB free space on external drive")
+            print("Consider freeing up space or using a different location")
+            
+    except PermissionError:
+        print(f"❌ Permission denied: Cannot write to {data_dir}")
+        print("Try running with different permissions or choose a different folder")
+        return 1
+    except OSError as e:
+        print(f"❌ Error accessing external drive: {e}")
+        print("Make sure the external drive is connected and accessible")
+        return 1
     
     print("\n" + "="*60)
     print("FluteVision Data Capture")
@@ -59,16 +90,46 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous",
     print(f"Samples per key: {samples_per_key}")
     print(f"User: {user_id}")
     print(f"Output directory: {data_dir}")
+    
+    # warn about external drive usage
+    if str(data_dir).startswith('/Volumes/'):
+        print("💾 Using external drive - make sure it stays connected!")
+        print("If capture fails, check drive connection and free space")
+    
     print("="*60 + "\n")
     
+    # small delay to let tkinter fully close before opencv
+    import time
+    time.sleep(0.5)
+    
     print("initializing webcam...")
-    cap = cv2.VideoCapture(0)
     
-    if not cap.isOpened():
-        print("Error: Could not open webcam!")
+    # try different camera indices to avoid segfault
+    cap = None
+    for camera_index in [0, 1, 2]:
+        try:
+            cap = cv2.VideoCapture(camera_index)
+            if cap.isOpened():
+                ret, frame = cap.read()
+                if ret and frame is not None:
+                    print(f"✅ Webcam initialized on camera {camera_index}!")
+                    break
+                else:
+                    cap.release()
+                    cap = None
+        except Exception as e:
+            print(f"Camera {camera_index} failed: {e}")
+            if cap:
+                cap.release()
+                cap = None
+    
+    if cap is None or not cap.isOpened():
+        print("❌ Error: Could not open any webcam!")
+        print("Try:")
+        print("1. Check if camera is connected")
+        print("2. Close other apps using the camera")
+        print("3. Try running: python -c \"import cv2; cap = cv2.VideoCapture(0); print('Camera works:', cap.isOpened())\"")
         return 1
-    
-    print("✅ Webcam initialized!\n")
     
     # loop through each key
     for key_index, key in enumerate(keys_to_collect):
@@ -266,19 +327,33 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous",
             
             # save unflipped frame to match training data orientation
             sample_path = session_dir / f"sample_{counter:04d}.jpg"
-            cv2.imwrite(str(sample_path), frame)
-            metadata = {
-                'filename': f"sample_{counter:04d}.jpg",
-                'key': key,
-                'user_id': user_id,
-                'timestamp': datetime.now().isoformat(),
-                'image_shape': list(frame.shape),
-                'session_dir': str(session_dir)
-            }
             
-            metadata_path = session_dir / f"sample_{counter:04d}_metadata.json"
-            with open(metadata_path, 'w') as f:
-                json.dump(metadata, f, indent=2)
+            try:
+                success = cv2.imwrite(str(sample_path), frame)
+                if not success:
+                    print(f"❌ Failed to save image {counter}")
+                    continue
+                    
+                metadata = {
+                    'filename': f"sample_{counter:04d}.jpg",
+                    'key': key,
+                    'user_id': user_id,
+                    'timestamp': datetime.now().isoformat(),
+                    'image_shape': list(frame.shape),
+                    'session_dir': str(session_dir)
+                }
+                
+                metadata_path = session_dir / f"sample_{counter:04d}_metadata.json"
+                with open(metadata_path, 'w') as f:
+                    json.dump(metadata, f, indent=2)
+                    
+            except OSError as e:
+                print(f"❌ Error saving image {counter}: {e}")
+                print("External drive may be disconnected or full")
+                break
+            except Exception as e:
+                print(f"❌ Unexpected error saving image {counter}: {e}")
+                break
             
             counter += 1
             
@@ -287,6 +362,17 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous",
             if progress_pct >= last_progress + 10:
                 print(f"{progress_pct}%... ", end="", flush=True)
                 last_progress = progress_pct
+                
+            # check if external drive is still accessible every 50 images
+            if counter % 50 == 0:
+                try:
+                    test_file = session_dir / "connection_test.tmp"
+                    test_file.write_text("test")
+                    test_file.unlink()
+                except OSError:
+                    print(f"\n❌ External drive disconnected at image {counter}")
+                    print("Please reconnect the drive and restart capture")
+                    break
             
             time.sleep(0.03)  # ~30fps capture speed
         
@@ -359,8 +445,8 @@ def main():
     
     parser.add_argument(
         '--output-dir',
-        default=None,
-        help='Output directory for captured images (default: opens Finder to select)'
+        default='datasets/raw',
+        help='Output directory for captured images (default: datasets/raw)'
     )
     
     args = parser.parse_args()
