@@ -140,7 +140,7 @@ flutevision/
 │   ├── test_landmark_live.py        # Live recognition
 │   └── manage.py                    # CLI management
 ├── datasets/
-│   └── raw/                         # Captured training images
+│   └── raw/                         # Captured training images (this will vary depending on they keys you capture)
 │       ├── Bb/
 │       ├── C/
 │       └── D/
@@ -150,13 +150,7 @@ flutevision/
 └── README.md
 ```
 
-## Performance
 
-I've tested it with 3 keys so far (Bb, C, D) and it's performing pretty well:
-- Test Accuracy: 99.0%
-- Training Time: around 10 seconds
-- Inference Speed: Real-time (30+ FPS)
-- Model Size: ~500KB
 
 Per-class accuracy:
 - Bb: 100%
@@ -171,10 +165,10 @@ For data collection, I've found it works best when you:
 - Vary hand position slightly between captures (helps the model generalize)
 - Capture at least 200-300 samples per key
 
-When training, more data usually means better accuracy. I train on all keys together rather than separately. If you add new keys later, you'll need to retrain.
+When training, more data usually means better accuracy. I train on all keys.
 
-For live recognition, make sure you have good lighting and keep your hands in frame. The predictions work best when you hold the fingering steady for a moment.
+For live recognition, make sure you have good lighting and keep your hands in frame. 
 
 ## Acknowledgments
 
-This project uses MediaPipe for hand landmark detection, scikit-learn for the Random Forest classifier, and OpenCV for the computer vision stuff.
+This project uses MediaPipe for hand landmark detection, scikit-learn for the Random Forest classifier, and OpenCV for the computer vision.

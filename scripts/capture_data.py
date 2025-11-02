@@ -31,7 +31,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 
-def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous", output_dir=None):
+def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous", output_dir=None, keep_old=True):
     """
     capture training data for multiple keys using opencv windows
     """
@@ -242,18 +242,24 @@ def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous",
         
         print("   GO! Collecting samples...")
         
-        # CLEAR old data for this key before capturing new data
+        # handle old data based on keep_old flag
         key_dir = data_dir / key
-        if key_dir.exists():
+        if not keep_old and key_dir.exists():
             import shutil
-            print(f"   🗑️  Clearing old data for key '{key}' to avoid duplicates...")
+            print(f"   Clearing old data for key '{key}' to avoid duplicates...")
             shutil.rmtree(key_dir)
         
-        # create fresh session directory
+        # create new session directory
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         session_dir = data_dir / key / f"{user_id}_{timestamp}"
         session_dir.mkdir(parents=True, exist_ok=True)
         print(f"   Saving to: {session_dir}")
+        
+        # check if there's existing data for this key (if keeping old)
+        if keep_old:
+            existing_sessions = [d for d in key_dir.iterdir() if d.is_dir()] if key_dir.exists() else []
+            if existing_sessions:
+                print(f"   (Existing {len(existing_sessions)} session(s) for '{key}' will be preserved)")
         
         # collect samples
         counter = 0
@@ -418,7 +424,10 @@ def main():
         # Custom output directory
         python scripts/capture_data.py --keys Bb C --samples 100 --output-dir /path/to/my/data
         
-        # Use Finder to select folder (default behavior)
+        # Replace existing photos (default: keeps old and adds new)
+        python scripts/capture_data.py --keys Bb C --samples 100 --replace
+        
+        # Use Finder to select folder (default: keeps old photos)
         python scripts/capture_data.py --keys Bb C --samples 100
         """
     )
@@ -449,10 +458,17 @@ def main():
         help='Output directory for captured images (default: datasets/raw)'
     )
     
+    parser.add_argument(
+        '--replace',
+        action='store_true',
+        help='Replace existing photos for keys (default: keeps old photos and adds new ones)'
+    )
+    
     args = parser.parse_args()
     
     try:
-        return capture_data_for_keys(args.keys, args.samples, args.user, args.output_dir)
+        keep_old = not args.replace  # Invert: if replace is True, keep_old is False
+        return capture_data_for_keys(args.keys, args.samples, args.user, args.output_dir, keep_old)
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
         cv2.destroyAllWindows()
