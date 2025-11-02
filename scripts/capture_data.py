@@ -6,6 +6,8 @@ The flags are:
 --keys: The keys to collect data for
 --samples: The number of samples to collect per key
 --user: The user ID
+--replace: Replace existing photos for keys (default: keeps old photos and adds new ones)
+--output-dir: The directory to save the output to
 
 e.g. python scripts/capture_data.py --keys Bb C D --samples 300 --user john
 
@@ -13,393 +15,531 @@ The script will open a webcam and show you the keys to collect data for.
 Press 'B' to begin capturing, 'S' to skip, or 'Q' to quit.
 The script will then count down from 3 and collect samples automatically.
 The script will then save the samples to the datasets/raw directory.
-The script will then save the metadata to the datasets/raw directory.
-The script will then save the metadata to the datasets/raw directory.
 """
 
 import sys
-import os
 import cv2
-from pathlib import Path
-from datetime import datetime
+import shutil
 import json
 import time
+from pathlib import Path
+from datetime import datetime
+from typing import Optional, List, Tuple
+from dataclasses import dataclass
 import tkinter as tk
 from tkinter import filedialog
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+@dataclass
+class CaptureSession:
+    """Configuration for a data capture session."""
+    keys: List[str]
+    samples_per_key: int
+    user_id: str
+    output_dir: Path
+    keep_old: bool
 
-def capture_data_for_keys(keys_to_collect, samples_per_key, user_id="anonymous", output_dir=None, keep_old=True):
-    """
-    capture training data for multiple keys using opencv windows
-    """
-    if output_dir == 'datasets/raw':  # default value
-        # use finder to select output directory
+
+class StorageManager:
+    """Handles all file and directory operations."""
+    
+    def __init__(self, base_dir: Path):
+        self.base_dir = base_dir
+    
+    def validate_directory(self) -> Tuple[bool, Optional[str]]:
+        """Validate that the directory is accessible and writable."""
         try:
-            root = tk.Tk()
-            root.withdraw()  # hide the main window
-            output_dir = filedialog.askdirectory(
-                title="Select folder to save captured images",
-                initialdir=str(project_root / "datasets")
-            )
-            root.destroy()
+            self.base_dir.mkdir(parents=True, exist_ok=True)
             
-            if not output_dir:
-                print("❌ No folder selected. Exiting.")
-                return 1
+            # Test write permissions
+            test_file = self.base_dir / "test_write.tmp"
+            test_file.write_text("test")
+            test_file.unlink()
+            
+            # Check available space
+            total, used, free = shutil.disk_usage(self.base_dir)
+            free_gb = free // (1024**3)
+            
+            if free_gb < 1:
+                return True, f"Warning: Only {free_gb}GB free space available"
+            
+            return True, None
+            
+        except PermissionError:
+            return False, f"Permission denied: Cannot write to {self.base_dir}"
+        except OSError as e:
+            return False, f"Error accessing directory: {e}"
+    
+    def prepare_key_directory(self, key: str, keep_old: bool) -> Path:
+        """Prepare directory for a specific key."""
+        key_dir = self.base_dir / key
+        
+        if not keep_old and key_dir.exists():
+            # if we're not keeping the old dir, then removing it
+            shutil.rmtree(key_dir)
+        
+        return key_dir
+    
+    def create_session_directory(self, key: str, user_id: str) -> Path:
+        """Create a new session directory with timestamp."""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        session_dir = self.base_dir / key / f"{user_id}_{timestamp}"
+        session_dir.mkdir(parents=True, exist_ok=True)
+        return session_dir
+    
+    def count_existing_sessions(self, key: str) -> int:
+        """Count existing sessions for a key."""
+        key_dir = self.base_dir / key
+        if not key_dir.exists():
+            return 0
+        return len([d for d in key_dir.iterdir() if d.is_dir()])
+    
+    def test_connection(self, session_dir: Path) -> bool:
+        """Test if storage is still accessible."""
+        try:
+            test_file = session_dir / "connection_test.tmp"
+            test_file.write_text("test")
+            test_file.unlink()
+            return True
+        except OSError:
+            return False
+
+
+class SampleRecorder:
+    """Handles saving of image samples and metadata."""
+    
+    def __init__(self, session_dir: Path, key: str, user_id: str):
+        self.session_dir = session_dir
+        self.key = key
+        self.user_id = user_id
+    
+    def save_sample(self, frame, sample_index: int) -> Tuple[bool, Optional[str]]:
+        """Save a single sample with metadata."""
+        sample_path = self.session_dir / f"sample_{sample_index:04d}.jpg"
+        
+        try:
+            success = cv2.imwrite(str(sample_path), frame)
+            if not success:
+                return False, f"Failed to save image {sample_index}"
+            
+            metadata = {
+                'filename': f"sample_{sample_index:04d}.jpg",
+                'key': self.key,
+                'user_id': self.user_id,
+                'timestamp': datetime.now().isoformat(),
+                'image_shape': list(frame.shape),
+                'session_dir': str(self.session_dir)
+            }
+            
+            metadata_path = self.session_dir / f"sample_{sample_index:04d}_metadata.json"
+            with open(metadata_path, 'w') as f:
+                json.dump(metadata, f, indent=2)
+            
+            return True, None
+            
+        except OSError as e:
+            return False, f"Error saving image: {e}"
         except Exception as e:
-            print(f"❌ Error opening folder dialog: {e}")
-            print("Try specifying --output-dir directly")
-            return 1
+            return False, f"Unexpected error: {e}"
+
+
+class UIRenderer:
+    """Handles all cv2 UI rendering on video frames."""
     
-    data_dir = Path(output_dir)
+    DARK_GREEN = (0, 180, 0)
+    WHITE = (255, 255, 255)
+    GRAY = (200, 200, 200)
+    DARK_GRAY = (50, 50, 50)
     
-    # check if external drive is accessible and has space
-    try:
-        data_dir.mkdir(parents=True, exist_ok=True)
+    @staticmethod
+    def render_waiting_screen(frame, key: str, samples: int):
+        """Render the waiting/ready screen."""
+        cv2.putText(
+            img=frame, 
+            text=f"KEY: {key}", 
+            (10, 50), 
+            cv2.FONT_HERSHEY_SIMPLEX, 
+            1.5, 
+            UIRenderer.DARK_GREEN, 
+            3,
+            cv2.LINE_AA
+        )
+
+        cv2.putText(
+
+        )
         
-        # test write permissions by creating a test file
-        test_file = data_dir / "test_write.tmp"
-        test_file.write_text("test")
-        test_file.unlink()  # delete test file
+        cv2.putText(
+            frame,
+            "Press B to BEGIN | S to SKIP | Q to QUIT",
+            (10, 100),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            UIRenderer.WHITE,
+            2,
+            cv2.LINE_AA
+        )
         
-        # check available space (rough estimate)
-        import shutil
-        total, used, free = shutil.disk_usage(data_dir)
-        free_gb = free // (1024**3)
+        cv2.putText(
+            frame,
+            f"Samples to collect: {samples}",
+            (10, 140),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.6,
+            UIRenderer.GRAY,
+            1,
+            cv2.LINE_AA
+        )
+    
+    @staticmethod
+    def render_countdown(frame, key: str, countdown: int):
+        """Render countdown screen."""
+        cv2.putText(
+            frame,
+            f"KEY: {key}",
+            (10, 50),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.5,
+            UIRenderer.DARK_GREEN,
+            3,
+            cv2.LINE_AA
+        )
         
-        if free_gb < 1:  # less than 1GB free
-            print(f"⚠️  Warning: Only {free_gb}GB free space on external drive")
-            print("Consider freeing up space or using a different location")
-            
-    except PermissionError:
-        print(f"❌ Permission denied: Cannot write to {data_dir}")
-        print("Try running with different permissions or choose a different folder")
-        return 1
-    except OSError as e:
-        print(f"❌ Error accessing external drive: {e}")
-        print("Make sure the external drive is connected and accessible")
-        return 1
+        cv2.putText(
+            frame,
+            str(countdown),
+            (frame.shape[1]//2 - 50, frame.shape[0]//2),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            5,
+            UIRenderer.DARK_GREEN,
+            10,
+            cv2.LINE_AA
+        )
     
-    print("\n" + "="*60)
-    print("FluteVision Data Capture")
-    print("="*60)
-    print(f"Keys to collect: {', '.join(keys_to_collect)}")
-    print(f"Samples per key: {samples_per_key}")
-    print(f"User: {user_id}")
-    print(f"Output directory: {data_dir}")
+    @staticmethod
+    def render_capture_progress(frame, key: str, current: int, total: int):
+        """Render capture progress with progress bar."""
+        cv2.putText(
+            frame,
+            f"KEY: {key}",
+            (10, 50),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.5,
+            UIRenderer.DARK_GREEN,
+            3,
+            cv2.LINE_AA
+        )
+        
+        cv2.putText(
+            frame,
+            f"Collecting: {current + 1}/{total}",
+            (10, 90),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            UIRenderer.WHITE,
+            2,
+            cv2.LINE_AA
+        )
+        
+        # Progress bar
+        bar_width = 400
+        bar_height = 30
+        bar_x = (frame.shape[1] - bar_width) // 2
+        bar_y = frame.shape[0] - 60
+        
+        # Background
+        cv2.rectangle(
+            frame,
+            (bar_x, bar_y),
+            (bar_x + bar_width, bar_y + bar_height),
+            UIRenderer.DARK_GRAY,
+            -1
+        )
+        
+        # Progress
+        progress_width = int((current / total) * bar_width)
+        cv2.rectangle(
+            frame,
+            (bar_x, bar_y),
+            (bar_x + progress_width, bar_y + bar_height),
+            UIRenderer.DARK_GREEN,
+            -1
+        )
+
+
+class WebcamManager:
+    """Manages webcam initialization and frame capture."""
     
-    # warn about external drive usage
-    if str(data_dir).startswith('/Volumes/'):
-        print("💾 Using external drive - make sure it stays connected!")
-        print("If capture fails, check drive connection and free space")
+    def __init__(self):
+        self.cap: Optional[cv2.VideoCapture] = None
     
-    print("="*60 + "\n")
-    
-    # small delay to let tkinter fully close before opencv
-    import time
-    time.sleep(0.5)
-    
-    print("initializing webcam...")
-    
-    # try different camera indices to avoid segfault
-    cap = None
-    for camera_index in [0, 1, 2]:
-        try:
-            cap = cv2.VideoCapture(camera_index)
-            if cap.isOpened():
-                ret, frame = cap.read()
-                if ret and frame is not None:
-                    print(f"✅ Webcam initialized on camera {camera_index}!")
-                    break
+    def initialize(self) -> Tuple[bool, Optional[str]]:
+        """Initialize webcam, trying multiple camera indices."""
+        # Small delay to ensure clean state before opencv access
+        time.sleep(0.1)
+        
+        for camera_index in [0, 1, 2]:
+            try:
+                cap = cv2.VideoCapture(camera_index)
+                if cap.isOpened():
+                    # Give camera time to initialize
+                    time.sleep(0.2)
+                    ret, frame = cap.read()
+                    if ret and frame is not None:
+                        self.cap = cap
+                        return True, f"Webcam initialized on camera {camera_index}"
+                    else:
+                        cap.release()
                 else:
-                    cap.release()
-                    cap = None
-        except Exception as e:
-            print(f"Camera {camera_index} failed: {e}")
-            if cap:
-                cap.release()
-                cap = None
+                    if cap:
+                        cap.release()
+            except Exception as e:
+                print(f"  Camera {camera_index} error: {e}")
+                if cap:
+                    try:
+                        cap.release()
+                    except:
+                        pass
+        
+        return False, "Could not open any webcam"
     
-    if cap is None or not cap.isOpened():
-        print("❌ Error: Could not open any webcam!")
-        print("Try:")
-        print("1. Check if camera is connected")
-        print("2. Close other apps using the camera")
-        print("3. Try running: python -c \"import cv2; cap = cv2.VideoCapture(0); print('Camera works:', cap.isOpened())\"")
-        return 1
+    def read_frame(self, mirror: bool = False):
+        """Read a frame from the webcam."""
+        if not self.cap:
+            return False, None
+        
+        ret, frame = self.cap.read()
+        if ret and mirror:
+            frame = cv2.flip(frame, 1)
+        
+        return ret, frame
     
-    # loop through each key
-    for key_index, key in enumerate(keys_to_collect):
+    def release(self):
+        """Release the webcam."""
+        if self.cap:
+            self.cap.release()
+        cv2.destroyAllWindows()
+
+
+class CaptureController:
+    """Orchestrates the data capture workflow (coordinates components)."""
+    
+    def __init__(self, session: CaptureSession):
+        self.session = session
+        self.storage = StorageManager(session.output_dir)
+        self.webcam = WebcamManager()
+        self.ui = UIRenderer()
+    
+    def run(self) -> int:
+        """Execute the capture workflow."""
+        # Validate storage
+        valid, message = self.storage.validate_directory()
+        if not valid:
+            print(f"Error: {message}")
+            return 1
+        
+        if message:
+            print(f"Warning: {message}")
+        
+        # Print session info
+        self._print_session_info()
+        
+        # Initialize webcam
+        print("Initializing webcam...")
+        
+        success, message = self.webcam.initialize()
+        if not success:
+            print(f"Error: {message}")
+            print("Try:")
+            print("1. Check if camera is connected")
+            print("2. Close other apps using the camera")
+            return 1
+        
+        print(message)
+        
+        # Capture data for each key
+        for key_index, key in enumerate(self.session.keys):
+            result = self._capture_key(key, key_index)
+            if result == -1:  # Quit requested
+                break
+        
+        # Cleanup
+        self.webcam.release()
+        self._print_completion_summary()
+        return 0
+    
+    def _print_session_info(self):
+        """Print session information."""
+        print("\n" + "="*60)
+        print("FluteVision Data Capture")
+        print("="*60)
+        print(f"Keys to collect: {', '.join(self.session.keys)}")
+        print(f"Samples per key: {self.session.samples_per_key}")
+        print(f"User: {self.session.user_id}")
+        print(f"Output directory: {self.session.output_dir}")
+        
+        if str(self.session.output_dir).startswith('/Volumes/'):
+            print("Using external drive - make sure it stays connected!")
+        
+        print("="*60 + "\n")
+    
+    def _capture_key(self, key: str, key_index: int) -> int:
+        """Capture samples for a single key. Returns -1 to quit, 0 to skip, 1 on success."""
         print(f"\n{'='*60}")
-        print(f"Key {key_index + 1}/{len(keys_to_collect)}: {key}")
+        print(f"Key {key_index + 1}/{len(self.session.keys)}: {key}")
         print(f"{'='*60}")
         print(f"Position your hands for the '{key}' fingering")
         print("Press 'B' to begin capturing, 'S' to skip, or 'Q' to quit\n")
         
-        # waiting for user to be ready
+        # Wait for user to be ready
+        action = self._wait_for_user_ready(key)
+        if action == 'q':
+            print("\nQuitting data capture")
+            return -1
+        elif action == 's':
+            print(f"Skipping key '{key}'")
+            return 0
+        
+        # Countdown
+        self._show_countdown(key)
+        
+        # Prepare storage
+        print("   GO! Collecting samples...")
+        self.storage.prepare_key_directory(key, self.session.keep_old)
+        session_dir = self.storage.create_session_directory(key, self.session.user_id)
+        print(f"   Saving to: {session_dir}")
+        
+        # Show existing sessions info
+        if self.session.keep_old:
+            existing_count = self.storage.count_existing_sessions(key)
+            if existing_count > 0:
+                print(f"   (Existing {existing_count} session(s) for '{key}' will be preserved)")
+        
+        # Capture samples
+        samples_captured = self._capture_samples(key, session_dir)
+        
+        print("100% Done")
+        print(f"Completed {samples_captured} samples for key '{key}'")
+        print(f"Saved to: {session_dir}\n")
+        
+        return 1
+    
+    def _wait_for_user_ready(self, key: str) -> str:
+        """Wait for user input. Returns 'b' to begin, 's' to skip, 'q' to quit."""
         while True:
-            ret, frame = cap.read()
+            ret, frame = self.webcam.read_frame(mirror=True)
             if not ret:
                 print("Failed to read from webcam")
-                break
+                return 'q'
             
-            # mirror so user sees themselves naturally
-            frame = cv2.flip(frame, 1)
-            
-            dark_green = (0, 180, 0)
-            
-            # display current key prominently for user guidance
-            cv2.putText(
-                frame, 
-                f"KEY: {key}", 
-                (10, 50), 
-                cv2.FONT_HERSHEY_SIMPLEX, 
-                1.5, 
-                dark_green, 
-                3,
-                cv2.LINE_AA
-            )
-            
-            cv2.putText(
-                frame,
-                "Press B to BEGIN | S to SKIP | Q to QUIT",
-                (10, 100),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.7,
-                (255, 255, 255),
-                2,
-                cv2.LINE_AA
-            )
-            
-            cv2.putText(
-                frame,
-                f"Samples to collect: {samples_per_key}",
-                (10, 140),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
-                (200, 200, 200),
-                1,
-                cv2.LINE_AA
-            )
-            
+            self.ui.render_waiting_screen(frame, key, self.session.samples_per_key)
             cv2.imshow('FluteVision Data Capture', frame)
             
             key_press = cv2.waitKey(25) & 0xFF
-            if key_press == ord('b') or key_press == ord('B'):
-                break
-            elif key_press == ord('s') or key_press == ord('S'):
-                print(f"Skipping key '{key}'")
-                break
-            elif key_press == ord('q') or key_press == ord('Q'):
-                print("\nQuitting data capture")
-                cap.release()
-                cv2.destroyAllWindows()
-                return 0
-        
-        # skip if user pressed 'S'
-        if key_press == ord('s') or key_press == ord('S'):
-            continue
-        
-        # countdown before collection
+            if key_press in (ord('b'), ord('B')):
+                return 'b'
+            elif key_press in (ord('s'), ord('S')):
+                return 's'
+            elif key_press in (ord('q'), ord('Q')):
+                return 'q'
+    
+    def _show_countdown(self, key: str):
+        """Show countdown before capture."""
         print("\nStarting countdown...")
-        dark_green = (0, 180, 0)  # darker green
-        
         for countdown in range(3, 0, -1):
-            ret, frame = cap.read()
+            ret, frame = self.webcam.read_frame(mirror=True)
             if ret:
-                frame = cv2.flip(frame, 1)
-                
-                # show key name at top
-                cv2.putText(
-                    frame,
-                    f"KEY: {key}",
-                    (10, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1.5,
-                    dark_green,
-                    3,
-                    cv2.LINE_AA
-                )
-                
-                # show countdown in center (darker green)
-                cv2.putText(
-                    frame,
-                    str(countdown),
-                    (frame.shape[1]//2 - 50, frame.shape[0]//2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    5,
-                    dark_green,
-                    10,
-                    cv2.LINE_AA
-                )
+                self.ui.render_countdown(frame, key, countdown)
                 cv2.imshow('FluteVision Data Capture', frame)
                 cv2.waitKey(1)
             print(f"   {countdown}...")
             time.sleep(1)
+    
+    def _capture_samples(self, key: str, session_dir: Path) -> int:
+        """Capture samples for a key. Returns number of samples captured."""
+        recorder = SampleRecorder(session_dir, key, self.session.user_id)
         
-        print("   GO! Collecting samples...")
-        
-        # handle old data based on keep_old flag
-        key_dir = data_dir / key
-        if not keep_old and key_dir.exists():
-            import shutil
-            print(f"   Clearing old data for key '{key}' to avoid duplicates...")
-            shutil.rmtree(key_dir)
-        
-        # create new session directory
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        session_dir = data_dir / key / f"{user_id}_{timestamp}"
-        session_dir.mkdir(parents=True, exist_ok=True)
-        print(f"   Saving to: {session_dir}")
-        
-        # check if there's existing data for this key (if keeping old)
-        if keep_old:
-            existing_sessions = [d for d in key_dir.iterdir() if d.is_dir()] if key_dir.exists() else []
-            if existing_sessions:
-                print(f"   (Existing {len(existing_sessions)} session(s) for '{key}' will be preserved)")
-        
-        # collect samples
         counter = 0
         print(f"\nProgress: ", end="", flush=True)
         last_progress = 0
         
-        while counter < samples_per_key:
-            ret, frame = cap.read()
+        while counter < self.session.samples_per_key:
+            ret, frame = self.webcam.read_frame(mirror=False)
             if not ret:
                 print("\nFailed to read frame")
                 break
             
-            # display collection in progress
-            display_frame = frame.copy()
-            display_frame = cv2.flip(display_frame, 1)
+            # Display progress (mirrored for user)
+            ret_display, display_frame = self.webcam.read_frame(mirror=True)
+            if ret_display:
+                self.ui.render_capture_progress(
+                    display_frame, key, counter, self.session.samples_per_key
+                )
+                cv2.imshow('FluteVision Data Capture', display_frame)
+                cv2.waitKey(1)
             
-            # darker green color (less neon)
-            dark_green = (0, 180, 0)  # was (0, 255, 0)
-            
-            # show the KEY being captured (large and prominent)
-            cv2.putText(
-                display_frame,
-                f"KEY: {key}",
-                (10, 50),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1.5,
-                dark_green,
-                3,
-                cv2.LINE_AA
-            )
-            
-            # show collection progress below
-            cv2.putText(
-                display_frame,
-                f"Collecting: {counter + 1}/{samples_per_key}",
-                (10, 90),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.8,
-                (255, 255, 255),
-                2,
-                cv2.LINE_AA
-            )
-            
-            # progress bar
-            bar_width = 400
-            bar_height = 30
-            bar_x = (display_frame.shape[1] - bar_width) // 2
-            bar_y = display_frame.shape[0] - 60
-            
-            # background
-            cv2.rectangle(
-                display_frame,
-                (bar_x, bar_y),
-                (bar_x + bar_width, bar_y + bar_height),
-                (50, 50, 50),
-                -1
-            )
-            
-            # progress (darker green)
-            progress_width = int((counter / samples_per_key) * bar_width)
-            cv2.rectangle(
-                display_frame,
-                (bar_x, bar_y),
-                (bar_x + progress_width, bar_y + bar_height),
-                dark_green,
-                -1
-            )
-            
-            cv2.imshow('FluteVision Data Capture', display_frame)
-            cv2.waitKey(1)
-            
-            # save unflipped frame to match training data orientation
-            sample_path = session_dir / f"sample_{counter:04d}.jpg"
-            
-            try:
-                success = cv2.imwrite(str(sample_path), frame)
-                if not success:
-                    print(f"❌ Failed to save image {counter}")
-                    continue
-                    
-                metadata = {
-                    'filename': f"sample_{counter:04d}.jpg",
-                    'key': key,
-                    'user_id': user_id,
-                    'timestamp': datetime.now().isoformat(),
-                    'image_shape': list(frame.shape),
-                    'session_dir': str(session_dir)
-                }
-                
-                metadata_path = session_dir / f"sample_{counter:04d}_metadata.json"
-                with open(metadata_path, 'w') as f:
-                    json.dump(metadata, f, indent=2)
-                    
-            except OSError as e:
-                print(f"❌ Error saving image {counter}: {e}")
-                print("External drive may be disconnected or full")
-                break
-            except Exception as e:
-                print(f"❌ Unexpected error saving image {counter}: {e}")
+            # Save sample (unflipped for training)
+            success, error = recorder.save_sample(frame, counter)
+            if not success:
+                print(f"\n{error}")
+                if "disconnected" in error.lower() or "full" in error.lower():
+                    print("External drive may be disconnected or full")
                 break
             
             counter += 1
             
-            # show progress every 10% to avoid spam
-            progress_pct = int((counter / samples_per_key) * 100)
+            # Show progress every 10%
+            progress_pct = int((counter / self.session.samples_per_key) * 100)
             if progress_pct >= last_progress + 10:
                 print(f"{progress_pct}%... ", end="", flush=True)
                 last_progress = progress_pct
-                
-            # check if external drive is still accessible every 50 images
+            
+            # Check storage connection every 50 images
             if counter % 50 == 0:
-                try:
-                    test_file = session_dir / "connection_test.tmp"
-                    test_file.write_text("test")
-                    test_file.unlink()
-                except OSError:
-                    print(f"\n❌ External drive disconnected at image {counter}")
+                if not self.storage.test_connection(session_dir):
+                    print(f"\nExternal drive disconnected at image {counter}")
                     print("Please reconnect the drive and restart capture")
                     break
             
             time.sleep(0.03)  # ~30fps capture speed
         
-        print("100% ✅")
-        print(f"✅ Completed {counter} samples for key '{key}'")
-        print(f"📁 Saved to: {session_dir}\n")
+        return counter
     
-    # cleanup
-    cap.release()
-    cv2.destroyAllWindows()
-    
-    print("\n" + "="*60)
-    print("Data Capture Complete!")
-    print("="*60)
-    print(f"Captured keys: {keys_to_collect}")
-    print(f"Samples per key: {samples_per_key}")
-    print(f"Total samples: {len(keys_to_collect) * samples_per_key}")
-    print("\nTo train the next: python scripts/manage.py train --all")
-    print("="*60 + "\n")
-    
-    return 0
+    def _print_completion_summary(self):
+        """Print completion summary."""
+        print("\n" + "="*60)
+        print("Data Capture Complete!")
+        print("="*60)
+        print(f"Captured keys: {self.session.keys}")
+        print(f"Samples per key: {self.session.samples_per_key}")
+        print(f"Total samples: {len(self.session.keys) * self.session.samples_per_key}")
+        print("\nTo train the model: python scripts/manage.py train --all")
+        print("="*60 + "\n")
+
+
+def select_output_directory() -> Optional[Path]:
+    """Open a dialog to select output directory."""
+    try:
+        root = tk.Tk()
+        root.withdraw()
+        output_dir = filedialog.askdirectory(
+            title="Select folder to save captured images",
+            initialdir=str(project_root / "datasets")
+        )
+        root.destroy()
+        
+        if not output_dir:
+            print("No folder selected. Exiting.")
+            return None
+        
+        return Path(output_dir)
+        
+    except Exception as e:
+        print(f"Error opening folder dialog: {e}")
+        print("Try specifying --output-dir directly")
+        return None
 
 
 def main():
@@ -419,7 +559,7 @@ def main():
         python scripts/capture_data.py --keys Bb C D --samples 150
         
         # All keys in Bb scale
-        python scripts/capture_data.py --keys Bb C D Eb F G A --samples 200 --user john
+        python scripts/capture_data.py --keys Bb C D Eb F G A --samples 200 --user hami
         
         # Custom output directory
         python scripts/capture_data.py --keys Bb C --samples 100 --output-dir /path/to/my/data
@@ -427,7 +567,7 @@ def main():
         # Replace existing photos (default: keeps old and adds new)
         python scripts/capture_data.py --keys Bb C --samples 100 --replace
         
-        # Use Finder to select folder (default: keeps old photos)
+        # Use Finder to select folder (default: keeps old photos) - this may crash if you're using continuityCamera on iOS, if that happens, please use the custom output directory script above. 
         python scripts/capture_data.py --keys Bb C --samples 100
         """
     )
@@ -467,8 +607,28 @@ def main():
     args = parser.parse_args()
     
     try:
-        keep_old = not args.replace  # Invert: if replace is True, keep_old is False
-        return capture_data_for_keys(args.keys, args.samples, args.user, args.output_dir, keep_old)
+        # Handle output directory selection
+        if args.output_dir == 'datasets/raw':
+            output_dir = select_output_directory()
+            if not output_dir:
+                return 1
+            # Critical: delay after tkinter closes to prevent segfault on macOS
+            time.sleep(0.5)
+        else:
+            output_dir = Path(args.output_dir)
+        
+        # Create session and run
+        session = CaptureSession(
+            keys=args.keys,
+            samples_per_key=args.samples,
+            user_id=args.user,
+            output_dir=output_dir,
+            keep_old=not args.replace
+        )
+        
+        controller = CaptureController(session)
+        return controller.run()
+        
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
         cv2.destroyAllWindows()
