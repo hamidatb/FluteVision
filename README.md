@@ -1,17 +1,10 @@
-# 🎶 FluteVision: Vision-Based Flute Fingering Recognition System
+# FluteVision: Vision-Based Flute Fingering Recognition System
 
-A landmark-based machine learning system for recognizing flute fingerings using MediaPipe hand tracking (similar to sign language recognition).
+I built this to recognize flute fingerings using computer vision. It's basically like sign language recognition but for flute hand positions. The system uses MediaPipe to track hand landmarks and a Random Forest classifier to identify which note you're playing.
 
-## 🌟 Features
+It can recognize fingerings in real-time from your webcam, and you can collect your own training data to extend it to more notes.
 
-- **Real-time Flute Fingering Recognition**: Landmark-based model using hand coordinates as features
-- **MediaPipe Hand Tracking**: Extracts precise hand landmark positions (x,y coordinates)
-- **Random Forest Classifier**: Fast, accurate classification (99% test accuracy)
-- **Interactive Data Collection**: Easy-to-use webcam capture with visual feedback
-- **Live Recognition**: Real-time predictions with confidence bars
-- **User-Extendable**: Capture your own data and retrain the model
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -36,11 +29,11 @@ A landmark-based machine learning system for recognizing flute fingerings using 
    pip install -r requirements.txt
    ```
 
-## 📊 Data Collection
+## Data Collection
 
 ### Capture Training Data
 
-The interactive capture tool shows you which key to play and guides you through the process:
+The capture tool will guide you through collecting training data. It shows you which key to play and walks you through the process:
 
 ```bash
 # Capture data for multiple keys (recommended)
@@ -53,20 +46,11 @@ python scripts/capture_data.py --keys Bb --samples 200
 python scripts/capture_data.py --keys Bb C D --samples 300 --user session1
 ```
 
-**During capture:**
-- Position your hands showing the fingering
-- Press `B` to begin capturing
-- The tool will count down 3-2-1 and then collect samples automatically
-- Progress bar shows collection status
-- Repeat for each key
+During capture, just position your hands showing the fingering and press `B` to start. The tool will count down 3-2-1 and then collect samples automatically. You'll see a progress bar while it's collecting. Repeat this for each key you want to train.
 
-**Tips for best results:**
-- Capture in good lighting
-- Keep hands steady and visible
-- Capture multiple sessions with slight variations in hand position
-- Old data is automatically replaced when you recapture a key
+A few tips: capture in good lighting, keep your hands steady and visible, and try capturing multiple sessions with slight variations in hand position. Note that if you recapture a key, the old data gets automatically replaced.
 
-## 🤖 Model Training
+## Model Training
 
 Training uses MediaPipe to extract hand landmark coordinates (x,y positions) and trains a Random Forest classifier.
 
@@ -77,27 +61,22 @@ Training uses MediaPipe to extract hand landmark coordinates (x,y positions) and
 python scripts/manage.py train --all
 ```
 
-**What happens during training:**
-- Extracts hand landmarks from all images
-- Creates train/validation/test splits (70/20/10)
-- Trains Random Forest classifier
-- Shows detailed accuracy metrics per class
-- Saves model to `trained_models/landmark_model.pkl`
+During training, it extracts hand landmarks from all your captured images, splits them into train/validation/test sets (70/20/10), and trains a Random Forest classifier. It'll show you accuracy metrics for each class and then save the model to `trained_models/landmark_model.pkl`.
 
-**Expected output:**
+**Expected output format:**
 ```
-📊 Results:
+Results:
    Train Accuracy: 100.0%
    Val Accuracy: 99.5%
    Test Accuracy: 99.0%
 
-📊 Per-Class Test Accuracy:
+Per-Class Test Accuracy:
 Bb: 100.0% (39/39 correct)
 C: 96.7% (29/30 correct)
 D: 100.0% (30/30 correct)
 ```
 
-## 🎥 Live Testing
+## Live Testing
 
 ### Test with Live Webcam
 
@@ -105,23 +84,16 @@ D: 100.0% (30/30 correct)
 python scripts/test_landmark_live.py
 ```
 
-**Features:**
-- ✅ **Smooth real-time recognition** - processes every frame
-- 🎹 **Live key prediction** - see what note you're playing
-- 📊 **Confidence bars** - see probability for all keys
-- ✨ **Hand landmark visualization** - see MediaPipe tracking
-- 🎨 **Clean UI** - prediction panel in top-right corner
+The live test shows your hand landmarks on screen and displays predictions in real-time. It processes every frame and shows confidence bars for each possible key. There's a prediction panel in the top-right corner that updates as you change fingerings.
 
-**Controls:**
-- Press `Q` to quit
-- Predictions update in real-time as you change fingerings
+Press `Q` to quit when you're done testing.
 
-**Example:**
+**Example output:**
 ```
 ============================================================
-🎶 FluteVision Live Recognition (Landmark-Based)
+FluteVision Live Recognition (Landmark-Based)
 ============================================================
-✅ Model loaded!
+Model loaded!
    Classes: ['Bb', 'C', 'D']
    Test accuracy: 99.0%
 
@@ -132,9 +104,9 @@ C:  ██           5%
 D:               0%
 ```
 
-## 🔧 Workflow Summary
+## Workflow Summary
 
-**Complete workflow from start to finish:**
+Here's the typical workflow I use:
 
 ```bash
 # 1. Capture training data
@@ -147,23 +119,18 @@ python scripts/manage.py train --all
 python scripts/test_landmark_live.py
 ```
 
-## 💡 How It Works
+## How It Works
 
-FluteVision uses a **landmark-based approach** similar to sign language recognition:
+The system uses a landmark-based approach, similar to how sign language recognition works. Here's what happens:
 
-1. **MediaPipe Hand Tracking**: Detects hands and extracts 21 landmark points per hand
-2. **Feature Extraction**: Uses x,y coordinates of landmarks as numerical features (84 values total)
-3. **Random Forest Classifier**: Learns patterns in hand positions to recognize fingerings
-4. **Real-time Prediction**: Processes webcam frames and predicts fingerings instantly
+1. MediaPipe tracks your hands and extracts 21 landmark points per hand
+2. The x,y coordinates of those landmarks become features (84 values total for both hands)
+3. A Random Forest classifier learns the patterns in hand positions to recognize fingerings
+4. When you run the live test, it processes webcam frames and predicts fingerings in real-time
 
-**Why this approach works:**
-- ✅ Position-invariant (works regardless of where hands are in frame)
-- ✅ Fast (Random Forest is very quick)
-- ✅ Accurate (99% test accuracy)
-- ✅ Simple (no complex CNN training needed)
-- ✅ Robust (learns actual hand positions, not image artifacts)
+I went with this approach because it's position-invariant (doesn't matter where your hands are in the frame), it's fast, and it actually works really well. I'm getting around 99% test accuracy. It's also simpler than training a CNN from scratch, and it learns actual hand positions rather than getting confused by image artifacts.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 flutevision/
@@ -183,43 +150,31 @@ flutevision/
 └── README.md
 ```
 
-## 📈 Performance
+## Performance
 
-**Current Results (3 keys: Bb, C, D):**
-- **Test Accuracy**: 99.0%
-- **Training Time**: ~10 seconds
-- **Inference Speed**: Real-time (30+ FPS)
-- **Model Size**: ~500KB
+I've tested it with 3 keys so far (Bb, C, D) and it's performing pretty well:
+- Test Accuracy: 99.0%
+- Training Time: around 10 seconds
+- Inference Speed: Real-time (30+ FPS)
+- Model Size: ~500KB
 
-**Per-Class Accuracy:**
+Per-class accuracy:
 - Bb: 100%
 - C: 96.7%
 - D: 100%
 
-## 🎯 Tips for Best Results
+## Tips for Best Results
 
-1. **Data Collection:**
-   - Capture in consistent lighting
-   - Keep hands fully visible
-   - Vary hand position slightly between captures
-   - Capture 200-300 samples per key minimum
+For data collection, I've found it works best when you:
+- Capture in consistent lighting
+- Keep your hands fully visible
+- Vary hand position slightly between captures (helps the model generalize)
+- Capture at least 200-300 samples per key
 
-2. **Training:**
-   - More data = better accuracy
-   - Train on all keys together for best results
-   - Retrain if you add new keys
+When training, more data usually means better accuracy. I train on all keys together rather than separately. If you add new keys later, you'll need to retrain.
 
-3. **Live Recognition:**
-   - Ensure good lighting
-   - Keep hands in frame
-   - Hold fingering steady for stable predictions
+For live recognition, make sure you have good lighting and keep your hands in frame. The predictions work best when you hold the fingering steady for a moment.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- **MediaPipe** for hand landmark detection
-- **scikit-learn** for Random Forest classifier
-- **OpenCV** for computer vision
-
----
-
-**FluteVision** - Making flute learning more accessible through AI! 🎶✨
+This project uses MediaPipe for hand landmark detection, scikit-learn for the Random Forest classifier, and OpenCV for the computer vision stuff.
