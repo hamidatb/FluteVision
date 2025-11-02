@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
+from scripts.ui_utils import PredictionUIRenderer
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -56,7 +57,7 @@ class ModelLoader:
             self.classes = data['classes']
             self.metadata = data
         
-        print(f"✅ Model loaded!")
+        print(f"   Model loaded!")
         print(f"   Classes: {self.classes}")
         print(f"   Test accuracy: {data['test_acc']:.1f}%\n")
         return True
@@ -67,8 +68,7 @@ class HandLandmarkExtractor:
     
     def __init__(self):
         """
-        I keep this stateless rather than storing landmarks as instance variables
-        to make it thread-safe for potential future parallelization.
+        I keep this stateless rather than storing landmarks as instance variables to make it thread-safe for potential future parallelization. Shoutout OS fr.
         """
         self.expected_feature_count = 120
     
@@ -76,8 +76,7 @@ class HandLandmarkExtractor:
         """
         Convert raw MediaPipe landmarks into a feature vector.
         
-        I extract 60 features per hand covering finger bends, angles, spacing, etc.
-        This matches the training pipeline to ensure consistency between training and inference.
+        I extract 60 features per hand covering finger bends, angles, spacing, etc. This matches the training pipeline to ensure consistency between training and inference.
         """
         if not hand_landmarks_list:
             return None
@@ -136,8 +135,7 @@ class HandLandmarkExtractor:
     
     def _finger_bend_level(self, tip, dip, pip, mcp) -> float:
         """
-        I measure bend as a ratio rather than absolute distance to make it
-        scale-invariant across different hand sizes and camera distances.
+        Measuring bend as a ratio to make it scale-invariant across different hand sizes and camera distances.
         """
         tip_to_mcp = self._distance(tip, mcp)
         pip_to_mcp = self._distance(pip, mcp)
@@ -148,8 +146,7 @@ class HandLandmarkExtractor:
     @staticmethod
     def _is_finger_down(tip, pip) -> float:
         """
-        I use binary up/down state in addition to continuous bend level because
-        some fingering patterns have sharp state transitions that are easier to detect this way.
+        Use binary up/down state in addition to continuous bend level because some fingering patterns have sharp state transitions that are easier to detect this way.
         """
         return 1.0 if tip.y > pip.y else 0.0
     
@@ -186,8 +183,7 @@ class HandLandmarkExtractor:
     
     def _compute_interfinger_spacing(self, finger_tips) -> List[float]:
         """
-        I measure both adjacent and non-adjacent finger distances because
-        some notes require spreading specific fingers apart.
+        Measure both adjacent and non-adjacent finger distances because some notes require spreading specific fingers apart.
         """
         index_tip, middle_tip, ring_tip, pinky_tip = finger_tips
         finger_pairs = [
@@ -198,8 +194,7 @@ class HandLandmarkExtractor:
     
     def _compute_finger_height_relativity(self, finger_tips) -> List[float]:
         """
-        I normalize heights to a 0-1 scale based on the current frame's min/max
-        to handle varying camera angles and hand positions gracefully.
+        I normalize heights to a 0-1 scale based on the current frame's min/max to handle varying camera angles and hand positions gracefully.
         """
         finger_heights = [tip.y for tip in finger_tips]
         min_height = min(finger_heights)
@@ -220,8 +215,7 @@ class HandLandmarkExtractor:
                               ring_mcp, ring_pip, ring_dip,
                               pinky_mcp, pinky_pip, pinky_dip) -> List[float]:
         """
-        I only use PIP joint angles rather than all joints because they're
-        the most stable and less affected by MediaPipe detection noise.
+        Only using PIP joint angles rather than all joints because they're the most stable and less affected by MediaPipe detection noise.
         """
         return [
             self._joint_angle(index_mcp, index_pip, index_dip),
@@ -232,8 +226,7 @@ class HandLandmarkExtractor:
     
     def _compute_thumb_positioning(self, thumb_tip, thumb_cmc, thumb_actual_tip, finger_tips) -> List[float]:
         """
-        I track thumb-to-finger distances separately because thumb position
-        is critical for distinguishing many flute fingering patterns.
+        I track thumb-to-finger distances separately because thumb position is critical for distinguishing many flute fingering patterns.
         """
         thumb_vector = np.array([thumb_actual_tip.x - thumb_cmc.x, thumb_actual_tip.y - thumb_cmc.y])
         thumb_angle = np.arctan2(thumb_vector[1], thumb_vector[0])
@@ -255,8 +248,7 @@ class HandLandmarkExtractor:
     
     def _compute_finger_straightness(self, finger_tips, mcps) -> List[float]:
         """
-        I measure tip-to-base distance as a proxy for finger straightness because
-        bent fingers have their tips closer to their base than straight ones.
+        Using tip-to-base distance as a proxy for finger straightness bc bent fingers have their tips closer to their base than straight ones.
         """
         return [self._distance(tip, mcp) for tip, mcp in zip(finger_tips, mcps)]
 
@@ -271,9 +263,6 @@ class PredictionEngine:
     def predict(self, features: np.ndarray) -> PredictionResult:
         """
         Run inference and return structured prediction results.
-        
-        I return a dataclass rather than multiple values to make the interface
-        cleaner and avoid tuple unpacking confusion.
         """
         prediction = self.model.predict([features])
         predicted_idx = int(prediction[0])
@@ -307,15 +296,14 @@ class WebcamCapture:
         if not self.cap.isOpened():
             print("❌ Could not open webcam!")
             return False
-        print("✅ Webcam started!")
+        print("Webcam started!")
         return True
     
     def read_frame(self) -> Optional[np.ndarray]:
         """
         Read and preprocess a frame from the webcam.
         
-        I flip the frame horizontally to create a mirror effect because
-        it's more intuitive for users (matching what they'd see in a real mirror).
+        Flip the frame horizontally to create a mirror effect because it's more intuitive for users (matching what they'd see in a real mirror).
         """
         if not self.cap:
             return None
@@ -332,88 +320,6 @@ class WebcamCapture:
             self.cap.release()
 
 
-class UIRenderer:
-    """Renders prediction results and overlays on video frames."""
-    
-    def __init__(self, classes: List[str]):
-        self.classes = classes
-        self.panel_width = 250
-        self.panel_margin = 10
-    
-    def render_predictions(self, frame: np.ndarray, result: Optional[PredictionResult]) -> np.ndarray:
-        """
-        Draw prediction panel on the frame.
-        
-        I place the panel in the top-right rather than overlaying text across the frame
-        to keep the hand landmarks visible for debugging fingering positions.
-        """
-        h, w = frame.shape[:2]
-        
-        panel_x = w - self.panel_width - self.panel_margin
-        panel_height = 60 + len(self.classes) * 30
-        
-        cv2.rectangle(frame, (panel_x, 10), (w - 10, 10 + panel_height), (0, 0, 0), -1)
-        cv2.rectangle(frame, (panel_x, 10), (w - 10, 10 + panel_height), (0, 255, 255), 2)
-        
-        if result:
-            self._draw_predicted_key(frame, panel_x, result.predicted_class)
-            self._draw_confidence_bars(frame, panel_x, result.all_probabilities)
-        else:
-            self._draw_no_hands_message(frame, panel_x)
-        
-        return frame
-    
-    @staticmethod
-    def _draw_predicted_key(frame: np.ndarray, panel_x: int, predicted_key: str):
-        cv2.putText(frame, f"Key: {predicted_key}",
-                   (panel_x + 10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
-    
-    def _draw_confidence_bars(self, frame: np.ndarray, panel_x: int, probabilities: Dict[str, float]):
-        """
-        I use colored bars rather than just numbers because humans perceive
-        relative bar lengths faster than comparing decimal values.
-        """
-        y_offset = 65
-        bar_width = self.panel_width - 100
-        
-        for class_name in self.classes:
-            prob = probabilities[class_name]
-            
-            color = self._get_confidence_color(prob)
-            
-            cv2.putText(frame, f"{class_name}:",
-                       (panel_x + 10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-            
-            bar_x = panel_x + 50
-            cv2.rectangle(frame, (bar_x, y_offset - 10), (bar_x + bar_width, y_offset - 2), (50, 50, 50), -1)
-            
-            filled_width = int(prob * bar_width)
-            if filled_width > 0:
-                cv2.rectangle(frame, (bar_x, y_offset - 10), (bar_x + filled_width, y_offset - 2), color, -1)
-            
-            cv2.putText(frame, f"{prob:.0%}",
-                       (bar_x + bar_width + 5, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
-            
-            y_offset += 30
-    
-    @staticmethod
-    def _get_confidence_color(probability: float) -> Tuple[int, int, int]:
-        """
-        I use green for high confidence and gray for low to give instant
-        visual feedback about prediction reliability.
-        """
-        if probability > 0.7:
-            return (0, 255, 0)
-        elif probability > 0.4:
-            return (0, 255, 255)
-        return (100, 100, 100)
-    
-    @staticmethod
-    def _draw_no_hands_message(frame: np.ndarray, panel_x: int):
-        cv2.putText(frame, "Key: ---",
-                   (panel_x + 10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 100, 100), 2)
-
-
 class HandLandmarkVisualizer:
     """Draws MediaPipe hand landmarks on frames."""
     
@@ -424,8 +330,7 @@ class HandLandmarkVisualizer:
     
     def draw_landmarks(self, frame: np.ndarray, hand_landmarks_list) -> np.ndarray:
         """
-        I draw landmarks on every frame even if predictions are throttled
-        to provide continuous visual feedback for hand positioning.
+        Draw landmarks on every frame even if predictions are throttled to provide continuous visual feedback for hand positioning.
         """
         if not hand_landmarks_list:
             return frame
@@ -447,8 +352,7 @@ class MediaPipeHandDetector:
     
     def __init__(self):
         """
-        I use static_image_mode=True and lower confidence threshold because
-        I found it gives more stable detections for stationary flute fingering positions.
+        Using static_image_mode=True and lower confidence threshold because it gives more stable detections for stationary flute fingering positions.
         """
         mp_hands = mp.solutions.hands
         self.hands = mp_hands.Hands(
@@ -476,9 +380,9 @@ class LiveRecognitionOrchestrator:
         webcam: WebcamCapture,
         hand_detector: MediaPipeHandDetector,
         feature_extractor: HandLandmarkExtractor,
-        ui_renderer: UIRenderer,
+        ui_renderer: PredictionUIRenderer,
         landmark_visualizer: HandLandmarkVisualizer
-    ):
+        ):
         self.model_loader = model_loader
         self.webcam = webcam
         self.hand_detector = hand_detector
@@ -513,8 +417,7 @@ class LiveRecognitionOrchestrator:
         """
         Main processing loop.
         
-        I process every single frame rather than skipping frames to ensure
-        responsive real-time feedback even with fast hand movements.
+        Process every single frame rather than skipping frames to ensure responsive real-time feedback even with fast hand movements.
         """
         while True:
             frame = self.webcam.read_frame()
@@ -531,7 +434,14 @@ class LiveRecognitionOrchestrator:
                 if features is not None:
                     prediction_result = self.prediction_engine.predict(features)
             
-            frame = self.ui_renderer.render_predictions(frame, prediction_result)
+            if prediction_result:
+                self.ui_renderer.render_predictions(
+                    frame,
+                    predicted_class=prediction_result.predicted_class,
+                    probabilities=prediction_result.all_probabilities
+                )
+            else:
+                self.ui_renderer.render_predictions(frame)
             
             cv2.imshow('FluteVision Landmark Recognition', frame)
             
@@ -549,13 +459,13 @@ class LiveRecognitionOrchestrator:
         self.webcam.release()
         cv2.destroyAllWindows()
         self.hand_detector.close()
-        print("✅ Live recognition stopped!")
+        print("Live recognition stopped!")
 
 
 def print_header():
     """Display welcome banner."""
     print("\n" + "="*60)
-    print("🎶 FluteVision Live Recognition (Landmark-Based)")
+    print("FluteVision Live Recognition")
     print("="*60)
     print("Using MediaPipe landmarks as features (like sign language!)")
     print("Press 'Q' to quit")
@@ -574,7 +484,7 @@ def main() -> int:
     feature_extractor = HandLandmarkExtractor()
     landmark_visualizer = HandLandmarkVisualizer()
     
-    ui_renderer = UIRenderer(classes=[])
+    ui_renderer = PredictionUIRenderer(classes=[])
     
     orchestrator = LiveRecognitionOrchestrator(
         model_loader=model_loader,
