@@ -29,10 +29,11 @@ from dataclasses import dataclass
 import tkinter as tk
 from tkinter import filedialog
 import argparse
-from scripts.ui_utils import CaptureUIRenderer
+from ui_utils import CaptureUIRenderer
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / 'scripts'))
 
 @dataclass
 class CaptureSession:

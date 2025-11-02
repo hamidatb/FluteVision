@@ -1,6 +1,6 @@
 # FluteVision: Vision-Based Flute Fingering Recognition System
 
-I built this to recognize flute fingerings using computer vision. It's basically like sign language recognition but for flute hand positions. The system uses MediaPipe to track hand landmarks and a Random Forest classifier to identify which note you're playing.
+I built this to recognize flute fingerings using computer vision. The system uses MediaPipe to track hand landmarks and a Random Forest classifier to identify which note you're playing.
 
 It can recognize fingerings in real-time from your webcam, and you can collect your own training data to extend it to more notes.
 

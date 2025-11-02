@@ -9,16 +9,17 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
-from scripts.ui_utils import PredictionUIRenderer
+from ui_utils import PredictionUIRenderer
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / 'scripts'))
 
 try:
     import mediapipe as mp
     MEDIAPIPE_AVAILABLE = True
 except ImportError:
-    print("❌ MediaPipe not available!")
+    print("MediaPipe not available!")
     sys.exit(1)
 
 
@@ -467,7 +468,7 @@ def print_header():
     print("\n" + "="*60)
     print("FluteVision Live Recognition")
     print("="*60)
-    print("Using MediaPipe landmarks as features (like sign language!)")
+    print("Using MediaPipe landmarks as features")
     print("Press 'Q' to quit")
     print("="*60 + "\n")
 

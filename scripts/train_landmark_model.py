@@ -1,8 +1,7 @@
 """
 Train a flute fingering classifier using MediaPipe hand landmarks as features.
 
-This approach uses the landmark COORDINATES directly (like sign language recognition)
-instead of drawing them on images and using a CNN.
+This approach uses the landmark COORDINATES directl instead of drawing them on images and using a CNN (I tried this and it was just inaccurate for my purposes)
 """
 
 import sys
@@ -566,7 +565,7 @@ class TrainingOrchestrator:
         print("\n" + "="*60)
         print("FluteVision Landmark-Based Training")
         print("="*60)
-        print("Using MediaPipe landmarks as features (like sign language!)")
+        print("Using MediaPipe landmarks as features")
     
     @staticmethod
     def _print_dataset_info(X: np.ndarray, y: np.ndarray, classes: List[str]):
