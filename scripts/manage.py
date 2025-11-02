@@ -44,8 +44,7 @@ class DirectorySelector:
         """
         Present a native file dialog for directory selection.
         
-        I use GUI dialogs rather than CLI prompts to make the tool more accessible
-        to users who may not be comfortable with command-line directory paths.
+        I use GUI dialogs rather than CLI prompts to make the tool more accessible to users who may not be comfortable with command-line directory paths.
         """
         root = tk.Tk()
         root.withdraw()
@@ -69,8 +68,7 @@ class TrainingDataValidator:
         """
         Verify that the data directory exists and contains subdirectories.
         
-        I check for subdirectories (one per instrument key) rather than individual
-        files because the pipeline expects organized data grouped by musical note.
+        I check for subdirectories (one per instrument key) rather than individual files because the pipeline expects organized data grouped by musical note.
         """
         if not data_path.exists():
             self.logger.error("No raw data found. Capture data first:")
@@ -94,8 +92,7 @@ class InstrumentKeyFinder:
         """
         Scan the data directory and extract available keys.
         
-        I infer available keys from the directory structure rather than requiring
-        explicit configuration, reducing the chance of training/data mismatches.
+        I infer available keys from the directory structure rather than requiring explicit configuration, reducing the chance of training/data mismatches
         """
         keys = sorted([d.name for d in data_path.iterdir() if d.is_dir()])
         if keys:
@@ -148,8 +145,7 @@ class TrainModelCommand(TrainingCommand):
         """
         Determine the training data directory to use.
         
-        If the user didn't explicitly specify a directory, we prompt them with a GUI
-        dialog to avoid hardcoding assumptions about their data location.
+        If the user didn't explicitly specify a directory, we prompt them with a GUI dialog to avoid hardcoding assumptions about their data location.
         """
         if self.args.input_dir != 'datasets/raw':
             return self.args.input_dir
@@ -169,8 +165,7 @@ class TrainModelCommand(TrainingCommand):
         """
         Figure out which instrument keys should be trained.
         
-        I support two modes: auto-detect all available keys, or train only specified ones.
-        Auto-detection is safer for batch operations as it adapts to whatever data exists.
+        I support two modes: auto-detect all available keys, or train only specified ones. Auto-detection is safer for batch operations as it adapts to whatever data exists.
         """
         if not self.validator.validate(data_path):
             return None
@@ -189,8 +184,7 @@ class TrainModelCommand(TrainingCommand):
         """
         Launch the actual training subprocess.
         
-        I spawn a separate process rather than importing the training module directly
-        to isolate its dependencies (TensorFlow, etc.) and allow independent version management.
+        I spawn a separate process rather than importing the training module directly to isolate its dependencies (TensorFlow, etc.) and allow independent version management.
         """
         self.logger.info(f"Starting model training for keys: {keys_to_train}")
         self.logger.info(f"Using data from: {input_dir}")
@@ -221,8 +215,7 @@ class CommandFactory:
         """
         Instantiate the appropriate command handler.
         
-        I centralize command creation here to make it easy to add new commands
-        without cluttering the main function with conditional logic.
+        I centralize command creation here to make it easy to add new commands without cluttering the main function with conditional logic.
         """
         if command_name == 'train':
             directory_selector = DirectorySelector()
@@ -246,11 +239,11 @@ def create_argument_parser() -> argparse.ArgumentParser:
         description='FluteVision Management CLI',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Examples:
-  python scripts/manage.py train --all
-  python scripts/manage.py train --keys Bb C D
-  python scripts/manage.py train --all --input-dir /path/to/my/data
-  python scripts/manage.py train --all
+            Examples:
+            python scripts/manage.py train --all
+            python scripts/manage.py train --keys Bb C D
+            python scripts/manage.py train --all --input-dir /path/to/my/data
+            python scripts/manage.py train --all
         """
     )
 
