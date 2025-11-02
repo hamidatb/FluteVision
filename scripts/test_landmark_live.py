@@ -1,5 +1,5 @@
 """
-Live testing with landmark-based model (like sign language recognition).
+Live testing with landmark-based model.
 """
 
 import cv2
