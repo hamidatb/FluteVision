@@ -44,6 +44,9 @@ python scripts/capture_data.py --keys Bb --samples 200
 
 # Capture with custom user ID
 python scripts/capture_data.py --keys Bb C D --samples 300 --user session1
+
+# Capture data and overwrite all previous images of that key
+python scripts/capture_data.py --keys Bb C --samples 300 --replace
 ```
 
 During capture, just position your hands showing the fingering and press `B` to start. The tool will count down 3-2-1 and then collect samples automatically. You'll see a progress bar while it's collecting. Repeat this for each key you want to train.
@@ -149,8 +152,6 @@ flutevision/
 ├── requirements.txt                 # Python dependencies
 └── README.md
 ```
-
-
 
 Per-class accuracy:
 - Bb: 100%
