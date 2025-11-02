@@ -28,6 +28,7 @@ from typing import Optional, List, Tuple
 from dataclasses import dataclass
 import tkinter as tk
 from tkinter import filedialog
+import argparse
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -154,93 +155,104 @@ class UIRenderer:
     DARK_GRAY = (50, 50, 50)
     
     @staticmethod
+    def _put_text(
+        img,
+        text,
+        org,
+        font_face=cv2.FONT_HERSHEY_SIMPLEX,
+        font_scale=1.0,
+        color=(255, 255, 255),
+        thickness=1,
+        line_type=cv2.LINE_AA
+        ):
+        """Helper method to call cv2.putText with named parameters for clarity."""
+        cv2.putText(img, text, org, font_face, font_scale, color, thickness, line_type)
+    
+    @staticmethod
+    def _rectangle(
+        img,
+        pt1,
+        pt2,
+        color,
+        thickness=1,
+        line_type=cv2.LINE_8,
+        shift=0
+        ):
+        """Helper method to call cv2.rectangle with named parameters for clarity."""
+        cv2.rectangle(img, pt1, pt2, color, thickness, line_type, shift)
+    
+    @staticmethod
     def render_waiting_screen(frame, key: str, samples: int):
         """Render the waiting/ready screen."""
-        cv2.putText(
-            img=frame, 
-            text=f"KEY: {key}", 
-            (10, 50), 
-            cv2.FONT_HERSHEY_SIMPLEX, 
-            1.5, 
-            UIRenderer.DARK_GREEN, 
-            3,
-            cv2.LINE_AA
-        )
-
-        cv2.putText(
-
+        UIRenderer._put_text(
+            img=frame,
+            text=f"KEY: {key}",
+            org=(10, 50),
+            font_scale=1.5,
+            color=UIRenderer.DARK_GREEN,
+            thickness=3,
+            line_type=cv2.LINE_AA
         )
         
-        cv2.putText(
-            frame,
-            "Press B to BEGIN | S to SKIP | Q to QUIT",
-            (10, 100),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
-            UIRenderer.WHITE,
-            2,
-            cv2.LINE_AA
+        UIRenderer._put_text(
+            img=frame,
+            text="Press B to BEGIN | S to SKIP | Q to QUIT",
+            org=(10, 100),
+            font_scale=0.7,
+            color=UIRenderer.WHITE,
+            thickness=2,
         )
         
-        cv2.putText(
-            frame,
-            f"Samples to collect: {samples}",
-            (10, 140),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.6,
-            UIRenderer.GRAY,
-            1,
-            cv2.LINE_AA
+        UIRenderer._put_text(
+            img=frame,
+            text=f"Samples to collect: {samples}",
+            org=(10, 140),
+            font_scale=0.6,
+            color=UIRenderer.GRAY,
+            thickness=1,
         )
     
     @staticmethod
     def render_countdown(frame, key: str, countdown: int):
         """Render countdown screen."""
-        cv2.putText(
-            frame,
-            f"KEY: {key}",
-            (10, 50),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1.5,
-            UIRenderer.DARK_GREEN,
-            3,
-            cv2.LINE_AA
+        UIRenderer._put_text(
+            img=frame,
+            text=f"KEY: {key}",
+            org=(10, 50),
+            font_scale=1.5,
+            color=UIRenderer.DARK_GREEN,
+            thickness=3,
         )
         
-        cv2.putText(
-            frame,
-            str(countdown),
-            (frame.shape[1]//2 - 50, frame.shape[0]//2),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            5,
-            UIRenderer.DARK_GREEN,
-            10,
-            cv2.LINE_AA
+        UIRenderer._put_text(
+            img=frame,
+            text=str(countdown),
+            org=(frame.shape[1]//2 - 50, frame.shape[0]//2),
+            font_scale=5,
+            color=UIRenderer.DARK_GREEN,
+            thickness=10,
         )
     
     @staticmethod
     def render_capture_progress(frame, key: str, current: int, total: int):
         """Render capture progress with progress bar."""
-        cv2.putText(
-            frame,
-            f"KEY: {key}",
-            (10, 50),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1.5,
-            UIRenderer.DARK_GREEN,
-            3,
-            cv2.LINE_AA
+        UIRenderer._put_text(
+            img=frame,
+            text=f"KEY: {key}",
+            org=(10, 50),
+            font_face=cv2.FONT_HERSHEY_SIMPLEX,
+            font_scale=1.5,
+            color=UIRenderer.DARK_GREEN,
+            thickness=3,
         )
         
-        cv2.putText(
-            frame,
-            f"Collecting: {current + 1}/{total}",
-            (10, 90),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            UIRenderer.WHITE,
-            2,
-            cv2.LINE_AA
+        UIRenderer._put_text(
+            img=frame,
+            text=f"Collecting: {current + 1}/{total}",
+            org=(10, 90),
+            font_scale=0.8,
+            color=UIRenderer.WHITE,
+            thickness=2,
         )
         
         # Progress bar
@@ -250,22 +262,22 @@ class UIRenderer:
         bar_y = frame.shape[0] - 60
         
         # Background
-        cv2.rectangle(
-            frame,
-            (bar_x, bar_y),
-            (bar_x + bar_width, bar_y + bar_height),
-            UIRenderer.DARK_GRAY,
-            -1
+        UIRenderer._rectangle(
+            img=frame,
+            pt1=(bar_x, bar_y),
+            pt2=(bar_x + bar_width, bar_y + bar_height),
+            color=UIRenderer.DARK_GRAY,
+            thickness=-1
         )
         
         # Progress
         progress_width = int((current / total) * bar_width)
-        cv2.rectangle(
-            frame,
-            (bar_x, bar_y),
-            (bar_x + progress_width, bar_y + bar_height),
-            UIRenderer.DARK_GREEN,
-            -1
+        UIRenderer._rectangle(
+            img=frame,
+            pt1=(bar_x, bar_y),
+            pt2=(bar_x + progress_width, bar_y + bar_height),
+            color=UIRenderer.DARK_GREEN,
+            thickness=-1
         )
 
 
@@ -334,7 +346,7 @@ class CaptureController:
     
     def run(self) -> int:
         """Execute the capture workflow."""
-        # Validate storage
+        # validating storage
         valid, message = self.storage.validate_directory()
         if not valid:
             print(f"Error: {message}")
@@ -343,10 +355,8 @@ class CaptureController:
         if message:
             print(f"Warning: {message}")
         
-        # Print session info
         self._print_session_info()
         
-        # Initialize webcam
         print("Initializing webcam...")
         
         success, message = self.webcam.initialize()
@@ -359,13 +369,12 @@ class CaptureController:
         
         print(message)
         
-        # Capture data for each key
+        # capturing data for each key
         for key_index, key in enumerate(self.session.keys):
             result = self._capture_key(key, key_index)
             if result == -1:  # Quit requested
                 break
         
-        # Cleanup
         self.webcam.release()
         self._print_completion_summary()
         return 0
@@ -402,7 +411,6 @@ class CaptureController:
             print(f"Skipping key '{key}'")
             return 0
         
-        # Countdown
         self._show_countdown(key)
         
         # Prepare storage
@@ -411,13 +419,11 @@ class CaptureController:
         session_dir = self.storage.create_session_directory(key, self.session.user_id)
         print(f"   Saving to: {session_dir}")
         
-        # Show existing sessions info
         if self.session.keep_old:
             existing_count = self.storage.count_existing_sessions(key)
             if existing_count > 0:
                 print(f"   (Existing {existing_count} session(s) for '{key}' will be preserved)")
         
-        # Capture samples
         samples_captured = self._capture_samples(key, session_dir)
         
         print("100% Done")
@@ -544,7 +550,6 @@ def select_output_directory() -> Optional[Path]:
 
 def main():
     """Main entry point for data capture."""
-    import argparse
     
     parser = argparse.ArgumentParser(
         description='Capture training data for FluteVision',
