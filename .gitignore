@@ -1,6 +1,8 @@
 # FluteVision .gitignore
 
+# ============================================================================
 # Python
+# ============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -97,17 +99,121 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# FluteVision specific
-# Dataset files (too large for git)
+# ============================================================================
+# ML Folder - Datasets & Models
+# ============================================================================
+
+# Raw datasets (too large for git)
+ml/datasets/raw/
+ml/datasets/processed/
+ml/datasets/augmented/
+!ml/datasets/.gitkeep
+!ml/datasets/raw/.gitkeep
+
+# Trained models (too large for git)
+ml/models/*.pkl
+ml/models/*.pt
+ml/models/*.pth
+ml/models/*.h5
+ml/models/*.onnx
+ml/models/*.pb
+ml/models/*.tflite
+!ml/models/.gitkeep
+
+# Model artifacts
+ml/models/checkpoints/
+ml/models/weights/
+ml/models/saved_models/
+
+# Experiment tracking
+ml/experiments/
+ml/mlruns/
+ml/wandb/
+
+# Jupyter notebooks (optional - uncomment if you don't want to commit them)
+# ml/notebooks/*.ipynb
+
+# ============================================================================
+# Backend
+# ============================================================================
+
+# Backend dependencies
+backend/venv/
+backend/__pycache__/
+
+# Backend logs
+backend/logs/
+backend/*.log
+
+# Database files
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+backend/database/
+
+# Backend uploads/temp files
+backend/uploads/
+backend/temp/
+backend/tmp/
+
+# Backend config overrides
+backend/config_local.py
+backend/.env.local
+backend/.env.production
+
+# ============================================================================
+# Frontend
+# ============================================================================
+
+# Node modules
+frontend/node_modules/
+frontend/package-lock.json
+frontend/yarn.lock
+frontend/pnpm-lock.yaml
+
+# Build output
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+
+# Frontend cache
+frontend/.cache/
+frontend/.parcel-cache/
+frontend/.vite/
+
+# Frontend env files
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Frontend testing
+frontend/coverage/
+frontend/.nyc_output/
+
+# ============================================================================
+# Legacy folders (if they still exist)
+# ============================================================================
+
+# Old dataset location
 datasets/raw/
 datasets/processed/
 !datasets/.gitkeep
 
-# Trained models (too large for git)
+# Old model location
+trained_models/*.pkl
 trained_models/*.pt
 trained_models/*.pth
 trained_models/*.onnx
 !trained_models/.gitkeep
+
+# Old scripts location (now in ml/scripts/)
+scripts/__pycache__/
+
+# ============================================================================
+# General Development
+# ============================================================================
 
 # Logs
 logs/
@@ -117,6 +223,7 @@ logs/
 temp/
 tmp/
 *.tmp
+*.temp
 
 # IDE files
 .vscode/
@@ -124,6 +231,9 @@ tmp/
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
 
 # OS files
 .DS_Store
@@ -133,9 +243,11 @@ tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# Docker
-.dockerignore
+# ============================================================================
+# ML/AI Specific
+# ============================================================================
 
 # Model checkpoints
 checkpoints/
@@ -144,6 +256,7 @@ checkpoints/
 # TensorBoard logs
 runs/
 tensorboard_logs/
+tb_logs/
 
 # MLflow
 mlruns/
@@ -151,30 +264,94 @@ mlruns/
 # Weights & Biases
 wandb/
 
-# Jupyter notebook outputs
-*.ipynb
+# DVC (Data Version Control)
+.dvc/
+*.dvc
 
-# Configuration overrides
-config_local.yaml
-config_prod.yaml
-config_dev.yaml
+# TensorFlow
+*.tfevents.*
+
+# PyTorch
+*.pt.tmp
+
+# ============================================================================
+# Docker & Deployment
+# ============================================================================
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+k8s/secrets/
+*.kubeconfig
+
+# ============================================================================
+# Security & Secrets
+# ============================================================================
 
 # SSL certificates
 ssl/
 *.pem
 *.key
 *.crt
+*.csr
 
-# Database files
-*.db
-*.sqlite
-*.sqlite3
+# Environment variables
+.env
+.env.backup
+*.env
+
+# Secrets
+secrets/
+*.secret
+
+# API keys
+api_keys.txt
+credentials.json
+
+# ============================================================================
+# Archive & Backup
+# ============================================================================
 
 # Backup files
 *.bak
 *.backup
+*.old
 
 # Archive files
 *.zip
 *.tar.gz
 *.rar
+*.7z
+
+# ============================================================================
+# Testing & Documentation
+# ============================================================================
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+test_reports/
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+site/
+
+# ============================================================================
+# Other
+# ============================================================================
+
+# Large files that shouldn't be committed
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.iso
+
+# Personal notes
+TODO.md
+NOTES.md
+scratch.py
