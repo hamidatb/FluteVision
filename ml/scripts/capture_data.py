@@ -29,11 +29,12 @@ from dataclasses import dataclass
 import tkinter as tk
 from tkinter import filedialog
 import argparse
-from ui_utils import CaptureUIRenderer
+from config import PROJECT_ROOT, SCRIPTS_DIR, SAVED_DATASETS_DIR
 
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
-sys.path.insert(0, str(project_root / 'scripts'))
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(SCRIPTS_DIR))
+
+from ui_utils import CaptureUIRenderer
 
 @dataclass
 class CaptureSession:
@@ -399,7 +400,7 @@ def select_output_directory() -> Optional[Path]:
         root.withdraw()
         output_dir = filedialog.askdirectory(
             title="Select folder to save captured images",
-            initialdir=str(project_root / "datasets")
+            initialdir=str(SAVED_DATASETS_DIR)
         )
         root.destroy()
         

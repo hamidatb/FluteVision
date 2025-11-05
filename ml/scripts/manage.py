@@ -13,10 +13,7 @@ from abc import ABC, abstractmethod
 import tkinter as tk
 from tkinter import filedialog
 from typing import List, Optional
-
-
-project_root = Path(__file__).parent.parent
-
+from config import PROJECT_ROOT, MODEL_PATH, SAVED_DATASETS_DIR
 
 class Logger:
     """Wrapper around Python's logging to provide consistent interface across commands."""
@@ -152,7 +149,7 @@ class TrainModelCommand(TrainingCommand):
         
         selected = self.directory_selector.select_directory(
             title="Select folder containing training data",
-            initial_dir=project_root / "datasets"
+            initial_dir=SAVED_DATASETS_DIR
         )
         
         if not selected:
@@ -194,7 +191,7 @@ class TrainModelCommand(TrainingCommand):
         try:
             result = subprocess.run([
                 sys.executable,
-                str(project_root / "scripts" / "train_landmark_model.py"),
+                str(MODEL_PATH),
                 "--raw-dir", input_dir
             ])
             return result.returncode

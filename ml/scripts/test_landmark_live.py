@@ -9,11 +9,15 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
-from ui_utils import PredictionUIRenderer
 
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
-sys.path.insert(0, str(project_root / 'scripts'))
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+SCRIPTS_DIR = Path(__file__).parent
+
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(SCRIPTS_DIR))
+
+from config import MODEL_PATH
+from ui_utils import PredictionUIRenderer
 
 try:
     import mediapipe as mp
@@ -477,8 +481,7 @@ def main() -> int:
     """Entry point for live recognition."""
     print_header()
     
-    model_path = project_root / 'trained_models' / 'landmark_model.pkl'
-    model_loader = ModelLoader(model_path)
+    model_loader = ModelLoader(MODEL_PATH)
     
     webcam = WebcamCapture(camera_index=0)
     hand_detector = MediaPipeHandDetector()

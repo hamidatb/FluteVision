@@ -15,13 +15,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import cv2
 import os
-
+from config import PROJECT_ROOT
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(PROJECT_ROOT))
 
 try:
     import mediapipe as mp
@@ -531,7 +530,7 @@ class TrainingOrchestrator:
         self.splitter = DatasetSplitter(config)
         self.trainer = ModelTrainer(config)
         self.evaluator = ModelEvaluator()
-        self.persistence = ModelPersistence(project_root / 'trained_models')
+        self.persistence = ModelPersistence(PROJECT_ROOT / 'trained_models')
     
     def run(self) -> Optional[Path]:
         """Execute the complete training workflow."""
