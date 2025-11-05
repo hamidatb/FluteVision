@@ -12,9 +12,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: production-backend
-      url: https://flutevision-api-2aeac29f3245.herokuapp.com
+    # no environment key here so backend deployments don't show publicly
     
     steps:
       - name: Checkout code
@@ -25,7 +23,7 @@ jobs:
       - name: Deploy backend to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: flutevision-api
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_BACKEND_APP_NAME }}
         run: |
           # configure git for heroku
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -39,5 +37,5 @@ jobs:
       
       - name: Check deployment status
         run: |
-          echo "✅ Backend deployed successfully to https://flutevision-api-2aeac29f3245.herokuapp.com"
+          echo "✅ Backend API deployed successfully"
 
