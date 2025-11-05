@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FluteVision Runner - Play with your hands!</title>
+    <link rel="stylesheet" href="src/css/game.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>🎵 FluteVision Runner</h1>
+            <p class="subtitle">Play correct fingerings to jump!</p>
+        </header>
+        
+        <div class="game-wrapper">
+            <!-- Camera feed (smaller, on side) -->
+            <div class="camera-panel">
+                <video id="video" autoplay playsinline></video>
+                <div class="prediction-display">
+                    <div class="current-gesture" id="currentGesture">-</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game canvas -->
+            <div class="game-panel">
+                <canvas id="gameCanvas"></canvas>
+                
+                <!-- Game UI overlay -->
+                <div class="game-ui">
+                    <div class="target-gesture">
+                        <span class="label">Play:</span>
+                        <span class="gesture" id="targetGesture">-</span>
+                    </div>
+                    <div class="score-display">
+                        <span class="label">Score:</span>
+                        <span class="score" id="score">0</span>
+                    </div>
+                    <div class="high-score">
+                        <span class="label">Best:</span>
+                        <span class="score" id="highScore">0</span>
+                    </div>
+                </div>
+                
+                <!-- Game over screen -->
+                <div id="gameOverScreen" class="game-over hidden">
+                    <h2>Game Over!</h2>
+                    <p class="final-score">Score: <span id="finalScore">0</span></p>
+                    <button id="restartBtn" class="game-btn">Play Again</button>
+                </div>
+                
+                <!-- Start screen -->
+                <div id="startScreen" class="start-screen">
+                    <h2>Ready to Play?</h2>
+                    <p>Watch for the target gesture and play it to jump!</p>
+                    <div id="status" class="status">Initializing...</div>
+                    <button id="startBtn" class="game-btn" disabled>Start Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reuse existing camera/API infrastructure -->
+    <script src="src/js/api.js"></script>
+    <script src="src/js/camera.js"></script>
+    
+    <!-- Game modules (SOLID architecture) -->
+    <script src="src/js/game/GameConfig.js"></script>
+    <script src="src/js/game/Player.js"></script>
+    <script src="src/js/game/Obstacle.js"></script>
+    <script src="src/js/game/CollisionDetector.js"></script>
+    <script src="src/js/game/ScoreManager.js"></script>
+    <script src="src/js/game/Renderer.js"></script>
+    <script src="src/js/game/PredictionHandler.js"></script>
+    <script src="src/js/game/GameEngine.js"></script>
+    <script src="src/js/game/GameController.js"></script>
+    
+    <script>
+        // initialize when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const controller = new GameController();
+            controller.initialize();
+        });
+    </script>
+</body>
+</html>
+
