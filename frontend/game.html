@@ -11,12 +11,18 @@
     <header>
         <h1>🎵 FluteVision</h1>
         <p class="subtitle">Game Mode</p>
+        <button id="navToggle" class="nav-toggle">Menu</button>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="practice.html">Practice</a>
             <a href="game.html" class="active">Game</a>
         </div>
     </header>
+    
+    <!-- Floating camera toggle button -->
+    <button id="cameraToggleBtn" class="camera-toggle-btn" title="Toggle Camera">
+        <span class="camera-status-icon">📹</span>
+    </button>
     
     <div id="game-container">
         <div class="game-wrapper">
@@ -77,6 +83,7 @@
     <!-- Reuse existing camera/API infrastructure -->
     <script src="src/js/api.js"></script>
     <script src="src/js/camera.js"></script>
+    <script src="src/js/navigation.js"></script>
     
     <!-- Load in dependency order (bc modules depend on each other) -->
     

@@ -181,9 +181,275 @@
     font-weight: bold;
 }
 
-@media (max-width: 968px) {
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .practice-container {
+        grid-template-columns: 1fr 350px;
+        gap: 15px;
+    }
+    
+    .info-card {
+        padding: 18px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
     .practice-container {
         grid-template-columns: 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .camera-section {
+        padding: 15px;
+    }
+    
+    #practiceVideo {
+        max-height: 400px;
+    }
+    
+    .controls {
+        margin-top: 12px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .controls .btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        min-height: 44px;
+    }
+    
+    .info-panel {
+        gap: 15px;
+    }
+    
+    .info-card {
+        padding: 15px;
+    }
+    
+    .info-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+    }
+    
+    .current-gesture {
+        font-size: 3rem;
+        margin: 15px 0;
+    }
+    
+    .confidence-bar {
+        height: 25px;
+    }
+    
+    .confidence-fill {
+        font-size: 0.9rem;
+    }
+    
+    .target-section {
+        padding: 15px;
+        margin-top: 12px;
+    }
+    
+    .target-label {
+        font-size: 0.85rem;
+    }
+    
+    .target-gesture {
+        font-size: 2.5rem;
+        margin-bottom: 8px;
+    }
+    
+    .target-selector {
+        padding: 10px;
+        font-size: 0.95rem;
+        margin-top: 8px;
+    }
+    
+    .probability-item {
+        grid-template-columns: 50px 1fr 55px;
+        gap: 8px;
+        padding: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .prob-gesture {
+        font-size: 0.95rem;
+    }
+    
+    .prob-bar-container {
+        height: 18px;
+    }
+    
+    .prob-value {
+        font-size: 0.85rem;
+    }
+    
+    .status-message {
+        padding: 12px;
+        font-size: 0.95rem;
+        margin-top: 8px;
+    }
+    
+    .timer {
+        font-size: 1.3rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .practice-container {
+        gap: 12px;
+        margin-top: 12px;
+    }
+    
+    .camera-section, .info-card {
+        padding: 12px;
+    }
+    
+    #practiceVideo {
+        max-height: 300px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .controls .btn {
+        width: 100%;
+        min-width: auto;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    .info-panel {
+        gap: 12px;
+    }
+    
+    .info-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    
+    .current-gesture {
+        font-size: 2.5rem;
+        margin: 12px 0;
+    }
+    
+    .confidence-bar {
+        height: 22px;
+    }
+    
+    .confidence-fill {
+        font-size: 0.85rem;
+    }
+    
+    .target-section {
+        padding: 12px;
+    }
+    
+    .target-gesture {
+        font-size: 2rem;
+    }
+    
+    .target-selector {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .probability-item {
+        grid-template-columns: 45px 1fr 50px;
+        gap: 6px;
+        padding: 5px;
+    }
+    
+    .prob-gesture {
+        font-size: 0.9rem;
+    }
+    
+    .prob-bar-container {
+        height: 16px;
+    }
+    
+    .prob-value {
+        font-size: 0.8rem;
+    }
+    
+    .status-message {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .timer {
+        font-size: 1.2rem;
+    }
+    
+    #randomTargetBtn {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .practice-container {
+        grid-template-columns: 1fr 300px;
+        gap: 10px;
+    }
+    
+    .camera-section {
+        padding: 10px;
+    }
+    
+    #practiceVideo {
+        max-height: 250px;
+    }
+    
+    .controls {
+        flex-direction: row;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .controls .btn {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+        min-height: 36px;
+    }
+    
+    .info-card {
+        padding: 10px;
+    }
+    
+    .info-card h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    
+    .current-gesture {
+        font-size: 2rem;
+        margin: 10px 0;
+    }
+    
+    .confidence-bar {
+        height: 20px;
+    }
+    
+    .target-section {
+        padding: 10px;
+    }
+    
+    .target-gesture {
+        font-size: 2rem;
+    }
+    
+    .timer {
+        font-size: 1.1rem;
     }
 }
 

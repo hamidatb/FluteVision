@@ -11,12 +11,18 @@
     <header>
         <h1>🎵 FluteVision</h1>
         <p class="subtitle">Practice Mode</p>
+        <button id="navToggle" class="nav-toggle">Menu</button>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="practice.html" class="active">Practice</a>
             <a href="game.html">Game</a>
         </div>
     </header>
+    
+    <!-- Floating camera toggle button -->
+    <button id="cameraToggleBtn" class="camera-toggle-btn" title="Toggle Camera">
+        <span class="camera-status-icon">📹</span>
+    </button>
     
     <div class="container">
         <div class="practice-container">
@@ -78,6 +84,7 @@
     <!-- Scripts - all JS should be in separate files -->
     <script src="src/js/api.js"></script>
     <script src="src/js/camera.js"></script>
+    <script src="src/js/navigation.js"></script>
     <script src="src/js/practice/PracticeMode.js"></script>
     <script>
         // initialize practice mode on page load

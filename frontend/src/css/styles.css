@@ -227,13 +227,96 @@ button:disabled {
     color: #666;
 }
 
-@media (max-width: 768px) {
+/* Tablet and below */
+@media (max-width: 1024px) {
+    #app {
+        max-width: 100%;
+    }
+    
     .container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 15px;
     }
     
     h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    
+    #app {
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+    }
+    
+    .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+    }
+    
+    .container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .video-container {
+        padding: 15px;
+    }
+    
+    #video {
+        max-height: 400px;
+    }
+    
+    .controls {
+        margin-top: 12px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    button {
+        flex: 1;
+        min-width: 120px;
+        padding: 12px 25px;
+        font-size: 0.95rem;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+    
+    .info-panel {
+        gap: 15px;
+    }
+    
+    .prediction-box, .status-box, .gestures-box, .probabilities-box {
+        padding: 15px;
+    }
+    
+    .box-title {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+    }
+    
+    .prediction-item {
+        margin-bottom: 12px;
+    }
+    
+    .prediction-label {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
     }
     
     .gesture-value {
@@ -242,6 +325,192 @@ button:disabled {
     
     .confidence-value {
         font-size: 1.5rem;
+    }
+    
+    #message {
+        font-size: 0.95rem;
+        margin-top: 8px;
+    }
+    
+    #status {
+        font-size: 0.95rem;
+        padding: 8px;
+    }
+    
+    #error {
+        padding: 12px;
+        font-size: 0.95rem;
+        margin-top: 8px;
+    }
+    
+    #availableGestures {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .probability-item {
+        grid-template-columns: 50px 1fr 55px;
+        gap: 8px;
+        padding: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .prob-gesture {
+        font-size: 0.95rem;
+    }
+    
+    .prob-bar-container {
+        height: 18px;
+    }
+    
+    .prob-value {
+        font-size: 0.85rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+    }
+    
+    .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+    
+    .container {
+        gap: 12px;
+        margin-top: 12px;
+    }
+    
+    .video-container, .prediction-box, .status-box, .gestures-box, .probabilities-box {
+        padding: 12px;
+    }
+    
+    #video {
+        max-height: 300px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    button {
+        width: 100%;
+        min-width: auto;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    .info-panel {
+        gap: 12px;
+    }
+    
+    .box-title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+    
+    .gesture-value {
+        font-size: 1.8rem;
+    }
+    
+    .confidence-value {
+        font-size: 1.3rem;
+    }
+    
+    #message, #status, #availableGestures {
+        font-size: 0.9rem;
+    }
+    
+    #error {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .probability-item {
+        grid-template-columns: 45px 1fr 50px;
+        gap: 6px;
+        padding: 5px;
+    }
+    
+    .prob-gesture {
+        font-size: 0.9rem;
+    }
+    
+    .prob-bar-container {
+        height: 16px;
+    }
+    
+    .prob-value {
+        font-size: 0.8rem;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .container {
+        grid-template-columns: 1fr 300px;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .video-container {
+        padding: 10px;
+    }
+    
+    #video {
+        max-height: 250px;
+    }
+    
+    .controls {
+        flex-direction: row;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    button {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+        min-height: 36px;
+    }
+    
+    .prediction-box, .status-box, .gestures-box, .probabilities-box {
+        padding: 10px;
+    }
+    
+    .box-title {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+    
+    .gesture-value {
+        font-size: 1.6rem;
+    }
+    
+    .confidence-value {
+        font-size: 1.2rem;
     }
 }
 
