@@ -85,22 +85,31 @@ class GameController {
             this._restartGame();
         });
         
-        // settings button
+        // settings button - create it and add click handler
         const settingsBtn = document.createElement('button');
         settingsBtn.id = 'settingsBtn';
         settingsBtn.textContent = '⚙️ Settings';
         settingsBtn.className = 'game-btn settings-btn';
-        settingsBtn.addEventListener('click', () => {
+        settingsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Settings button clicked');
             this.settingsUI.toggle();
         });
         
-        // add to header
-        document.querySelector('header').appendChild(settingsBtn);
+        // add to header if it exists
+        const header = document.querySelector('header');
+        if (header) {
+            header.appendChild(settingsBtn);
+        }
     }
     
     _startGame() {
         document.getElementById('startScreen').classList.add('hidden');
-        
+        this._startGameplay();
+    }
+    
+    _startGameplay() {
+        // extracted common gameplay start logic bc it's used by both start and restart
         // check if using musical test mode
         const mode = gameSettings.get('musicMode');
         
@@ -118,7 +127,7 @@ class GameController {
             this.gameEngine.setMusicalTest(null); // random mode
         }
         
-        // start monitoring input
+        // start monitoring input (keyboard + gestures)
         this.inputManager.startMonitoring((prediction) => {
             this._updatePredictionDisplay(prediction);
         });
@@ -128,6 +137,9 @@ class GameController {
             this._selectRandomGesture();
             
             const interval = gameSettings.get('gestureChangeInterval');
+            if (this.gestureChangeInterval) {
+                clearInterval(this.gestureChangeInterval);
+            }
             this.gestureChangeInterval = setInterval(() => {
                 this._selectRandomGesture();
             }, interval);
@@ -140,14 +152,12 @@ class GameController {
     _restartGame() {
         document.getElementById('gameOverScreen').classList.add('hidden');
         
+        // reset game state
         this.gameEngine.reset();
         
-        // reset target gesture in random mode
-        if (!this.gameEngine.testMode) {
-            this._selectRandomGesture();
-        }
-        
-        this.gameEngine.start();
+        // restart everything using the same logic as initial start
+        // this ensures input monitoring and intervals are properly restarted
+        this._startGameplay();
     }
     
     _handleGameOver(finalScore, finalCombo, maxCombo) {

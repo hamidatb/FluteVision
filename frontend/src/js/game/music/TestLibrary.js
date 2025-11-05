@@ -7,12 +7,20 @@ class TestLibrary {
     }
     
     _loadDefaultTests() {
-        // simple scale - good for beginners
+        // default beginner test using common notes - Bb C D bc those are usually the first notes learned
+        this.addTest(MusicalTest.fromSimpleFormat(
+            'Beginner Pattern (Bb-C-D)',
+            'Basic three-note pattern',
+            'Bb:0 C:1 D:2 Bb:3 C:4 D:5 Bb:6 C:7 D:8',
+            100 // slower tempo for beginners
+        ));
+        
+        // simple scale - good for general practice
         this.addTest(MusicalTest.fromSimpleFormat(
             'C Major Scale',
             'Basic scale exercise',
             'C:0 D:1 E:2 F:3 G:4 A:5 Bb:6',
-            120 // tempo in BPM
+            120
         ));
         
         // arpeggio pattern

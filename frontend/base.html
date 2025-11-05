@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FluteVision{% endblock %}</title>
+    
+    <!-- Base styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+    
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{% block header_title %}🎵 FluteVision{% endblock %}</h1>
+            <p class="subtitle">{% block subtitle %}Vision-based flute training{% endblock %}</p>
+            
+            <div class="nav-links">
+                <a href="index.html">Live Detection</a>
+                <a href="game.html">Play Game</a>
+            </div>
+        </header>
+        
+        {% block content %}
+        <!-- Page-specific content goes here -->
+        {% endblock %}
+    </div>
+    
+    <!-- Base scripts -->
+    <script src="src/js/api.js"></script>
+    <script src="src/js/camera.js"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

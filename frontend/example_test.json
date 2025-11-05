@@ -1,0 +1,16 @@
+{
+    "name": "Example Custom Test",
+    "description": "Template for creating your own musical tests",
+    "notes": [
+        {"gesture": "C", "time": 0, "duration": 500},
+        {"gesture": "D", "time": 500, "duration": 500},
+        {"gesture": "E", "time": 1000, "duration": 500},
+        {"gesture": "C", "time": 1500, "duration": 500}
+    ],
+    "metadata": {
+        "difficulty": "beginner",
+        "composer": "Your Name",
+        "tempo": 120
+    }
+}
+

@@ -234,6 +234,11 @@ h1 {
     z-index: 1000;
 }
 
+/* ensure hidden class actually hides it */
+.settings-panel.hidden {
+    display: none !important;
+}
+
 .settings-content {
     background: white;
     padding: 30px;

@@ -5,9 +5,14 @@ class SettingsUI {
         this.testLibrary = testLibrary;
         this.isOpen = false;
         
+        // bind methods to preserve 'this' context bc javascript is weird about scope
+        this.open = this.open.bind(this);
+        this.close = this.close.bind(this);
+        this.toggle = this.toggle.bind(this);
+        this._saveSettings = this._saveSettings.bind(this);
+        
         this._createSettingsPanel();
         this._attachEventListeners();
-        this._loadCurrentSettings();
     }
     
     _createSettingsPanel() {
@@ -69,6 +74,14 @@ class SettingsUI {
                     <span id="thresholdValue">70%</span>
                 </div>
                 
+                <div class="setting-group">
+                    <label>Upload Custom Test (JSON):</label>
+                    <input type="file" id="testUploadInput" accept=".json">
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        Upload a JSON file with your custom musical test
+                    </small>
+                </div>
+                
                 <div class="settings-buttons">
                     <button id="saveSettings" class="game-btn">Save</button>
                     <button id="closeSettings" class="game-btn secondary">Cancel</button>
@@ -78,55 +91,91 @@ class SettingsUI {
         
         document.body.appendChild(panel);
         this.panel = panel;
+        
+        // force it to start hidden bc we don't want it popping up immediately
+        this.panel.style.display = 'none';
+        
+        // click outside to close bc it's intuitive UX
+        panel.addEventListener('click', (e) => {
+            if (e.target === panel) {
+                this.close();
+            }
+        });
     }
     
     _attachEventListeners() {
-        // mode change shows/hides test selection
-        document.getElementById('modeSelect').addEventListener('change', (e) => {
-            const testGroup = document.getElementById('testGroup');
-            testGroup.style.display = e.target.value === 'test' ? 'block' : 'none';
+        // using event delegation on the panel bc dynamically created elements can be tricky
+        this.panel.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            // handle save button
+            if (target.id === 'saveSettings') {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Save button clicked');
+                this._saveSettings();
+                this.close();
+                return;
+            }
+            
+            // handle close button
+            if (target.id === 'closeSettings') {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Close button clicked');
+                this.close();
+                return;
+            }
+            
+            // handle clear buttons
+            if (target.id === 'clearPlayerImage') {
+                this.assetManager.images.delete('player');
+                document.getElementById('playerImageInput').value = '';
+                return;
+            }
+            
+            if (target.id === 'clearBackground') {
+                this.assetManager.images.delete('background');
+                document.getElementById('backgroundImageInput').value = '';
+                return;
+            }
         });
         
-        // threshold slider updates label
-        const slider = document.getElementById('thresholdSlider');
-        slider.addEventListener('input', (e) => {
-            const value = (parseFloat(e.target.value) * 100).toFixed(0);
-            document.getElementById('thresholdValue').textContent = `${value}%`;
+        // mode select shows/hides test group
+        this.panel.addEventListener('change', (e) => {
+            if (e.target.id === 'modeSelect') {
+                const testGroup = document.getElementById('testGroup');
+                testGroup.style.display = e.target.value === 'test' ? 'block' : 'none';
+            }
+            
+            // threshold slider
+            if (e.target.id === 'thresholdSlider') {
+                const value = (parseFloat(e.target.value) * 100).toFixed(0);
+                document.getElementById('thresholdValue').textContent = `${value}%`;
+            }
         });
         
-        // file inputs for custom images
-        document.getElementById('playerImageInput').addEventListener('change', async (e) => {
-            if (e.target.files[0]) {
+        // slider input event (for live updates)
+        this.panel.addEventListener('input', (e) => {
+            if (e.target.id === 'thresholdSlider') {
+                const value = (parseFloat(e.target.value) * 100).toFixed(0);
+                document.getElementById('thresholdValue').textContent = `${value}%`;
+            }
+        });
+        
+        // file inputs
+        this.panel.addEventListener('change', async (e) => {
+            if (e.target.id === 'playerImageInput' && e.target.files[0]) {
                 await this.assetManager.loadFromFile('player', e.target.files[0]);
             }
-        });
-        
-        document.getElementById('backgroundImageInput').addEventListener('change', async (e) => {
-            if (e.target.files[0]) {
+            
+            if (e.target.id === 'backgroundImageInput' && e.target.files[0]) {
                 await this.assetManager.loadFromFile('background', e.target.files[0]);
             }
-        });
-        
-        // clear custom images
-        document.getElementById('clearPlayerImage').addEventListener('click', () => {
-            // remove from asset manager bc we don't want to keep it in memory
-            this.assetManager.images.delete('player');
-            document.getElementById('playerImageInput').value = '';
-        });
-        
-        document.getElementById('clearBackground').addEventListener('click', () => {
-            this.assetManager.images.delete('background');
-            document.getElementById('backgroundImageInput').value = '';
-        });
-        
-        // save/cancel
-        document.getElementById('saveSettings').addEventListener('click', () => {
-            this._saveSettings();
-            this.close();
-        });
-        
-        document.getElementById('closeSettings').addEventListener('click', () => {
-            this.close();
+            
+            if (e.target.id === 'testUploadInput' && e.target.files[0]) {
+                await this._loadCustomTest(e.target.files[0]);
+            }
         });
     }
     
@@ -156,6 +205,30 @@ class SettingsUI {
         testGroup.style.display = settings.musicMode === 'test' ? 'block' : 'none';
     }
     
+    async _loadCustomTest(file) {
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            
+            // validate the format
+            if (!data.name || !data.notes || !Array.isArray(data.notes)) {
+                alert('Invalid test format. Must have "name" and "notes" array.');
+                return;
+            }
+            
+            // add to library
+            await this.testLibrary.loadFromJson(data);
+            
+            // refresh the test dropdown
+            this._loadCurrentSettings();
+            
+            alert(`Test "${data.name}" loaded successfully!`);
+        } catch (error) {
+            alert(`Error loading test: ${error.message}`);
+            console.error('Test load error:', error);
+        }
+    }
+    
     _saveSettings() {
         const newSettings = {
             difficulty: document.getElementById('difficultySelect').value,
@@ -170,14 +243,20 @@ class SettingsUI {
     }
     
     open() {
+        console.log('Opening settings panel');
         this.isOpen = true;
         this._loadCurrentSettings();
         this.panel.classList.remove('hidden');
+        // force display bc sometimes CSS doesn't apply
+        this.panel.style.display = 'flex';
     }
     
     close() {
+        console.log('Closing settings panel');
         this.isOpen = false;
         this.panel.classList.add('hidden');
+        // force hide bc we really want it gone
+        this.panel.style.display = 'none';
     }
     
     toggle() {

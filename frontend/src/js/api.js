@@ -1,6 +1,6 @@
 class FluteVisionAPI {
-    constructor(baseUrl = 'http://localhost:8000/api/v1') {
-        this.baseUrl = baseUrl;
+    constructor(baseUrl = null) {
+        this.baseUrl = baseUrl || `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
     }
 
     async healthCheck() {

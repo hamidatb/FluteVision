@@ -1,6 +1,6 @@
 class CameraStream {
-    constructor(apiUrl = 'http://localhost:8000/api/v1') {
-        this.apiUrl = apiUrl;
+    constructor(apiUrl = null) {
+        this.apiUrl = apiUrl || `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
         this.video = null;
         this.canvas = null;
         this.ctx = null;

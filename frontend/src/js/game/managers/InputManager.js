@@ -7,6 +7,21 @@ class InputManager {
         this.targetGesture = null;
         this.onCorrectInput = null;
         this.isMonitoring = false;
+        
+        // add keyboard support for testing bc it's easier to debug without needing perfect gestures
+        this._setupKeyboardInput();
+    }
+    
+    _setupKeyboardInput() {
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && this.isMonitoring) {
+                e.preventDefault();
+                // trigger jump via callback, simulating a perfect gesture match
+                if (this.onCorrectInput) {
+                    this.onCorrectInput('keyboard', 1.0);
+                }
+            }
+        });
     }
     
     startMonitoring(onPredictionUpdate) {
