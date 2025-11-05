@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FluteVision Runner - Play with your hands!</title>
+    <title>FluteVision Runner - Musical Training Game</title>
     <link rel="stylesheet" href="src/css/game.css">
 </head>
 <body>
     <div id="game-container">
         <header>
             <h1>🎵 FluteVision Runner</h1>
-            <p class="subtitle">Play correct fingerings to jump!</p>
+            <p class="subtitle">play the right notes to jump!</p>
         </header>
         
         <div class="game-wrapper">
-            <!-- Camera feed (smaller, on side) -->
+            <!-- Camera feed -->
             <div class="camera-panel">
                 <video id="video" autoplay playsinline></video>
                 <div class="prediction-display">
@@ -38,6 +38,7 @@
                     <div class="score-display">
                         <span class="label">Score:</span>
                         <span class="score" id="score">0</span>
+                        <span class="combo" id="combo"></span>
                     </div>
                     <div class="high-score">
                         <span class="label">Best:</span>
@@ -49,13 +50,14 @@
                 <div id="gameOverScreen" class="game-over hidden">
                     <h2>Game Over!</h2>
                     <p class="final-score">Score: <span id="finalScore">0</span></p>
+                    <p class="final-combo">Max Combo: <span id="finalCombo">0</span></p>
                     <button id="restartBtn" class="game-btn">Play Again</button>
                 </div>
                 
                 <!-- Start screen -->
                 <div id="startScreen" class="start-screen">
                     <h2>Ready to Play?</h2>
-                    <p>Watch for the target gesture and play it to jump!</p>
+                    <p>watch the target gesture and play it to make your character jump!</p>
                     <div id="status" class="status">Initializing...</div>
                     <button id="startBtn" class="game-btn" disabled>Start Game</button>
                 </div>
@@ -67,16 +69,35 @@
     <script src="src/js/api.js"></script>
     <script src="src/js/camera.js"></script>
     
-    <!-- Game modules (SOLID architecture) -->
-    <script src="src/js/game/GameConfig.js"></script>
-    <script src="src/js/game/Player.js"></script>
-    <script src="src/js/game/Obstacle.js"></script>
-    <script src="src/js/game/CollisionDetector.js"></script>
-    <script src="src/js/game/ScoreManager.js"></script>
-    <script src="src/js/game/Renderer.js"></script>
-    <script src="src/js/game/PredictionHandler.js"></script>
-    <script src="src/js/game/GameEngine.js"></script>
-    <script src="src/js/game/GameController.js"></script>
+    <!-- Load in dependency order (bc modules depend on each other) -->
+    
+    <!-- Config layer -->
+    <script src="src/js/game/config/GameConstants.js"></script>
+    <script src="src/js/game/config/GameSettings.js"></script>
+    
+    <!-- Assets & Music -->
+    <script src="src/js/game/assets/AssetManager.js"></script>
+    <script src="src/js/game/music/MusicalTest.js"></script>
+    <script src="src/js/game/music/TestLibrary.js"></script>
+    
+    <!-- Entities -->
+    <script src="src/js/game/entities/Player.js"></script>
+    <script src="src/js/game/entities/Obstacle.js"></script>
+    
+    <!-- Systems -->
+    <script src="src/js/game/systems/CollisionSystem.js"></script>
+    <script src="src/js/game/systems/RenderSystem.js"></script>
+    
+    <!-- Managers -->
+    <script src="src/js/game/managers/ScoreManager.js"></script>
+    <script src="src/js/game/managers/InputManager.js"></script>
+    
+    <!-- Core Engine -->
+    <script src="src/js/game/core/GameEngine.js"></script>
+    
+    <!-- UI Layer -->
+    <script src="src/js/game/ui/SettingsUI.js"></script>
+    <script src="src/js/game/ui/GameController.js"></script>
     
     <script>
         // initialize when page loads
@@ -87,4 +108,3 @@
     </script>
 </body>
 </html>
-

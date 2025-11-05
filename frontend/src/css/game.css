@@ -203,6 +203,120 @@ h1 {
     color: #667eea;
 }
 
+.final-combo {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 10px 0;
+}
+
+.final-combo span {
+    font-weight: bold;
+    color: #667eea;
+}
+
+.combo {
+    color: #10b981;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* settings panel */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.settings-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.settings-content h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.setting-group select,
+.setting-group input[type="color"],
+.setting-group input[type="file"],
+.setting-group input[type="range"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.setting-group input[type="color"] {
+    height: 40px;
+    cursor: pointer;
+}
+
+.setting-group input[type="range"] {
+    padding: 0;
+}
+
+.small-btn {
+    margin-top: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.small-btn:hover {
+    background: #dc2626;
+}
+
+.settings-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.game-btn.secondary {
+    background: #6b7280;
+}
+
+.game-btn.secondary:hover {
+    background: #4b5563;
+}
+
+.settings-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+}
+
 @media (max-width: 768px) {
     .game-wrapper {
         grid-template-columns: 1fr;
@@ -214,6 +328,11 @@ h1 {
     
     h1 {
         font-size: 2rem;
+    }
+    
+    .settings-btn {
+        position: static;
+        margin-top: 10px;
     }
 }
 

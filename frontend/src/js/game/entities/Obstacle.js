@@ -1,18 +1,18 @@
-// SRP: handles obstacle movement and properties
+// obstacle entity - knows how to move and draw itself
 class Obstacle {
     constructor(x, groundY, speed) {
         this.x = x;
         this.groundY = groundY;
         this.speed = speed;
         
-        // randomize size for variety
+        // randomize size for variety bc playing against identical obstacles is boring
         this.width = this._randomRange(
-            GameConfig.OBSTACLE_MIN_WIDTH,
-            GameConfig.OBSTACLE_MAX_WIDTH
+            GameConstants.OBSTACLE_MIN_WIDTH,
+            GameConstants.OBSTACLE_MAX_WIDTH
         );
         this.height = this._randomRange(
-            GameConfig.OBSTACLE_MIN_HEIGHT,
-            GameConfig.OBSTACLE_MAX_HEIGHT
+            GameConstants.OBSTACLE_MIN_HEIGHT,
+            GameConstants.OBSTACLE_MAX_HEIGHT
         );
         
         this.y = groundY - this.height;
@@ -20,6 +20,11 @@ class Obstacle {
     
     update() {
         this.x -= this.speed;
+    }
+    
+    render(ctx) {
+        ctx.fillStyle = gameSettings.get('obstacleColor');
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     
     isOffScreen() {

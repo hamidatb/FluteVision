@@ -1,18 +1,31 @@
-// SRP: manages score and high score persistence
+// score tracking and persistence
+// keeping this as a manager bc it's a cross-cutting concern that multiple systems need
 class ScoreManager {
     constructor() {
         this.score = 0;
         this.highScore = this._loadHighScore();
+        this.combo = 0; // track consecutive correct notes
+        this.maxCombo = 0;
     }
     
-    addPoint() {
-        this.score++;
+    addPoint(points = 1) {
+        this.score += points;
         
-        // update high score if beaten
         if (this.score > this.highScore) {
             this.highScore = this.score;
             this._saveHighScore();
         }
+    }
+    
+    incrementCombo() {
+        this.combo++;
+        if (this.combo > this.maxCombo) {
+            this.maxCombo = this.combo;
+        }
+    }
+    
+    resetCombo() {
+        this.combo = 0;
     }
     
     getScore() {
@@ -23,8 +36,14 @@ class ScoreManager {
         return this.highScore;
     }
     
+    getCombo() {
+        return this.combo;
+    }
+    
     reset() {
         this.score = 0;
+        this.combo = 0;
+        this.maxCombo = 0;
     }
     
     _loadHighScore() {
