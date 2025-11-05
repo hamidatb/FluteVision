@@ -1,0 +1,40 @@
+name: Deploy Backend to Heroku
+
+on:
+  push:
+    branches:
+      - prod
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch: # allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # need full history for subtree
+      
+      - name: Deploy backend to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: flutevision-api
+        run: |
+          # configure git for heroku
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          
+          # add heroku remote
+          git remote add heroku-backend https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git || true
+          
+          # push backend subtree to heroku
+          git push heroku-backend `git subtree split --prefix backend prod`:refs/heads/main --force
+      
+      - name: Check deployment status
+        run: |
+          echo "✅ Backend deployed successfully to https://flutevision-api-2aeac29f3245.herokuapp.com"
+
