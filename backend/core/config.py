@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import List
+import os
 
 class Settings:
     # API Settings
@@ -8,8 +9,13 @@ class Settings:
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
     
-    # CORS Settings
-    ALLOWED_ORIGINS: List[str] = ["*"] 
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    
+    ALLOWED_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://flutevision-web-cd91d82764ea.herokuapp.com",
+    ] 
     
     # Paths
     PROJECT_ROOT: Path = Path(__file__).parent.parent.parent

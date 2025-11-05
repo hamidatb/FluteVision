@@ -1,10 +1,15 @@
 
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Request
 from typing import Dict, Any
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from services import vision_service
 
 router = APIRouter()
+
+# rate limiter to prevent abuse
+limiter = Limiter(key_func=get_remote_address)
 
 @router.get("/")
 async def root():
@@ -53,9 +58,11 @@ async def predict_gesture(file: UploadFile = File(...)) -> Dict[str, Any]:
     return result
 
 @router.post("/predict/base64")
-async def predict_gesture_base64(data: dict) -> Dict[str, Any]:
+@limiter.limit("60/minute")  # limit to 60 predictions per minute per IP
+async def predict_gesture_base64(request: Request, data: dict) -> Dict[str, Any]:
     """
     predict from base64 image - much faster than multipart bc less overhead, perfect for real-time streaming
+    rate limited to prevent abuse
     """
     if not vision_service.is_ready():
         raise HTTPException(status_code=503, detail="Service not ready")
