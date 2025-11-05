@@ -12,6 +12,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: production-backend
+      url: https://flutevision-api-2aeac29f3245.herokuapp.com
     
     steps:
       - name: Checkout code
