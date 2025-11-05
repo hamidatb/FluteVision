@@ -103,12 +103,12 @@ dmypy.json
 # ML Folder - Datasets & Models
 # ============================================================================
 
-# Raw datasets (too large for git)
-ml/datasets/raw/
-ml/datasets/processed/
-ml/datasets/augmented/
-!ml/datasets/.gitkeep
-!ml/datasets/raw/.gitkeep
+# Raw datasets (too large for git) - ml is now in backend/ml
+backend/ml/datasets/raw/
+backend/ml/datasets/processed/
+backend/ml/datasets/augmented/
+!backend/ml/datasets/.gitkeep
+!backend/ml/datasets/raw/.gitkeep
 
 # Trained models (too large for git)
 ml/models/*.pkl

@@ -18,10 +18,10 @@ class Settings:
     ] 
     
     # Paths
-    PROJECT_ROOT: Path = Path(__file__).parent.parent.parent
-    SCRIPTS_PATH: Path = PROJECT_ROOT / "scripts"
+    PROJECT_ROOT: Path = Path(__file__).parent.parent  # backend folder
+    SCRIPTS_PATH: Path = PROJECT_ROOT / "ml" / "scripts"
     MODEL_PATH: Path = PROJECT_ROOT / "ml" / "models" / "landmark_model.pkl"
-    SAVED_DATASETS_DIR = PROJECT_ROOT / "datasets" / "raw"
+    SAVED_DATASETS_DIR = PROJECT_ROOT / "ml" / "datasets" / "raw"
     
     # odel Settings
     CONFIDENCE_THRESHOLD: float = 0.5

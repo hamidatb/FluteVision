@@ -10,7 +10,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+# ml is now inside backend folder
+PROJECT_ROOT = Path(__file__).parent.parent.parent  # backend/
 SCRIPTS_DIR = Path(__file__).parent
 
 sys.path.insert(0, str(PROJECT_ROOT))
