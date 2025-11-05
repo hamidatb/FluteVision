@@ -1,6 +1,14 @@
 class FluteVisionAPI {
     constructor(baseUrl = null) {
-        this.baseUrl = baseUrl || `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
+        if (baseUrl) {
+            this.baseUrl = baseUrl;
+        } else if (window.location.hostname.includes('herokuapp.com')) {
+            // production - use the deployed API
+            this.baseUrl = 'https://flutevision-api-2aeac29f3245.herokuapp.com/api/v1';
+        } else {
+            // local development
+            this.baseUrl = `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
+        }
     }
 
     async healthCheck() {
