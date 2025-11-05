@@ -131,18 +131,129 @@ header h1 {
 }
 
 /* responsive */
-@media (max-width: 768px) {
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    
     header h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+    body {
+        padding-top: 200px !important;
+    }
+    
+    header {
+        padding: 12px 15px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+    }
+    
+    .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .nav-links {
+        gap: 8px;
+        margin-top: 15px;
+    }
+    
+    .nav-links a {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        min-width: 100px;
+        text-align: center;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    /* Better touch targets */
+    .btn {
+        padding: 14px 25px;
+        font-size: 1rem;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    body {
+        padding-top: 220px !important;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .subtitle {
+        font-size: 0.85rem;
     }
     
     .nav-links {
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .nav-links a {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        width: 100%;
     }
     
     .container {
-        padding: 15px;
+        padding: 8px;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding-top: 150px !important;
+    }
+    
+    header {
+        padding: 8px 15px;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .nav-links {
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .nav-links a {
+        padding: 6px 12px;
+        font-size: 0.85rem;
     }
 }
 

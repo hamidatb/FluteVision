@@ -118,13 +118,182 @@
     }
 }
 
-@media (max-width: 768px) {
+/* Tablet and below */
+@media (max-width: 1024px) {
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
     
     .hero .tagline {
+        font-size: 1.3rem;
+    }
+    
+    .features {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .feature-card {
+        padding: 30px 20px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+    .hero {
+        padding: 15px 15px 30px;
+    }
+    
+    .hero h1 {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero .tagline {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .features {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin: 30px 0;
+    }
+    
+    .feature-card {
+        padding: 30px 20px;
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+    
+    .feature-card p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .getting-started {
+        padding: 30px 20px;
+        margin: 30px 0;
+    }
+    
+    .getting-started h2 {
+        font-size: 1.7rem;
+        margin-bottom: 25px;
+    }
+    
+    .steps {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .step {
+        padding: 15px;
+    }
+    
+    .step-number {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+        margin: 0 auto 12px;
+    }
+    
+    .step h3 {
         font-size: 1.2rem;
+    }
+    
+    .step p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+    
+    .hero .tagline {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .features {
+        margin: 20px 0;
+        gap: 15px;
+    }
+    
+    .feature-card {
+        padding: 25px 15px;
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .feature-card p {
+        font-size: 0.9rem;
+    }
+    
+    .getting-started {
+        padding: 25px 15px;
+        margin: 20px 0;
+    }
+    
+    .getting-started h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .steps {
+        gap: 20px;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        padding: 10px 15px 20px;
+    }
+    
+    .hero h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+    
+    .hero .tagline {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    
+    .features {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .feature-card {
+        padding: 20px 15px;
+    }
+    
+    .getting-started {
+        padding: 20px 15px;
+    }
+    
+    .steps {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
     }
 }
 
