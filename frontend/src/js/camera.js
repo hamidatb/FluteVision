@@ -11,9 +11,15 @@ class CameraStream {
         this.pendingRequest = false;
     }
 
-    async initialize() {
+    async initialize(videoElementId = 'video') {
         try {
-            this.video = document.getElementById('video');
+            // allow specifying which video element to use bc different pages use different IDs
+            this.video = document.getElementById(videoElementId);
+            if (!this.video) {
+                console.error(`Video element with id '${videoElementId}' not found`);
+                return false;
+            }
+            
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
             

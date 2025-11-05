@@ -3,71 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FluteVision - Live Hand Gesture Recognition</title>
-    <link rel="stylesheet" href="src/css/styles.css">
+    <title>FluteVision - AI-Powered Flute Training</title>
+    <link rel="stylesheet" href="src/css/shared.css">
+    <link rel="stylesheet" href="src/css/home.css">
 </head>
 <body>
-    <div id="app">
+    <header>
         <h1>🎵 FluteVision</h1>
-        <p class="subtitle">Real-time Flute Fingering Recognition</p>
+        <p class="subtitle">AI-powered flute fingering recognition</p>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="practice.html">Practice</a>
+            <a href="game.html">Game</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="hero">
+            <h1>Learn Flute with AI</h1>
+            <p class="tagline">Practice smarter, play better</p>
+        </div>
         
-        <div class="container">
-            <!-- Video Feed -->
-            <div class="video-container">
-                <video id="video" autoplay playsinline></video>
-                <div class="controls">
-                    <button id="startBtn">Start Predictions</button>
-                    <button id="stopBtn" disabled>Stop Predictions</button>
-                </div>
+        <!-- Feature Cards -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📹</div>
+                <h3>Practice Mode</h3>
+                <p>Real-time fingering detection with instant feedback. Perfect for learning new notes and building confidence.</p>
+                <a href="practice.html" class="btn btn-primary">Start Practicing</a>
             </div>
             
-            <!-- Info Panel -->
-            <div class="info-panel">
-                <!-- Prediction Display -->
-                <div class="prediction-box">
-                    <div class="box-title">Current Prediction</div>
-                    <div class="prediction-item">
-                        <span class="prediction-label">Gesture:</span>
-                        <span id="gesture" class="gesture-value">-</span>
-                    </div>
-                    <div class="prediction-item">
-                        <span class="prediction-label">Confidence:</span>
-                        <span id="confidence" class="confidence-value">-</span>
-                    </div>
-                    <div id="message"></div>
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>Game Mode</h3>
+                <p>Turn practice into play! Jump over obstacles by playing the correct fingerings. Customize settings and choose your musical tests.</p>
+                <a href="game.html" class="btn btn-primary">Play Game</a>
+            </div>
+        </div>
+        
+        <!-- Getting Started -->
+        <div class="getting-started">
+            <h2>Getting Started</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Allow Camera</h3>
+                    <p>Grant camera access when prompted so we can see your fingerings</p>
                 </div>
-                
-                <!-- Status -->
-                <div class="status-box">
-                    <div class="box-title">Status</div>
-                    <div id="status">Initializing...</div>
-                    <div id="error"></div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Position Hands</h3>
+                    <p>Show your hands clearly to the camera with good lighting</p>
                 </div>
-                
-                <!-- Available Gestures -->
-                <div class="gestures-box">
-                    <div class="box-title">Available Gestures</div>
-                    <div id="availableGestures">Loading...</div>
-                </div>
-                
-                <!-- All Probabilities -->
-                <div class="probabilities-box">
-                    <div class="box-title">Top Predictions</div>
-                    <div id="allProbabilities"></div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Start Playing</h3>
+                    <p>Choose practice mode to learn or game mode to have fun!</p>
                 </div>
             </div>
         </div>
     </div>
-    
-    <script src="src/js/api.js"></script>
-    <script src="src/js/camera.js"></script>
-    <script src="src/js/ui.js"></script>
-    <script>
-        // Initialize the app when page loads
-        window.addEventListener('DOMContentLoaded', () => {
-            const app = new FluteVisionUI();
-            app.initialize();
-        });
-    </script>
 </body>
 </html>

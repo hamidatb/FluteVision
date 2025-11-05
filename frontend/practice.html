@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Mode - FluteVision</title>
+    <link rel="stylesheet" href="src/css/shared.css">
+    <link rel="stylesheet" href="src/css/practice.css">
+</head>
+<body>
+    <header>
+        <h1>🎵 FluteVision</h1>
+        <p class="subtitle">Practice Mode</p>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="practice.html" class="active">Practice</a>
+            <a href="game.html">Game</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="practice-container">
+            <!-- Camera Section -->
+            <div class="camera-section">
+                <video id="practiceVideo" autoplay playsinline></video>
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary" disabled>Start Practice</button>
+                    <button id="stopBtn" class="btn btn-secondary" disabled>Stop</button>
+                </div>
+                <div id="statusMessage" class="status-message info">
+                    Initializing...
+                </div>
+            </div>
+            
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <!-- Current Detection -->
+                <div class="info-card">
+                    <h3>Current Fingering</h3>
+                    <div class="current-gesture" id="currentGesture">-</div>
+                    <div class="confidence-display">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Target Practice -->
+                <div class="info-card">
+                    <h3>Target Practice</h3>
+                    <div class="target-section">
+                        <div class="target-label">Practice this note:</div>
+                        <div class="target-gesture" id="targetGesture">-</div>
+                        <select id="targetSelector" class="target-selector">
+                            <option value="">All Notes (Free Practice)</option>
+                        </select>
+                        <button id="randomTargetBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">
+                            Random Note
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Practice Timer -->
+                <div class="info-card">
+                    <h3>Practice Time</h3>
+                    <div class="timer" id="timer">00:00</div>
+                </div>
+                
+                <!-- All Probabilities -->
+                <div class="info-card">
+                    <h3>All Detections</h3>
+                    <div id="allProbabilities"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts - all JS should be in separate files -->
+    <script src="src/js/api.js"></script>
+    <script src="src/js/camera.js"></script>
+    <script src="src/js/practice/PracticeMode.js"></script>
+    <script>
+        // initialize practice mode on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const practice = new PracticeMode();
+            practice.initialize();
+        });
+    </script>
+</body>
+</html>
+

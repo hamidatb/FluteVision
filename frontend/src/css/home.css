@@ -1,0 +1,130 @@
+/* landing page specific styles */
+.hero {
+    text-align: center;
+    padding: 20px 20px 40px;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease;
+}
+
+.hero .tagline {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    opacity: 0.95;
+    animation: fadeInUp 1s ease;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeInUp 1.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.feature-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 1.8rem;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.getting-started {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    margin: 40px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.getting-started h2 {
+    color: #667eea;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.step {
+    text-align: center;
+    padding: 20px;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 15px;
+}
+
+.step h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.step p {
+    color: #666;
+    line-height: 1.5;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero .tagline {
+        font-size: 1.2rem;
+    }
+}
+
