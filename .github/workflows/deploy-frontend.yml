@@ -25,7 +25,7 @@ jobs:
       - name: Deploy frontend to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: flutevision-web
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_FRONTEND_APP_NAME }}
         run: |
           # configure git for heroku
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
