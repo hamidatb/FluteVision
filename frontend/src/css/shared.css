@@ -76,6 +76,86 @@ header h1 {
     background: rgba(255,255,255,0.4);
 }
 
+/* Mobile nav dropdown */
+.nav-toggle {
+    display: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+    margin: 15px auto 0;
+}
+
+.nav-toggle:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.nav-toggle::after {
+    content: ' ▼';
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+.nav-toggle.active::after {
+    content: ' ▲';
+}
+
+/* Camera toggle - floating button */
+.camera-toggle-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: 3px solid rgba(255,255,255,0.3);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    touch-action: manipulation;
+}
+
+.camera-toggle-btn:hover {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+}
+
+.camera-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.camera-toggle-btn.camera-off {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: rgba(255,255,255,0.4);
+}
+
+.camera-toggle-btn.camera-off:hover {
+    box-shadow: 0 12px 35px rgba(239, 68, 68, 0.5);
+}
+
+.camera-status-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.camera-status-text {
+    display: none;
+}
+
 /* utility classes */
 .hidden {
     display: none;
@@ -167,15 +247,31 @@ header h1 {
         margin-bottom: 15px;
     }
     
+    /* Mobile dropdown navigation */
+    .nav-toggle {
+        display: block;
+        width: auto;
+        max-width: 200px;
+    }
+    
     .nav-links {
+        flex-direction: column;
+        align-items: center;
         gap: 8px;
-        margin-top: 15px;
+        margin-top: 10px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+    
+    .nav-links.show {
+        max-height: 200px;
     }
     
     .nav-links a {
-        padding: 8px 15px;
+        padding: 10px 20px;
         font-size: 0.9rem;
-        min-width: 100px;
+        width: 200px;
         text-align: center;
     }
     
@@ -194,6 +290,14 @@ header h1 {
     .card {
         padding: 15px;
     }
+    
+    .camera-toggle-btn {
+        width: 60px;
+        height: 60px;
+        bottom: 20px;
+        left: 20px;
+        font-size: 1.8rem;
+    }
 }
 
 /* Small mobile devices */
@@ -210,15 +314,16 @@ header h1 {
         font-size: 0.85rem;
     }
     
-    .nav-links {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
+    .nav-toggle {
+        max-width: 180px;
+        font-size: 0.9rem;
+        padding: 8px 16px;
     }
     
     .nav-links a {
-        width: 100%;
+        width: 180px;
         padding: 10px;
+        font-size: 0.85rem;
     }
     
     .btn {
@@ -229,6 +334,14 @@ header h1 {
     
     .container {
         padding: 8px;
+    }
+    
+    .camera-toggle-btn {
+        width: 55px;
+        height: 55px;
+        bottom: 15px;
+        left: 15px;
+        font-size: 1.6rem;
     }
 }
 
@@ -246,14 +359,36 @@ header h1 {
         font-size: 1.5rem;
     }
     
+    .nav-toggle {
+        display: block;
+        font-size: 0.85rem;
+        padding: 6px 14px;
+    }
+    
     .nav-links {
         flex-direction: row;
-        gap: 8px;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-links.show {
+        max-height: 150px;
     }
     
     .nav-links a {
         padding: 6px 12px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        width: auto;
+        min-width: 80px;
+    }
+    
+    .camera-toggle-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 10px;
+        left: 10px;
+        font-size: 1.5rem;
     }
 }
 

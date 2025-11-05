@@ -2,8 +2,8 @@
 // using facade pattern bc other code shouldn't need to know about all the internal systems
 class GameController {
     constructor() {
-        // infrastructure
-        this.camera = new CameraStream();
+        // infrastructure - using CameraController for SOLID design
+        this.cameraController = new CameraController('video');
         this.api = new FluteVisionAPI();
         this.assetManager = assetManager; // singleton
         this.testLibrary = testLibrary; // singleton
@@ -12,6 +12,7 @@ class GameController {
         this.gameEngine = null;
         this.inputManager = null;
         this.settingsUI = null;
+        this.cameraToggleUI = null;
         
         // state
         this.availableGestures = [];
@@ -40,12 +41,17 @@ class GameController {
         
         // initialize camera
         this._updateStatus('Initializing camera...');
-        const cameraReady = await this.camera.initialize();
+        const cameraReady = await this.cameraController.initialize();
         
         if (!cameraReady) {
             this._showError('Could not access camera. Check permissions.');
             return;
         }
+        
+        // set up camera state observer
+        this.cameraController.onStateChange((state, isEnabled) => {
+            this._handleCameraStateChange(state, isEnabled);
+        });
         
         // create game engine
         const canvas = document.getElementById('gameCanvas');
@@ -59,8 +65,8 @@ class GameController {
         this.gameEngine.onNoteChange = (gesture, time) =>
             this._handleNoteChange(gesture, time);
         
-        // create input manager
-        this.inputManager = new InputManager(this.camera);
+        // create input manager - pass the camera stream (backward compatible)
+        this.inputManager = new InputManager(this.cameraController.stream);
         this.inputManager.onCorrectInput = (gesture, confidence) => {
             this.gameEngine.makePlayerJump();
             this._flashSuccess();
@@ -69,11 +75,50 @@ class GameController {
         // create settings UI
         this.settingsUI = new SettingsUI(this.assetManager, this.testLibrary);
         
+        // initialize camera toggle UI
+        this.cameraToggleUI = new CameraToggleUI(this.cameraController);
+        this.cameraToggleUI.initialize('cameraToggleBtn');
+        
         // set up UI event listeners
         this._setupEventListeners();
         
         this._updateStatus('Ready to play!');
         document.getElementById('startBtn').disabled = false;
+    }
+    
+    _handleCameraStateChange(state, isEnabled) {
+        // handle camera on/off state changes
+        if (!isEnabled) {
+            // camera turned off - stop game if running
+            if (this.gameEngine && this.gameEngine.isRunning) {
+                this._pauseGame();
+                this._updateStatus('Camera off - Game paused. Turn on camera to continue.');
+            }
+            
+            // stop input monitoring
+            if (this.inputManager) {
+                this.inputManager.stopMonitoring();
+            }
+        } else {
+            // camera turned on
+            this._updateStatus('Camera on - Ready to play!');
+            
+            // resume input monitoring if game is running
+            if (this.gameEngine && this.gameEngine.isRunning) {
+                this.inputManager.startMonitoring((prediction) => {
+                    this._updatePredictionDisplay(prediction);
+                });
+            }
+        }
+    }
+    
+    _pauseGame() {
+        if (this.gameEngine) {
+            this.gameEngine.pause();
+        }
+        if (this.gestureChangeInterval) {
+            clearInterval(this.gestureChangeInterval);
+        }
     }
     
     _setupEventListeners() {
@@ -104,11 +149,23 @@ class GameController {
     }
     
     _startGame() {
+        // check if camera is enabled before starting
+        if (!this.cameraController.isEnabled()) {
+            this._updateStatus('Please turn on the camera to play!');
+            return;
+        }
+        
         document.getElementById('startScreen').classList.add('hidden');
         this._startGameplay();
     }
     
     _startGameplay() {
+        // check camera state before starting gameplay
+        if (!this.cameraController.isEnabled()) {
+            this._updateStatus('Camera must be on to play!');
+            return;
+        }
+        
         // extracted common gameplay start logic bc it's used by both start and restart
         // check if using musical test mode
         const mode = gameSettings.get('musicMode');

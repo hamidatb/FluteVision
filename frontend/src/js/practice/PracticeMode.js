@@ -1,8 +1,10 @@
 // practice mode controller - handles real-time detection without game logic
 class PracticeMode {
     constructor() {
-        this.camera = new CameraStream();
+        // using CameraController for SOLID design and camera toggle support
+        this.cameraController = new CameraController('practiceVideo');
         this.api = new FluteVisionAPI();
+        this.cameraToggleUI = null;
         this.isRunning = false;
         this.targetGesture = null;
         this.availableGestures = [];
@@ -31,16 +33,45 @@ class PracticeMode {
         this.populateGestureSelector();
 
         this.updateStatus('Initializing camera...', 'info');
-        const cameraReady = await this.camera.initialize('practiceVideo');
+        const cameraReady = await this.cameraController.initialize();
 
         if (!cameraReady) {
             this.updateStatus('Could not access camera', 'warning');
             return;
         }
 
+        // set up camera state observer
+        this.cameraController.onStateChange((state, isEnabled) => {
+            this.handleCameraStateChange(state, isEnabled);
+        });
+
+        // initialize camera toggle UI
+        this.cameraToggleUI = new CameraToggleUI(this.cameraController);
+        this.cameraToggleUI.initialize('cameraToggleBtn');
+
         this.setupEventListeners();
         this.updateStatus('Ready to practice!', 'success');
         document.getElementById('startBtn').disabled = false;
+    }
+
+    handleCameraStateChange(state, isEnabled) {
+        // handle camera on/off state changes
+        if (!isEnabled) {
+            // camera turned off - stop practice if running
+            if (this.isRunning) {
+                this.stop();
+                this.updateStatus('Camera off - Practice stopped. Turn on camera to continue.', 'warning');
+            }
+            
+            // disable start button
+            document.getElementById('startBtn').disabled = true;
+        } else {
+            // camera turned on
+            if (!this.isRunning) {
+                document.getElementById('startBtn').disabled = false;
+                this.updateStatus('Camera on - Ready to practice!', 'success');
+            }
+        }
     }
 
     populateGestureSelector() {
@@ -68,11 +99,18 @@ class PracticeMode {
     }
 
     start() {
+        // check if camera is enabled before starting
+        if (!this.cameraController.isEnabled()) {
+            this.updateStatus('Please turn on the camera to practice!', 'warning');
+            return;
+        }
+
         // start practicing and streaming from camera
         this.isRunning = true;
         this.startTime = Date.now();
 
-        this.camera.startStreaming((prediction) => {
+        // use the camera stream from controller (backward compatible)
+        this.cameraController.stream.startStreaming((prediction) => {
             this.updatePredictionDisplay(prediction);
         });
 
@@ -86,7 +124,7 @@ class PracticeMode {
     stop() {
         // stop practice session
         this.isRunning = false;
-        this.camera.stopStreaming();
+        this.cameraController.stream.stopStreaming();
 
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
@@ -95,7 +133,8 @@ class PracticeMode {
         // save practice time to stats bc we want to track progress
         this.savePracticeTime();
 
-        document.getElementById('startBtn').disabled = false;
+        // only enable start button if camera is on
+        document.getElementById('startBtn').disabled = !this.cameraController.isEnabled();
         document.getElementById('stopBtn').disabled = true;
         this.updateStatus('Practice stopped', 'info');
     }
