@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/")
 async def root():
-    """API root endpoint."""
+    """just a basic info endpoint"""
     return {
         "message": "FluteVision API",
         "version": "1.0.0",
@@ -19,11 +19,10 @@ async def root():
 @router.get("/health")
 async def health_check() -> Dict[str, Any]:
     """
-    Health check endpoint.
-    Returns API status and model information.
+    health check so frontend knows if backend is alive and model is loaded before trying to use camera
     """
     is_ready = vision_service.is_ready()
-    gestures = vision_service.get_available_gestures()
+    gestures = vision_service.get_available_fingerings()
     
     return {
         "status": "healthy" if is_ready else "not ready",
@@ -36,25 +35,16 @@ async def health_check() -> Dict[str, Any]:
 @router.post("/predict")
 async def predict_gesture(file: UploadFile = File(...)) -> Dict[str, Any]:
     """
-    TODO: Make this work with a livestream
-    Predict gesture from uploaded image.
-    
-    Args:
-        file: Image file (JPEG, PNG, etc.)
-        
-    Returns:
-        Prediction results including gesture, confidence, and all probabilities
+    predict from uploaded file (multipart) - kept this for testing but base64 endpoint is faster for live streaming
     """
     if not vision_service.is_ready():
         raise HTTPException(status_code=503, detail="Service not ready")
     
-    # Read image bytes
     try:
         image_bytes = await file.read()
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error reading file: {str(e)}")
     
-    # Get prediction
     result = vision_service.predict_from_image_bytes(image_bytes)
     
     if "error" in result:
@@ -62,10 +52,37 @@ async def predict_gesture(file: UploadFile = File(...)) -> Dict[str, Any]:
     
     return result
 
-
+@router.post("/predict/base64")
+async def predict_gesture_base64(data: dict) -> Dict[str, Any]:
+    """
+    predict from base64 image - much faster than multipart bc less overhead, perfect for real-time streaming
+    """
+    if not vision_service.is_ready():
+        raise HTTPException(status_code=503, detail="Service not ready")
+    
+    try:
+        import base64
+        image_data = data.get("image")
+        if not image_data:
+            raise HTTPException(status_code=400, detail="No image data provided")
+        
+        # strip the data:image/jpeg;base64, prefix if browser sent it
+        if "," in image_data:
+            image_data = image_data.split(",")[1]
+        
+        image_bytes = base64.b64decode(image_data)
+        result = vision_service.predict_from_image_bytes(image_bytes)
+        
+        if "error" in result:
+            raise HTTPException(status_code=400, detail=result["error"])
+        
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
+    
 @router.get("/fingerings")
 async def list_gestures():
-    """Get list of all recognizable fingerings."""
+    """returns what gestures the model knows so frontend can display them"""
     if not vision_service.is_ready():
         raise HTTPException(status_code=503, detail="Service not ready")
     

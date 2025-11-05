@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FluteVision - Live Hand Gesture Recognition</title>
+    <link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <h1>🎵 FluteVision</h1>
+        <p class="subtitle">Real-time Flute Fingering Recognition</p>
+        
+        <div class="container">
+            <!-- Video Feed -->
+            <div class="video-container">
+                <video id="video" autoplay playsinline></video>
+                <div class="controls">
+                    <button id="startBtn">Start Predictions</button>
+                    <button id="stopBtn" disabled>Stop Predictions</button>
+                </div>
+            </div>
+            
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <!-- Prediction Display -->
+                <div class="prediction-box">
+                    <div class="box-title">Current Prediction</div>
+                    <div class="prediction-item">
+                        <span class="prediction-label">Gesture:</span>
+                        <span id="gesture" class="gesture-value">-</span>
+                    </div>
+                    <div class="prediction-item">
+                        <span class="prediction-label">Confidence:</span>
+                        <span id="confidence" class="confidence-value">-</span>
+                    </div>
+                    <div id="message"></div>
+                </div>
+                
+                <!-- Status -->
+                <div class="status-box">
+                    <div class="box-title">Status</div>
+                    <div id="status">Initializing...</div>
+                    <div id="error"></div>
+                </div>
+                
+                <!-- Available Gestures -->
+                <div class="gestures-box">
+                    <div class="box-title">Available Gestures</div>
+                    <div id="availableGestures">Loading...</div>
+                </div>
+                
+                <!-- All Probabilities -->
+                <div class="probabilities-box">
+                    <div class="box-title">Top Predictions</div>
+                    <div id="allProbabilities"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="src/js/api.js"></script>
+    <script src="src/js/camera.js"></script>
+    <script src="src/js/ui.js"></script>
+    <script>
+        // Initialize the app when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const app = new FluteVisionUI();
+            app.initialize();
+        });
+    </script>
+</body>
+</html>
