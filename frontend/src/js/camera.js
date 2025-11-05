@@ -1,6 +1,16 @@
 class CameraStream {
     constructor(apiUrl = null) {
-        this.apiUrl = apiUrl || `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
+        // dynamically determine API URL based on environment
+        if (apiUrl) {
+            this.apiUrl = apiUrl;
+        } else if (window.location.hostname.includes('herokuapp.com')) {
+            // on heroku, use the deployed backend API
+            this.apiUrl = 'https://flutevision-api-2aeac29f3245.herokuapp.com/api/v1';
+        } else {
+            // local development
+            this.apiUrl = 'http://localhost:8000/api/v1';
+        }
+        
         this.video = null;
         this.canvas = null;
         this.ctx = null;
