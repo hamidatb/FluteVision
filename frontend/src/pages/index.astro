@@ -12,20 +12,21 @@ import FeatureCard from '../layouts/FeatureCard.astro';
 
     <!-- Feature Cards -->
     <div class="features">
-      <div class="feature-card">
-        <div class="feature-icon">📹</div>
-        <h3>Practice Mode</h3>
-        <p>Real-time fingering detection with instant feedback. Perfect for learning new notes and building confidence.</p>
-        <a href="/practice" class="btn btn-primary">Start Practicing</a>
-      </div>
+      <FeatureCard
+        cardIcon="📹"
+        cardTitle="Practice Mode"
+        cardParagraphText="Real-time fingering detection with instant feedback. Perfect for learning new notes and building confidence."
+        cardButtonLink="/practice"
+        cardButtonText="Start Practicing"
+      />
 
-      <div class="feature-card">
-        <div class="feature-icon">🎮</div>
-        <h3>Game Mode</h3>
-        <p>Turn practice into play! Jump over obstacles by playing the correct fingerings. Customize settings and choose your musical tests.</p>
-        <a href="/game" class="btn btn-primary">Play Game</a>
-      </div>
-    </div>
+      <FeatureCard
+        cardIcon="🎮"
+        cardTitle="Game Mode"
+        cardParagraphText="Turn practice into play! Jump over obstacles by playing the correct fingerings. Customize settings and choose your musical tests."
+        cardButtonLink="/game"
+        cardButtonText="Play Game"
+      />
 
     <!-- Getting Started -->
     <div class="getting-started">
