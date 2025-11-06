@@ -2,6 +2,7 @@
 import siteConfig from '../frontend_config.js'; 
 import '../css/home.css';
 import '../css/shared.css';
+import Navbar from './Navbar.astro';
 
 const title = siteConfig.site_name; 
 ---
@@ -18,12 +19,7 @@ const title = siteConfig.site_name;
         <h1>FluteVision</h1>
         <p class="subtitle">AI-powered flute gaming</p>
 
-        <button id="navToggle" class="nav-toggle">Menu</button>
-        <div class="nav-links">
-            <a href="/" class="active">Home</a>
-            <a href="/practice">Practice</a>
-            <a href="/game">Game</a>
-        </div>
+        <Navbar selectedPage="home"/>
     </header>
 
     <main>
