@@ -12,7 +12,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
+    env:
       name: production-frontend
       url: ${{ secrets.HEROKU_FRONTEND_URL }}
     
