@@ -7,10 +7,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "start": "node server.js",
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
-    "astro": "^5.15.3"
+    "astro": "^5.15.3",
+    "express": "^4.18.2"
   },
   "engines": {
     "node": ">=18.0.0",
