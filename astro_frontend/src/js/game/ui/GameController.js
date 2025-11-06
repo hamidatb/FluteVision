@@ -301,3 +301,7 @@ class GameController {
     }
 }
 
+window.addEventListener('DOMContentLoaded', () => {
+            const controller = new GameController();
+            controller.initialize();
+        });
