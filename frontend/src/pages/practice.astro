@@ -1,20 +1,19 @@
 ---
 import BaseLayout from '../layouts/baseLayout.astro';
+import CameraToggleButton from '../components/CameraToggleButton.astro';
+import CameraFeed from '../components/CameraFeed.astro';
 
 import '../css/practice.css';
 ---
 
 <BaseLayout>
-    <!-- Floating camera toggle button -->
-    <button id="cameraToggleBtn" class="camera-toggle-btn" title="Toggle Camera">
-        <span class="camera-status-icon">📹</span>
-    </button>
+    <CameraToggleButton />
     
     <div class="container">
         <div class="practice-container">
             <!-- Camera Section -->
             <div class="camera-section">
-                <video id="practiceVideo" autoplay playsinline></video>
+                <CameraFeed videoId="practiceVideo" />
                 <div class="controls">
                     <button id="startBtn" class="btn btn-primary" disabled>Start Practice</button>
                     <button id="stopBtn" class="btn btn-secondary" disabled>Stop</button>
