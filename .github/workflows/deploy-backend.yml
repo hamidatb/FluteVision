@@ -3,7 +3,7 @@ name: Deploy Backend to Heroku
 on:
   push:
     branches:
-      - prod
+      - main
     paths:
       - 'backend/**'
       - '.github/workflows/deploy-backend.yml'
@@ -33,7 +33,7 @@ jobs:
           git remote add heroku-backend https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git || true
           
           # push backend subtree to heroku
-          git push heroku-backend `git subtree split --prefix backend prod`:refs/heads/main --force
+          git push heroku-backend `git subtree split --prefix backend main`:refs/heads/main --force
       
       - name: Check deployment status
         run: |
