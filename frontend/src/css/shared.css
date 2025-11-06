@@ -40,12 +40,12 @@ html {
 
 body {
   font-family: var(--font-pixel), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--background);
+  background: #FFE5F0;
   color: var(--foreground);
   min-height: 100vh;
   padding-top: 80px;
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
   background-attachment: fixed;
+  position: relative;
 }
 
 .container {
@@ -67,8 +67,8 @@ header {
   padding: 20px;
   background: var(--primary);
   z-index: 1000;
-  box-shadow: 8px 8px 0px rgba(0, 0, 0, 1);
-  border-bottom: 4px solid var(--border);
+  box-shadow: none;
+  border-bottom: none;
 }
 
 header h1 {
@@ -110,6 +110,12 @@ header h1 {
   right: 0;
   z-index: 1000;
   font-family: var(--font-pixel);
+  box-shadow: none;
+}
+
+main {
+  position: relative;
+  z-index: 10;
 }
 
 /* --- Logo --- */
@@ -270,4 +276,147 @@ header h1 {
 
 .pixel-shadow-lg {
   box-shadow: 12px 12px 0 0 rgba(0, 0, 0, 1);
+}
+
+/* ============================================================
+   FLOATING BACKGROUND EMOJIS (ALL PAGES)
+============================================================ */
+.floating-emoji {
+    position: fixed;
+    font-size: 2rem;
+    opacity: 0.15;
+    pointer-events: none;
+    animation: float 20s infinite ease-in-out;
+    z-index: 0;
+}
+
+.floating-emoji:nth-child(1) {
+    left: 5%;
+    top: 15%;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.floating-emoji:nth-child(2) {
+    right: 8%;
+    top: 10%;
+    animation-delay: 1.5s;
+    animation-duration: 22s;
+}
+
+.floating-emoji:nth-child(3) {
+    left: 2%;
+    top: 55%;
+    animation-delay: 3s;
+    animation-duration: 20s;
+}
+
+.floating-emoji:nth-child(4) {
+    right: 3%;
+    bottom: 20%;
+    animation-delay: 4.5s;
+    animation-duration: 24s;
+}
+
+.floating-emoji:nth-child(5) {
+    left: 15%;
+    top: 35%;
+    animation-delay: 6s;
+    animation-duration: 19s;
+}
+
+.floating-emoji:nth-child(6) {
+    right: 20%;
+    top: 65%;
+    animation-delay: 7.5s;
+    animation-duration: 21s;
+}
+
+.floating-emoji:nth-child(7) {
+    left: 50%;
+    top: 8%;
+    animation-delay: 9s;
+    animation-duration: 23s;
+}
+
+.floating-emoji:nth-child(8) {
+    left: 25%;
+    bottom: 12%;
+    animation-delay: 10.5s;
+    animation-duration: 25s;
+}
+
+.floating-emoji:nth-child(9) {
+    right: 15%;
+    top: 40%;
+    animation-delay: 12s;
+    animation-duration: 19s;
+}
+
+.floating-emoji:nth-child(10) {
+    left: 35%;
+    top: 70%;
+    animation-delay: 13.5s;
+    animation-duration: 22s;
+}
+
+.floating-emoji:nth-child(11) {
+    right: 30%;
+    bottom: 30%;
+    animation-delay: 15s;
+    animation-duration: 20s;
+}
+
+.floating-emoji:nth-child(12) {
+    left: 18%;
+    top: 25%;
+    animation-delay: 16.5s;
+    animation-duration: 24s;
+}
+
+.floating-emoji:nth-child(13) {
+    right: 12%;
+    top: 50%;
+    animation-delay: 18s;
+    animation-duration: 21s;
+}
+
+.floating-emoji:nth-child(14) {
+    left: 42%;
+    bottom: 40%;
+    animation-delay: 19.5s;
+    animation-duration: 23s;
+}
+
+.floating-emoji:nth-child(15) {
+    right: 25%;
+    top: 20%;
+    animation-delay: 21s;
+    animation-duration: 19s;
+}
+
+.floating-emoji:nth-child(16) {
+    left: 8%;
+    bottom: 35%;
+    animation-delay: 22.5s;
+    animation-duration: 22s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) translateX(0px) rotate(0deg);
+        opacity: 0.12;
+    }
+    25% {
+        transform: translateY(-50px) translateX(30px) rotate(10deg);
+        opacity: 0.2;
+    }
+    50% {
+        transform: translateY(-80px) translateX(-25px) rotate(-6deg);
+        opacity: 0.16;
+    }
+    75% {
+        transform: translateY(-45px) translateX(35px) rotate(8deg);
+        opacity: 0.18;
+    }
 }
