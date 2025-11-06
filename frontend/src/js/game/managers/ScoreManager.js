@@ -1,6 +1,6 @@
 // score tracking and persistence
 // keeping this as a manager bc it's a cross-cutting concern that multiple systems need
-class ScoreManager {
+export class ScoreManager {
     constructor() {
         this.score = 0;
         this.highScore = this._loadHighScore();

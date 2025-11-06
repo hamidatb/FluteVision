@@ -1,6 +1,14 @@
+import { Player } from '../../game/entities/Player';
+import { Obstacle } from '../../game/entities/Obstacle';
+import { GameConstants } from '../../game/config/GameConstants';
+import { gameSettings } from '../../game/config/GameSettings';
+import { RenderSystem } from '../../game/systems/RenderSystem';
+import { CollisionSystem } from '../../game/systems/CollisionSystem';
+import { ScoreManager } from '../../game/managers/ScoreManager';
+
 // core game loop and state - the heart of the game
 // handles update/render cycle and coordinates all systems
-class GameEngine {
+export class GameEngine {
     constructor(canvas, assetManager) {
         this.assetManager = assetManager;
         

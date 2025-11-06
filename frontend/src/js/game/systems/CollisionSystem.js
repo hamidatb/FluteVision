@@ -1,6 +1,6 @@
 // collision detection system - operates on entities but doesn't own them
 // using system pattern bc collision detection is a behavior that works on multiple entities
-class CollisionSystem {
+export class CollisionSystem {
     // axis-aligned bounding box collision - fast and good enough for this game
     checkCollision(rect1, rect2) {
         return rect1.x < rect2.x + rect2.width &&

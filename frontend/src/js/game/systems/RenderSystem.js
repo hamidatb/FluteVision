@@ -1,6 +1,9 @@
+import { GameConstants } from '../../game/config/GameConstants';
+import { CollisionSystem } from '../../game/systems/CollisionSystem';
+
 // rendering system - handles all drawing operations
 // separated bc rendering logic should be independent of game logic
-class RenderSystem {
+export class RenderSystem {
     constructor(canvas, assetManager) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');

@@ -1,6 +1,6 @@
 // centralized settings management using singleton pattern - one source of truth across the entire game
 // storing in localStorage bc we want settings to persist between sessions
-class GameSettings {
+export class GameSettings {
     constructor() {
         if (GameSettings.instance) {
             return GameSettings.instance;
@@ -70,5 +70,5 @@ class GameSettings {
 }
 
 // export singleton instance
-const gameSettings = new GameSettings();
+export const gameSettings = new GameSettings();
 

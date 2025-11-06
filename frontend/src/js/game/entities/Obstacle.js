@@ -1,5 +1,7 @@
+import { GameConstants } from '../../game/config/GameConstants';
+
 // obstacle entity - knows how to move and draw itself
-class Obstacle {
+export class Obstacle {
     constructor(x, groundY, speed) {
         this.x = x;
         this.groundY = groundY;

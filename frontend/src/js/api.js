@@ -1,4 +1,4 @@
-class FluteVisionAPI {
+export class FluteVisionAPI {
     constructor(baseUrl = null) {
         if (baseUrl) {
             this.baseUrl = baseUrl;

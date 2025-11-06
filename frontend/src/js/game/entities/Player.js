@@ -1,6 +1,8 @@
+import { GameConstants } from '../../game/config/GameConstants';
+
 // player entity - separated bc entities should only know about themselves
 // SRP: only handles player state, physics, and rendering itself
-class Player {
+export class Player {
     constructor(x, groundY, assetManager) {
         this.x = x;
         this.groundY = groundY;

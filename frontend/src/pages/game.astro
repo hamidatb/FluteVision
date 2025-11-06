@@ -77,37 +77,34 @@ import '../css/game.css';
     </div>
     
     <!-- Reuse existing camera/API infrastructure -->
-    <script is:inline src="/src/js/api.js"></script>
-    <script is:inline src="/src/js/camera.js"></script>
-    <script is:inline src="/src/js/navigation.js"></script>
+    <script src="../js/camera.js"></script>
     
     <!-- Load in dependency order (bc modules depend on each other) -->
     
     <!-- Config layer -->
-    <script is:inline src="/src/js/game/config/GameConstants.js"></script>
-    <script is:inline src="/src/js/game/config/GameSettings.js"></script>
+    <script src="../js/game/config/GameConstants.js"></script>
+    <script src="../js/game/config/GameSettings.js"></script>
     
     <!-- Assets & Music -->
-    <script is:inline src="/src/js/game/assets/AssetManager.js"></script>
-    <script is:inline src="/src/js/game/music/MusicalTest.js"></script>
-    <script is:inline src="/src/js/game/music/TestLibrary.js"></script>
+    <script src="../js/game/assets/AssetManager.js"></script>
+    <script src="../js/game/music/MusicalTest.js"></script>
     
     <!-- Entities -->
-    <script is:inline src="/src/js/game/entities/Player.js"></script>
-    <script is:inline src="/src/js/game/entities/Obstacle.js"></script>
+    <script src="../js/game/entities/Player.js"></script>
+    <script src="../js/game/entities/Obstacle.js"></script>
     
     <!-- Systems -->
-    <script is:inline src="/src/js/game/systems/CollisionSystem.js"></script>
-    <script is:inline src="/src/js/game/systems/RenderSystem.js"></script>
+    <script src="../js/game/systems/CollisionSystem.js"></script>
+    <script src="../js/game/systems/RenderSystem.js"></script>
     
     <!-- Managers -->
-    <script is:inline src="/src/js/game/managers/ScoreManager.js"></script>
-    <script is:inline src="/src/js/game/managers/InputManager.js"></script>
+    <script src="../js/game/managers/ScoreManager.js"></script>
+    <script src="../js/game/managers/InputManager.js"></script>
     
     <!-- Core Engine -->
-    <script is:inline src="/src/js/game/core/GameEngine.js"></script>
+    <script src="../js/game/core/GameEngine.js"></script>
     
     <!-- UI Layer -->
-    <script is:inline src="/src/js/game/ui/SettingsUI.js"></script>
-    <script is:inline src="/src/js/game/ui/GameController.js"></script>
+    <script src="../js/game/ui/SettingsUI.js"></script>
+    <script src="../js/game/ui/GameController.js"></script>
 </BaseLayout>

@@ -1,6 +1,6 @@
 // bridges prediction system to game input
 // separated bc input can come from different sources (gestures, keyboard for testing, etc)
-class InputManager {
+export class InputManager {
     constructor(camera) {
         this.camera = camera;
         this.currentPrediction = null;
