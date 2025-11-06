@@ -16,6 +16,7 @@ class Settings:
         "http://127.0.0.1:3000",
         "http://localhost:4321",
         "http://127.0.0.1:4321",
+        "http://localhost:4322",
         "https://flutevision-web-cd91d82764ea.herokuapp.com",
     ] 
     

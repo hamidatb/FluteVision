@@ -3,49 +3,56 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FeatureCard from '../layouts/FeatureCard.astro';
 ---
 
-<BaseLayout>
+<BaseLayout selectedPage="home">
   <div class="container">
     <div class="hero">
-      <h1>Learn Flute with AI</h1>
-      <p class="tagline">Practice smarter, play better</p>
+      <div class="hero-box">
+        <span class="hero-icons">🎵</span>
+        <h1>FLUTE HERO</h1>
+        <span class="hero-icons">🎮</span>
+      </div>
+      <p class="tagline">LEARN FLUTE WITH <span class="tagline-highlight">AI!</span></p>
     </div>
 
     <!-- Feature Cards -->
     <div class="features">
       <FeatureCard
-        cardIcon="📹"
-        cardTitle="Practice Mode"
-        cardParagraphText="Real-time fingering detection with instant feedback. Perfect for learning new notes and building confidence."
-        cardButtonLink="/practice"
-        cardButtonText="Start Practicing"
+        cardTitle="GAME MODE"
+        cardParagraphText="Jump obstacles by playing notes! Beat your high score."
+        cardButtonLink="/game"
+        bgColor="#7B68EE"
+        stickyIcon="🎮"
+        tags={["FUN", "SCORE", "FAST"]}
       />
 
       <FeatureCard
-        cardIcon="🎮"
-        cardTitle="Game Mode"
-        cardParagraphText="Turn practice into play! Jump over obstacles by playing the correct fingerings. Customize settings and choose your musical tests."
-        cardButtonLink="/game"
-        cardButtonText="Play Game"
+        cardTitle="PRACTICE MODE"
+        cardParagraphText="Master each note. Track progress and build skills!"
+        cardButtonLink="/practice"
+        bgColor="#FF69B4"
+        stickyIcon="🎓"
+        tags={["PROGRESS", "ACCURACY", "STREAK"]}
       />
+    </div>
 
-    <!-- Getting Started -->
+    <!-- How It Works -->
     <div class="getting-started">
-      <h2>Getting Started</h2>
+      <h2>HOW IT WORKS</h2>
       <div class="steps">
         <div class="step">
-          <div class="step-number">1</div>
-          <h3>Allow Camera</h3>
-          <p>Grant camera access when prompted so we can see your fingerings.</p>
+          <span class="step-emoji">📸</span>
+          <div class="step-number">1. CAMERA</div>
+          <p>Enable your webcam</p>
         </div>
         <div class="step">
-          <div class="step-number">2</div>
-          <h3>Position Hands</h3>
-          <p>Show your hands clearly to the camera with good lighting.</p>
+          <span class="step-emoji">🎵</span>
+          <div class="step-number">2. PLAY</div>
+          <p>AI detects notes</p>
         </div>
         <div class="step">
-          <div class="step-number">3</div>
-          <h3>Start Playing</h3>
-          <p>Choose practice mode to learn or game mode to have fun!</p>
+          <span class="step-emoji">🌟</span>
+          <div class="step-number">3. FUN!</div>
+          <p>Learn while gaming</p>
         </div>
       </div>
     </div>

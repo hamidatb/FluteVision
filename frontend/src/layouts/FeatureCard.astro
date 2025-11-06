@@ -1,19 +1,27 @@
 ---
 interface Props {
-  cardIcon: string;
   cardTitle: string;
   cardParagraphText: string;
   cardButtonLink: string;
-  cardButtonText: string;
+  bgColor: string;
+  stickyIcon: string;
+  tags: string[];
 }
 
-const {cardIcon, cardTitle, cardParagraphText, cardButtonLink, cardButtonText} = Astro.props; 
+const {cardTitle, cardParagraphText, cardButtonLink, bgColor, stickyIcon, tags} = Astro.props; 
 ---
 
-<div class="features">
-      <div class="feature-card">
-        <div class="feature-icon">{cardIcon}</div>
-        <h3>{cardTitle}</h3>
-        <p>{cardParagraphText}</p>
-        <a href={cardButtonLink} class="btn btn-primary">{cardButtonText}</a>
-      </div>
+<a href={cardButtonLink} class="feature-card-link">
+  <div class="feature-card" style={`background: ${bgColor};`}>
+    <div class="sticky-note">
+      <div class="sticky-icon">{stickyIcon}</div>
+    </div>
+    <h3 class="feature-title">{cardTitle}</h3>
+    <p class="feature-description">{cardParagraphText}</p>
+    <div class="feature-tags">
+      {tags.map(tag => (
+        <span class="feature-tag">{tag}</span>
+      ))}
+    </div>
+  </div>
+</a>

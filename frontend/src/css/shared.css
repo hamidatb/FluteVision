@@ -43,7 +43,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   min-height: 100vh;
-  padding-top: 180px !important;
+  padding-top: 80px;
   background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
   background-attachment: fixed;
 }
@@ -100,7 +100,6 @@ header h1 {
 .pixel-header {
   background: var(--white);
   border-bottom: 4px solid var(--black);
-  box-shadow: 0 4px 0 var(--black);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -128,6 +127,7 @@ header h1 {
   background: linear-gradient(90deg, var(--pink), var(--purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* --- Navbar --- */
@@ -190,19 +190,6 @@ header h1 {
 }
 
 /* --- Drop shadow under header --- */
-body {
-  margin-top: 100px;
-}
-
-.pixel-header::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--black);
-}
 
 /* --- Responsive --- */
 @media (max-width: 800px) {

@@ -4,6 +4,11 @@ import '../css/home.css';
 import '../css/shared.css';
 import Navbar from './Navbar.astro';
 
+interface Props {
+    selectedPage?: string;
+}
+
+const { selectedPage = 'home' } = Astro.props;
 const title = siteConfig.site_name; 
 ---
 <!DOCTYPE html>
@@ -15,12 +20,7 @@ const title = siteConfig.site_name;
 </head>
 
 <body>
-    <header>
-        <h1>FluteVision</h1>
-        <p class="subtitle">AI-powered flute gaming</p>
-
-        <Navbar selectedPage="home"/>
-    </header>
+    <Navbar selectedPage={selectedPage}/>
 
     <main>
         <slot />
