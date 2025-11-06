@@ -1,5 +1,5 @@
 // UI for game settings - separated bc UI concerns shouldn't mix with game logic
-class SettingsUI {
+export class SettingsUI {
     constructor(assetManager, testLibrary) {
         this.assetManager = assetManager;
         this.testLibrary = testLibrary;

@@ -1,6 +1,6 @@
 // immutable game constants - things that define core mechanics and shouldn't change during gameplay
 // separated from settings bc settings are user-configurable but constants are system-level
-class GameConstants {
+export class GameConstants {
     // canvas
     static CANVAS_WIDTH = 800;
     static CANVAS_HEIGHT = 300;

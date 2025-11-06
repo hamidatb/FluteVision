@@ -1,3 +1,7 @@
+import { CameraController } from '../camera';
+import { FluteVisionAPI } from '../api';
+import { CameraToggleUI } from '../navigation';
+
 // practice mode controller - handles real-time detection without game logic
 class PracticeMode {
     constructor() {

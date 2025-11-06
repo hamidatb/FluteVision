@@ -203,7 +203,7 @@ class CameraStream {
 /**
  * CameraController - Coordinate camera lifecycle
  */
-class CameraController {
+export class CameraController {
     constructor(videoElementId = 'video', apiUrl = null) {
         this.stateManager = new CameraStateManager();
         this.stream = new CameraStream(apiUrl);

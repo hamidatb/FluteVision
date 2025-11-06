@@ -2,7 +2,7 @@
  * NavigationController - Handles mobile navigation dropdown
  * Follows Single Responsibility Principle
  */
-class NavigationController {
+export class NavigationController {
     constructor() {
         this.navToggle = null;
         this.navLinks = null;
@@ -61,7 +61,7 @@ class NavigationController {
  * CameraToggleUI - Handles camera toggle button UI
  * Follows Single Responsibility Principle - only manages UI
  */
-class CameraToggleUI {
+export class CameraToggleUI {
     constructor(cameraController) {
         this.cameraController = cameraController;
         this.toggleButton = null;
