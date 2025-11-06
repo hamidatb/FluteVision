@@ -1,4 +1,5 @@
 import { GameConstants } from '../../game/config/GameConstants';
+import { gameSettings } from '../../game/config/GameSettings';
 
 // player entity - separated bc entities should only know about themselves
 // SRP: only handles player state, physics, and rendering itself

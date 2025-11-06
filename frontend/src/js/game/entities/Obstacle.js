@@ -1,4 +1,5 @@
 import { GameConstants } from '../../game/config/GameConstants';
+import { gameSettings } from '../../game/config/GameSettings';
 
 // obstacle entity - knows how to move and draw itself
 export class Obstacle {

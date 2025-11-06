@@ -6,6 +6,7 @@ import { testLibrary } from '../music/MusicalTest';
 import { assetManager } from '../assets/AssetManager';
 import { InputManager } from '../../game/managers/InputManager';
 import { SettingsUI } from '../../game/ui/SettingsUI';
+import { gameSettings } from '../../game/config/GameSettings';
 
 // main orchestrator - ties everything together
 // using facade pattern bc other code shouldn't need to know about all the internal systems
