@@ -1,15 +1,12 @@
 
 from fastapi import APIRouter, File, UploadFile, HTTPException, Request
 from typing import Dict, Any
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 from services import vision_service
+from services.limiter import limiter
+from starlette.responses import JSONResponse
 
 router = APIRouter()
-
-# rate limiter to prevent abuse
-limiter = Limiter(key_func=get_remote_address)
 
 @router.get("/")
 async def root():
@@ -83,7 +80,8 @@ async def predict_gesture_base64(request: Request, data: dict) -> Dict[str, Any]
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])
         
-        return result
+        return JSONResponse(content=result)
+        
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
     

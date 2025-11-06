@@ -184,6 +184,7 @@ class CameraStream {
     }
 
     async sendPredictionRequest(imageData) {
+        // need to add a rate limit to this so that the backend doesnt hate me. the backend has a limit of 60 per second
         const response = await fetch(`${this.apiUrl}/predict/base64`, {
             method: 'POST',
             headers: {
@@ -192,10 +193,12 @@ class CameraStream {
             body: JSON.stringify({ image: imageData })
         });
         
-        if (!response.ok) {
-            throw new Error(`API error: ${response.statusText}`);
+        if (!response.ok) {            
+            let errorText = await response.text();
+            let errorMessage = errorText || response.statusText;
+
+            throw new Error(errorMessage);
         }
-        
         return await response.json();
     }
 }
