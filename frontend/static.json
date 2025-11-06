@@ -1,7 +1,9 @@
 {
-  "root": ".",
+  "root": "dist",
   "clean_urls": false,
   "routes": {
+    "/practice": "/practice/index.html",
+    "/game": "/game/index.html",
     "/**": "index.html"
   },
   "headers": {

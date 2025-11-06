@@ -233,3 +233,8 @@ class PracticeMode {
         statusEl.className = `status-message ${type}`;
     }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    const practice = new PracticeMode();
+    practice.initialize();
+});

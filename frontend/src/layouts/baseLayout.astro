@@ -1,0 +1,35 @@
+---
+import siteConfig from '../frontend_config.js'; 
+import '../css/home.css';
+import '../css/shared.css';
+
+const title = siteConfig.site_name; 
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title ? `${title} | FluteVision` : "FluteVision - AI-Powered Flute Training"}</title>
+</head>
+
+<body>
+    <header>
+        <h1>FluteVision</h1>
+        <p class="subtitle">AI-powered flute gaming</p>
+
+        <button id="navToggle" class="nav-toggle">Menu</button>
+        <div class="nav-links">
+            <a href="/" class="active">Home</a>
+            <a href="/practice">Practice</a>
+            <a href="/game">Game</a>
+        </div>
+    </header>
+
+    <main>
+        <slot />
+    </main>
+    <script src="/src/js/navigation.js"></script>
+</body>
+</html>
+

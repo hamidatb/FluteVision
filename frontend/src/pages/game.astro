@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Mode - FluteVision</title>
-    <link rel="stylesheet" href="src/css/shared.css">
-    <link rel="stylesheet" href="src/css/game.css">
-</head>
-<body>
-    <header>
+---
+import BaseLayout from '../layouts/baseLayout.astro';
+import CameraToggleButton from '../components/CameraToggleButton.astro';
+import CameraFeed from '../components/CameraFeed.astro';
+
+import '../css/game.css';
+---
+
+<BaseLayout>
+<header>
         <h1>🎵 FluteVision</h1>
         <p class="subtitle">Game Mode</p>
         <button id="navToggle" class="nav-toggle">Menu</button>
@@ -19,16 +18,13 @@
         </div>
     </header>
     
-    <!-- Floating camera toggle button -->
-    <button id="cameraToggleBtn" class="camera-toggle-btn" title="Toggle Camera">
-        <span class="camera-status-icon">📹</span>
-    </button>
+    <CameraToggleButton />
     
     <div id="game-container">
         <div class="game-wrapper">
             <!-- Camera feed -->
             <div class="camera-panel">
-                <video id="video" autoplay playsinline></video>
+                <CameraFeed videoId="video" />
                 <div class="prediction-display">
                     <div class="current-gesture" id="currentGesture">-</div>
                     <div class="confidence-bar">
@@ -81,46 +77,37 @@
     </div>
     
     <!-- Reuse existing camera/API infrastructure -->
-    <script src="src/js/api.js"></script>
-    <script src="src/js/camera.js"></script>
-    <script src="src/js/navigation.js"></script>
+    <script is:inline src="/src/js/api.js"></script>
+    <script is:inline src="/src/js/camera.js"></script>
+    <script is:inline src="/src/js/navigation.js"></script>
     
     <!-- Load in dependency order (bc modules depend on each other) -->
     
     <!-- Config layer -->
-    <script src="src/js/game/config/GameConstants.js"></script>
-    <script src="src/js/game/config/GameSettings.js"></script>
+    <script is:inline src="/src/js/game/config/GameConstants.js"></script>
+    <script is:inline src="/src/js/game/config/GameSettings.js"></script>
     
     <!-- Assets & Music -->
-    <script src="src/js/game/assets/AssetManager.js"></script>
-    <script src="src/js/game/music/MusicalTest.js"></script>
-    <script src="src/js/game/music/TestLibrary.js"></script>
+    <script is:inline src="/src/js/game/assets/AssetManager.js"></script>
+    <script is:inline src="/src/js/game/music/MusicalTest.js"></script>
+    <script is:inline src="/src/js/game/music/TestLibrary.js"></script>
     
     <!-- Entities -->
-    <script src="src/js/game/entities/Player.js"></script>
-    <script src="src/js/game/entities/Obstacle.js"></script>
+    <script is:inline src="/src/js/game/entities/Player.js"></script>
+    <script is:inline src="/src/js/game/entities/Obstacle.js"></script>
     
     <!-- Systems -->
-    <script src="src/js/game/systems/CollisionSystem.js"></script>
-    <script src="src/js/game/systems/RenderSystem.js"></script>
+    <script is:inline src="/src/js/game/systems/CollisionSystem.js"></script>
+    <script is:inline src="/src/js/game/systems/RenderSystem.js"></script>
     
     <!-- Managers -->
-    <script src="src/js/game/managers/ScoreManager.js"></script>
-    <script src="src/js/game/managers/InputManager.js"></script>
+    <script is:inline src="/src/js/game/managers/ScoreManager.js"></script>
+    <script is:inline src="/src/js/game/managers/InputManager.js"></script>
     
     <!-- Core Engine -->
-    <script src="src/js/game/core/GameEngine.js"></script>
+    <script is:inline src="/src/js/game/core/GameEngine.js"></script>
     
     <!-- UI Layer -->
-    <script src="src/js/game/ui/SettingsUI.js"></script>
-    <script src="src/js/game/ui/GameController.js"></script>
-    
-    <script>
-        // initialize when page loads
-        window.addEventListener('DOMContentLoaded', () => {
-            const controller = new GameController();
-            controller.initialize();
-        });
-    </script>
-</body>
-</html>
+    <script is:inline src="/src/js/game/ui/SettingsUI.js"></script>
+    <script is:inline src="/src/js/game/ui/GameController.js"></script>
+</BaseLayout>

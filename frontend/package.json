@@ -1,0 +1,19 @@
+{
+  "name": "astro-frontend",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "heroku-postbuild": "npm run build"
+  },
+  "dependencies": {
+    "astro": "^5.15.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
