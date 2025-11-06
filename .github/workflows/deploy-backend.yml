@@ -12,7 +12,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # no environment key here so backend deployments don't show publicly
+    environment:
+      name: production-backend   
     
     steps:
       - name: Checkout code

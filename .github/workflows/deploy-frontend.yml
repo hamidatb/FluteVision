@@ -7,37 +7,37 @@ on:
     paths:
       - 'frontend/**'
       - '.github/workflows/deploy-frontend.yml'
-  workflow_dispatch: # allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: production-frontend   
+
     env:
-      name: production-frontend
-      url: ${{ secrets.HEROKU_FRONTEND_URL }}
-    
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_APP_NAME: ${{ secrets.HEROKU_FRONTEND_APP_NAME }}
+      FRONTEND_URL: ${{ secrets.HEROKU_FRONTEND_URL }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # need full history for subtree
-      
+          fetch-depth: 0
+
       - name: Deploy frontend to Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_FRONTEND_APP_NAME }}
         run: |
-          # configure git for heroku
+          # configure git for Heroku
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
-          
-          # add heroku remote
+
+          # add Heroku remote
           git remote add heroku-frontend https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git || true
-          
-          # push frontend subtree to heroku
+
+          # push frontend subtree to Heroku
           git push heroku-frontend `git subtree split --prefix frontend main`:refs/heads/main --force
-      
+
       - name: Check deployment status
         run: |
-          echo "✅ Frontend deployed successfully to https://flutevision-web-cd91d82764ea.herokuapp.com"
-
+          echo "✅ Frontend deployed successfully to $FRONTEND_URL"
