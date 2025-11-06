@@ -1,3 +1,5 @@
+import { gameSettings } from '../../game/config/GameSettings';
+
 // bridges prediction system to game input
 // separated bc input can come from different sources (gestures, keyboard for testing, etc)
 export class InputManager {

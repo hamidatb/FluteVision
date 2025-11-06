@@ -21,20 +21,6 @@ export class FluteVisionAPI {
         }
     }
 
-    async predictFromImage(imageData) {
-        const response = await fetch(`${this.baseUrl}/predict/base64`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: imageData })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`API error: ${response.statusText}`);
-        }
-        
-        return await response.json();
-    }
-
     async getAvailableGestures() {
         try {
             const response = await fetch(`${this.baseUrl}/fingerings`);
