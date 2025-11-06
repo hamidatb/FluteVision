@@ -1,0 +1,19 @@
+---
+interface Props {
+  cardIcon: string;
+  cardTitle: string;
+  cardParagraphText: string;
+  cardButtonLink: string;
+  cardButtonText: string;
+}
+
+const {cardIcon, cardTitle, cardParagraphText, cardButtonLink, cardButtonText} = Astro.props; 
+---
+
+<div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">{cardIcon}</div>
+        <h3>{cardTitle}</h3>
+        <p>{cardParagraphText}</p>
+        <a href={cardButtonLink} class="btn btn-primary">{cardButtonText}</a>
+      </div>
