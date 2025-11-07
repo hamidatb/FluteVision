@@ -4,15 +4,38 @@ import FeatureCard from '../layouts/FeatureCard.astro';
 ---
 
 <BaseLayout selectedPage="home">
-  <div class="container">
-    <div class="hero">
+  <section class="container">
+    <section class="hero">
       <div class="hero-box">
         <span class="hero-icons">🎵</span>
         <h1>FLUTE HERO</h1>
         <span class="hero-icons">🎮</span>
       </div>
-      <p class="tagline">LEARN FLUTE WITH <span class="tagline-highlight">AI!</span></p>
-    </div>
+      <p class="tagline">Learn Flute fingerings with <span class="tagline-highlight">AI!</span></p>
+    </section> <!-- end: Hero -->
+
+    <!-- How It Works -->
+    <section class="getting-started">
+      <h2>HOW IT WORKS</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-emoji">📸</span>
+          <div class="step-number">1. CAMERA</div>
+          <p>Enable your webcam</p>
+        </div>
+        <div class="step">
+          <span class="step-emoji">🎵</span>
+          <div class="step-number">2. PLAY</div>
+          <p>Computer vision maps your fingerings to notes</p>
+        </div>
+        <div class="step">
+          <span class="step-emoji">🌟</span>
+          <div class="step-number">3. FUN!</div>
+          <p>Learn while gaming</p>
+        </div>
+      </div>
+      </section>
+    
 
     <!-- Feature Cards -->
     <div class="features">
@@ -34,27 +57,13 @@ import FeatureCard from '../layouts/FeatureCard.astro';
         tags={["PROGRESS", "ACCURACY", "STREAK"]}
       />
     </div>
-
-    <!-- How It Works -->
-    <div class="getting-started">
-      <h2>HOW IT WORKS</h2>
-      <div class="steps">
-        <div class="step">
-          <span class="step-emoji">📸</span>
-          <div class="step-number">1. CAMERA</div>
-          <p>Enable your webcam</p>
-        </div>
-        <div class="step">
-          <span class="step-emoji">🎵</span>
-          <div class="step-number">2. PLAY</div>
-          <p>AI detects notes</p>
-        </div>
-        <div class="step">
-          <span class="step-emoji">🌟</span>
-          <div class="step-number">3. FUN!</div>
-          <p>Learn while gaming</p>
-        </div>
-      </div>
-    </div>
-  </div>
+    <section id="home-more-info" class="getting-started">
+      <h2>A Bit More Curious?</h2>
+      <ul class="more-info-list">
+        <li><a href="/about">About FluteVision</a></li>
+      </ul>
+      <p> This has a detailed overview of why I made this, the Machine Learning of it all, and features I'm thinking about adding in the future. </p>
+      <p id="signoff"> Best, Hamidat!</p>
+    </section>
+  </section> <!-- end of the whole container -->
 </BaseLayout>
