@@ -152,6 +152,7 @@ main {
 
 /* --- Buttons --- */
 .nav-btn {
+  font-family: 'Press Start 2P', cursive;
   display: inline-flex;
   align-items: center;
   justify-content: center;
