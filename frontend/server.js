@@ -11,7 +11,15 @@ const PORT = process.env.PORT || 3000;
 
 // Security headers (apply to all responses)
 app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://flutevision-api-2aeac29f3245.herokuapp.com http://localhost:8000; media-src 'self' blob:;");
+  res.setHeader('Content-Security-Policy', `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: blob:;
+    connect-src 'self' https://flutevision-api-2aeac29f3245.herokuapp.com http://localhost:8000;
+    media-src 'self' blob:;
+  `.replace(/\s{2,}/g, ' ').trim());
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
