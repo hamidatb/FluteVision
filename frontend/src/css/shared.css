@@ -185,6 +185,16 @@ main {
   font-size: 0.7rem;
 }
 
+/* --- Camera Toggle & Settings Button States --- */
+.nav-btn.camera-toggle.camera-off {
+  background: #ff4470;
+  color: var(--white);
+}
+
+.nav-btn.settings-btn-nav {
+  cursor: pointer;
+}
+
 /* --- Divider between sections --- */
 .nav-list li:nth-child(3)::after {
   content: '';

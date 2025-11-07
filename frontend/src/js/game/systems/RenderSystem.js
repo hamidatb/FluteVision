@@ -35,9 +35,14 @@ export class RenderSystem {
         this.ctx.stroke();
     }
     
-    render(player, obstacles) {
+    render(player, obstacles, isInvulnerable = false) {
         this.clear();
-        player.render(this.ctx);
+        
+        // flash player when invulnerable (alternating visibility)
+        if (!isInvulnerable || Math.floor(Date.now() / 150) % 2 === 0) {
+            player.render(this.ctx);
+        }
+        
         obstacles.forEach(obstacle => obstacle.render(this.ctx));
     }
 }

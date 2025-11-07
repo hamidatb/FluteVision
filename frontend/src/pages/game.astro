@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CameraToggleButton from '../components/CameraToggleButton.astro';
 import CameraFeed from '../components/CameraFeed.astro';
 
 import '../css/game.css';
@@ -8,54 +7,64 @@ import '../css/game.css';
 
 <BaseLayout selectedPage="game">
     
-    <CameraToggleButton />
-    
     <div id="game-container">
-        <div class="game-wrapper">
-            <!-- Camera feed -->
-            <div class="camera-panel">
-                <CameraFeed videoId="video" />
-                <div class="prediction-display">
-                    <div class="current-gesture" id="currentGesture">-</div>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill" id="confidenceFill"></div>
-                    </div>
+        <!-- Game Header Bar -->
+        <div class="game-header">
+            <div class="header-left">
+                <button class="pause-btn" id="pauseBtn">
+                    <span class="pause-icon">⏸</span> PAUSE
+                </button>
+                <button class="stop-btn" id="stopBtn">
+                    <span class="stop-icon">⏹</span> STOP
+                </button>
+            </div>
+            
+            <div class="score-lives-container">
+                <div class="hearts-container" id="heartsContainer">
+                    <div class="heart filled">❤️</div>
+                    <div class="heart filled">❤️</div>
+                    <div class="heart filled">❤️</div>
                 </div>
+                <div class="score-container">
+                    <div class="score-label">SCORE</div>
+                    <div class="score-value" id="headerScore">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Main Area -->
+        <div class="game-main">
+            <!-- Camera feed overlay (small, inside game) -->
+            <div class="camera-overlay">
+                <div class="rec-indicator">REC</div>
+                <CameraFeed videoId="video" />
+                <div class="current-note" id="currentGesture">-</div>
+            </div>
+            
+            <!-- Now Playing indicator -->
+            <div class="now-playing">
+                <div class="now-label">NOW:</div>
+                <div class="now-note" id="targetGesture">-</div>
             </div>
             
             <!-- Game canvas -->
-            <div class="game-panel">
-                <canvas id="gameCanvas"></canvas>
-                
-                <!-- Game UI overlay -->
-                <div class="game-ui">
-                    <div class="target-gesture">
-                        <span class="label">Play:</span>
-                        <span class="gesture" id="targetGesture">-</span>
-                    </div>
-                    <div class="score-display">
-                        <span class="label">Score:</span>
-                        <span class="score" id="score">0</span>
-                        <span class="combo" id="combo"></span>
-                    </div>
-                    <div class="high-score">
-                        <span class="label">Best:</span>
-                        <span class="score" id="highScore">0</span>
-                    </div>
-                </div>
-                
-                <!-- Game over screen -->
-                <div id="gameOverScreen" class="game-over hidden">
+            <canvas id="gameCanvas"></canvas>
+            
+            <!-- Game over screen -->
+            <div id="gameOverBackdrop" class="modal-backdrop hidden">
+                <div id="gameOverScreen" class="game-over">
                     <h2>Game Over!</h2>
                     <p class="final-score">Score: <span id="finalScore">0</span></p>
                     <p class="final-combo">Max Combo: <span id="finalCombo">0</span></p>
                     <button id="restartBtn" class="game-btn">Play Again</button>
                 </div>
-                
-                <!-- Start screen -->
+            </div>
+            
+            <!-- Start screen -->
+            <div id="startScreenBackdrop" class="modal-backdrop">
                 <div id="startScreen" class="start-screen">
                     <h2>Ready to Play?</h2>
-                    <p>watch the target gesture and play it to make your character jump!</p>
+                    <p>Watch the NOW display and play the note to make your character jump!</p>
                     <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
                         <strong>Testing:</strong> Press <kbd style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc;">Space</kbd> to jump
                     </p>

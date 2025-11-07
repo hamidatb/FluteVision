@@ -25,10 +25,15 @@ const { selectedPage } = Astro.props;
         </a>
       </li>
       <li>
-        <a href="/cat" class="nav-btn">🐱</a>
+        <button id="cameraToggleBtn" class="nav-btn camera-toggle" title="Toggle Camera">
+          📹
+        </button>
       </li>
       <li>
-        <a href="/palette" class="nav-btn">🎨</a>
+        <button id="settingsBtn" class="nav-btn settings-btn-nav" title="Settings">
+          ⚙️
+        </button>
+      </li>
     </ul>
   </nav>
 </header>

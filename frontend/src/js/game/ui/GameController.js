@@ -50,15 +50,6 @@ class GameController {
             return;
         }
         
-        // initialize camera
-        this._updateStatus('Initializing camera...');
-        const cameraReady = await this.cameraController.initialize();
-        
-        if (!cameraReady) {
-            this._showError('Could not access camera. Check permissions.');
-            return;
-        }
-        
         // set up camera state observer
         this.cameraController.onStateChange((state, isEnabled) => {
             this._handleCameraStateChange(state, isEnabled);
@@ -75,6 +66,8 @@ class GameController {
             this._updateScore(score, high, combo);
         this.gameEngine.onNoteChange = (gesture, time) =>
             this._handleNoteChange(gesture, time);
+        this.gameEngine.onLivesUpdate = (lives, maxLives) =>
+            this._updateLives(lives, maxLives);
         
         // create input manager - pass the camera stream (backward compatible)
         this.inputManager = new InputManager(this.cameraController.stream);
@@ -93,7 +86,7 @@ class GameController {
         // set up UI event listeners
         this._setupEventListeners();
         
-        this._updateStatus('Ready to play!');
+        this._updateStatus('Turn on camera (📹 in navbar) to start!');
         document.getElementById('startBtn').disabled = false;
     }
     
@@ -141,22 +134,71 @@ class GameController {
             this._restartGame();
         });
         
-        // settings button - create it and add click handler
-        const settingsBtn = document.createElement('button');
-        settingsBtn.id = 'settingsBtn';
-        settingsBtn.textContent = '⚙️ Settings';
-        settingsBtn.className = 'game-btn settings-btn';
-        settingsBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Settings button clicked');
-            this.settingsUI.toggle();
-        });
-        
-        // add to header if it exists
-        const header = document.querySelector('header');
-        if (header) {
-            header.appendChild(settingsBtn);
+        // pause button
+        const pauseBtn = document.getElementById('pauseBtn');
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', () => {
+                this._togglePause();
+            });
         }
+        
+        // stop button
+        const stopBtn = document.getElementById('stopBtn');
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                this._stopGame();
+            });
+        }
+        
+        // settings button (now in navbar) - just hook up the click handler
+        const settingsBtn = document.getElementById('settingsBtn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Settings button clicked');
+                this.settingsUI.toggle();
+            });
+        }
+    }
+    
+    _togglePause() {
+        if (!this.gameEngine) return;
+        
+        const pauseBtn = document.getElementById('pauseBtn');
+        
+        if (this.gameEngine.isPaused) {
+            // Currently paused, so resume
+            this.gameEngine.resume();
+            if (this.cameraController.isEnabled()) {
+                this.inputManager.startMonitoring((prediction) => {
+                    this._updatePredictionDisplay(prediction);
+                });
+            }
+            pauseBtn.innerHTML = '<span class="pause-icon">⏸</span> PAUSE';
+        } else if (this.gameEngine.isRunning) {
+            // Currently running, so pause
+            this._pauseGame();
+            pauseBtn.innerHTML = '<span class="pause-icon">▶</span> RESUME';
+        }
+    }
+    
+    _stopGame() {
+        if (!this.gameEngine) return;
+        
+        // Stop everything
+        this._pauseGame();
+        this.gameEngine.stop();
+        this.gameEngine.reset();
+        
+        // Show start screen again
+        document.getElementById('startScreenBackdrop').classList.remove('hidden');
+        
+        // Reset pause button
+        const pauseBtn = document.getElementById('pauseBtn');
+        pauseBtn.innerHTML = '<span class="pause-icon">⏸</span> PAUSE';
+        
+        // Reset UI
+        this._updateStatus('Turn on camera (📹 in navbar) to start!');
     }
     
     _startGame() {
@@ -166,7 +208,7 @@ class GameController {
             return;
         }
         
-        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('startScreenBackdrop').classList.add('hidden');
         this._startGameplay();
     }
     
@@ -176,6 +218,9 @@ class GameController {
             this._updateStatus('Camera must be on to play!');
             return;
         }
+        
+        // initialize hearts display
+        this._updateLives(this.gameEngine.lives, this.gameEngine.maxLives);
         
         // extracted common gameplay start logic bc it's used by both start and restart
         // check if using musical test mode
@@ -218,7 +263,7 @@ class GameController {
     }
     
     _restartGame() {
-        document.getElementById('gameOverScreen').classList.add('hidden');
+        document.getElementById('gameOverBackdrop').classList.add('hidden');
         
         // reset game state
         this.gameEngine.reset();
@@ -240,7 +285,7 @@ class GameController {
         // show game over screen
         document.getElementById('finalScore').textContent = finalScore;
         document.getElementById('finalCombo').textContent = maxCombo;
-        document.getElementById('gameOverScreen').classList.remove('hidden');
+        document.getElementById('gameOverBackdrop').classList.remove('hidden');
     }
     
     _handleNoteChange(gesture, time) {
@@ -265,18 +310,16 @@ class GameController {
     
     _updatePredictionDisplay(prediction) {
         const gestureEl = document.getElementById('currentGesture');
-        const fillEl = document.getElementById('confidenceFill');
         
         if (prediction.success) {
             gestureEl.textContent = prediction.gesture;
-            fillEl.style.width = `${prediction.confidence * 100}%`;
             
             // green if matches target
             const isCorrect = prediction.gesture === this.currentTargetGesture;
-            gestureEl.style.color = isCorrect ? GameConstants.COLOR_SUCCESS : '#666';
+            gestureEl.style.color = isCorrect ? '#00ff00' : '#ffffff';
         } else {
             gestureEl.textContent = '-';
-            fillEl.style.width = '0%';
+            gestureEl.style.color = '#ffffff';
         }
     }
     
@@ -285,9 +328,31 @@ class GameController {
     }
     
     _updateScore(score, highScore, combo) {
-        document.getElementById('score').textContent = score;
-        document.getElementById('highScore').textContent = highScore;
-        document.getElementById('combo').textContent = combo > 1 ? `x${combo}` : '';
+        document.getElementById('headerScore').textContent = score;
+    }
+    
+    _updateLives(lives, maxLives) {
+        const heartsContainer = document.getElementById('heartsContainer');
+        if (!heartsContainer) return;
+        
+        // clear existing hearts
+        heartsContainer.innerHTML = '';
+        
+        // create hearts based on max lives
+        for (let i = 0; i < maxLives; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            if (i < lives) {
+                heart.classList.add('filled');
+                heart.textContent = '❤️';
+            } else {
+                heart.classList.add('empty');
+                heart.textContent = '❤️';
+            }
+            
+            heartsContainer.appendChild(heart);
+        }
     }
     
     _flashSuccess() {
