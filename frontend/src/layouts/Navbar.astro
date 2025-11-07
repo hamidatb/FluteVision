@@ -1,0 +1,36 @@
+---
+const { selectedPage } = Astro.props;
+---
+
+<header class="pixel-header">
+  <div class="logo pixel-text">
+    🎵 <span>FLUTE HERO</span>
+  </div>
+
+  <nav class="navbar">
+    <ul class="nav-list">
+      <li>
+        <a href="/" class={`nav-btn ${selectedPage === 'home' ? 'active' : ''}`}>
+          <span class="icon">🏠</span> HOME
+        </a>
+      </li>
+      <li>
+        <a href="/game" class={`nav-btn ${selectedPage === 'game' ? 'active' : ''}`}>
+          <span class="icon">🎮</span> GAME
+        </a>
+      </li>
+      <li>
+        <a href="/practice" class={`nav-btn ${selectedPage === 'practice' ? 'active' : ''}`}>
+          <span class="icon">🎓</span> PRACTICE
+        </a>
+      </li>
+      <li>
+        <button id="cameraToggleBtn" class="nav-btn camera-toggle" title="Toggle Camera">
+          📹
+        </button>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+

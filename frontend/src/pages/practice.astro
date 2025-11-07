@@ -1,66 +1,82 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CameraToggleButton from '../components/CameraToggleButton.astro';
 import CameraFeed from '../components/CameraFeed.astro';
 
 import '../css/practice.css';
 ---
 
-<BaseLayout>
-    <CameraToggleButton />
-    
-    <div class="container">
-        <div class="practice-container">
-            <!-- Camera Section -->
-            <div class="camera-section">
-                <CameraFeed videoId="practiceVideo" />
-                <div class="controls">
-                    <button id="startBtn" class="btn btn-primary" disabled>Start Practice</button>
-                    <button id="stopBtn" class="btn btn-secondary" disabled>Stop</button>
-                </div>
-                <div id="statusMessage" class="status-message info">
-                    Initializing...
-                </div>
+<BaseLayout selectedPage="practice">
+    <div id="practice-container">
+        <!-- Practice Header Bar -->
+        <div class="practice-header">
+            <div class="header-left">
+                <button id="startBtn" class="practice-btn start-btn" disabled>
+                    <span class="btn-icon">▶</span> START
+                </button>
+                <button id="stopBtn" class="practice-btn stop-btn" disabled>
+                    <span class="btn-icon">⏹</span> STOP
+                </button>
             </div>
             
-            <!-- Info Panel -->
-            <div class="info-panel">
-                <!-- Current Detection -->
-                <div class="info-card">
-                    <h3>Current Fingering</h3>
-                    <div class="current-gesture" id="currentGesture">-</div>
-                    <div class="confidence-display">
-                        <div class="confidence-bar">
-                            <div class="confidence-fill" id="confidenceFill">0%</div>
+            <div class="header-center">
+                <div class="practice-title">PRACTICE MODE</div>
+            </div>
+            
+            <div class="header-right">
+                <div class="timer-display" id="timer">00:00</div>
+            </div>
+        </div>
+        
+        <!-- Practice Main Area -->
+        <div class="practice-main">
+            <div class="practice-grid">
+                <!-- Camera Section -->
+                <div class="camera-section">
+                    <div class="section-header">
+                        <span class="section-icon">📹</span>
+                        <h3>CAMERA</h3>
+                    </div>
+                    <CameraFeed videoId="practiceVideo" />
+                    <div id="statusMessage" class="status-message info">
+                        Initializing...
+                    </div>
+                </div>
+            
+                <!-- Info Panel -->
+                <div class="info-panel">
+                    <!-- Current Detection -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <span class="section-icon">🎵</span>
+                            <h3>CURRENT NOTE</h3>
+                        </div>
+                        <div class="current-gesture" id="currentGesture">-</div>
+                        <div class="confidence-display">
+                            <div class="confidence-label">CONFIDENCE</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill">0%</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Target Practice -->
-                <div class="info-card">
-                    <h3>Target Practice</h3>
-                    <div class="target-section">
-                        <div class="target-label">Practice this note:</div>
-                        <div class="target-gesture" id="targetGesture">-</div>
-                        <select id="targetSelector" class="target-selector">
-                            <option value="">All Notes (Free Practice)</option>
-                        </select>
-                        <button id="randomTargetBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">
-                            Random Note
-                        </button>
+                    
+                    <!-- Target Practice -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <span class="section-icon">🎯</span>
+                            <h3>TARGET</h3>
+                        </div>
+                        <div class="target-section">
+                            <div class="target-label">PRACTICE:</div>
+                            <div class="target-gesture" id="targetGesture">-</div>
+                            <select id="targetSelector" class="target-selector">
+                                <option value="">ALL NOTES</option>
+                            </select>
+                            
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Practice Timer -->
-                <div class="info-card">
-                    <h3>Practice Time</h3>
-                    <div class="timer" id="timer">00:00</div>
-                </div>
-                
-                <!-- All Probabilities -->
-                <div class="info-card">
-                    <h3>All Detections</h3>
-                    <div id="allProbabilities"></div>
+                    
+                    
+                    </div>
                 </div>
             </div>
         </div>

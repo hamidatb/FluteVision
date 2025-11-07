@@ -2,7 +2,13 @@
 import siteConfig from '../frontend_config.js'; 
 import '../css/home.css';
 import '../css/shared.css';
+import Navbar from './Navbar.astro';
 
+interface Props {
+    selectedPage?: string;
+}
+
+const { selectedPage = 'home' } = Astro.props;
 const title = siteConfig.site_name; 
 ---
 <!DOCTYPE html>
@@ -14,17 +20,27 @@ const title = siteConfig.site_name;
 </head>
 
 <body>
-    <header>
-        <h1>FluteVision</h1>
-        <p class="subtitle">AI-powered flute gaming</p>
+    <div class="floating-emoji">🎶</div>
+    <div class="floating-emoji">🎼</div>
+    <div class="floating-emoji">🎵</div>   
+    <div class="floating-emoji">🎶</div>   
+    <div class="floating-emoji">🎼</div>  
+    <div class="floating-emoji">🎤</div>   
+    <div class="floating-emoji">🎷</div>   
+    <div class="floating-emoji">🎶</div>
+    <div class="floating-emoji">🎵</div>
+    <div class="floating-emoji">🎼</div>
+    <div class="floating-emoji">🎷</div>
+    <div class="floating-emoji">🎻</div>   
+    <div class="floating-emoji">🎶</div>
+    <div class="floating-emoji">🎵</div>
+    <div class="floating-emoji">🎼</div>
+    <div class="floating-emoji">🎷</div>
+    <div class="floating-emoji">💨</div>   <!-- breath / air flow -->
+    <div class="floating-emoji">🌟</div>   <!-- sparkle effect for performance shine -->
 
-        <button id="navToggle" class="nav-toggle">Menu</button>
-        <div class="nav-links">
-            <a href="/" class="active">Home</a>
-            <a href="/practice">Practice</a>
-            <a href="/game">Game</a>
-        </div>
-    </header>
+    
+    <Navbar selectedPage={selectedPage}/>
 
     <main>
         <slot />

@@ -69,6 +69,13 @@ class CameraStream {
         this.lastRequestTime = 0;
         this.minRequestInterval = 100; // throttle to 10 FPS bc sending every frame would overwhelm the backend and cause lag. Backend has rate limit of (600/minute)
         this.pendingRequest = false;
+        this.predictionEndpoint = 'predict/base64'; // default to flute mode
+    }
+    
+    setPredictionMode(mode) {
+        // Set the API endpoint based on vision mode
+        // 'flute' mode uses standard prediction, 'hand' mode uses hand gesture prediction
+        this.predictionEndpoint = mode === 'hand' ? 'predict/hand' : 'predict/base64';
     }
 
     async initialize(videoElementId = 'video') {
@@ -184,7 +191,7 @@ class CameraStream {
     }
 
     async sendPredictionRequest(imageData) {
-        const response = await fetch(`${this.apiUrl}/predict/base64`, {
+        const response = await fetch(`${this.apiUrl}/${this.predictionEndpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

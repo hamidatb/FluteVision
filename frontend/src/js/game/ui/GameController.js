@@ -5,9 +5,9 @@ import { GameEngine } from '../../game/core/GameEngine';
 import { testLibrary } from '../music/MusicalTest';
 import { assetManager } from '../assets/AssetManager';
 import { InputManager } from '../../game/managers/InputManager';
-import { SettingsUI } from '../../game/ui/SettingsUI';
 import { gameSettings } from '../../game/config/GameSettings';
 import { GameConstants } from '../../game/config/GameConstants';
+import { THEMES, CHARACTERS } from '../../game/config/ThemeConfig';
 
 // main orchestrator - ties everything together
 // using facade pattern bc other code shouldn't need to know about all the internal systems
@@ -22,7 +22,6 @@ class GameController {
         // core systems
         this.gameEngine = null;
         this.inputManager = null;
-        this.settingsUI = null;
         this.cameraToggleUI = null;
         
         // state
@@ -50,15 +49,6 @@ class GameController {
             return;
         }
         
-        // initialize camera
-        this._updateStatus('Initializing camera...');
-        const cameraReady = await this.cameraController.initialize();
-        
-        if (!cameraReady) {
-            this._showError('Could not access camera. Check permissions.');
-            return;
-        }
-        
         // set up camera state observer
         this.cameraController.onStateChange((state, isEnabled) => {
             this._handleCameraStateChange(state, isEnabled);
@@ -75,6 +65,8 @@ class GameController {
             this._updateScore(score, high, combo);
         this.gameEngine.onNoteChange = (gesture, time) =>
             this._handleNoteChange(gesture, time);
+        this.gameEngine.onLivesUpdate = (lives, maxLives) =>
+            this._updateLives(lives, maxLives);
         
         // create input manager - pass the camera stream (backward compatible)
         this.inputManager = new InputManager(this.cameraController.stream);
@@ -83,9 +75,6 @@ class GameController {
             this._flashSuccess();
         };
         
-        // create settings UI
-        this.settingsUI = new SettingsUI(this.assetManager, this.testLibrary);
-        
         // initialize camera toggle UI
         this.cameraToggleUI = new CameraToggleUI(this.cameraController);
         this.cameraToggleUI.initialize('cameraToggleBtn');
@@ -93,8 +82,14 @@ class GameController {
         // set up UI event listeners
         this._setupEventListeners();
         
-        this._updateStatus('Ready to play!');
+        this._updateStatus('Turn on camera (📹 in navbar) to start!');
         document.getElementById('startBtn').disabled = false;
+        
+        // Initialize lives display
+        this._updateLives(this.gameEngine.lives, this.gameEngine.maxLives);
+        
+        // Load and apply game settings (theme, character, vision mode)
+        this._loadGameSettings();
     }
     
     _handleCameraStateChange(state, isEnabled) {
@@ -141,22 +136,215 @@ class GameController {
             this._restartGame();
         });
         
-        // settings button - create it and add click handler
-        const settingsBtn = document.createElement('button');
-        settingsBtn.id = 'settingsBtn';
-        settingsBtn.textContent = '⚙️ Settings';
-        settingsBtn.className = 'game-btn settings-btn';
-        settingsBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Settings button clicked');
-            this.settingsUI.toggle();
+        // pause button
+        const pauseBtn = document.getElementById('pauseBtn');
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', () => {
+                this._togglePause();
+            });
+        }
+        
+        // stop button
+        const stopBtn = document.getElementById('stopBtn');
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                this._stopGame();
+            });
+        }
+        
+        // game settings button in header
+        const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+        if (gameSettingsBtn) {
+            gameSettingsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Game settings button clicked');
+                this._openGameSettings();
+            });
+        }
+        
+        // game settings modal backdrop click (close when clicking outside)
+        const gameSettingsModal = document.getElementById('gameSettingsModal');
+        if (gameSettingsModal) {
+            gameSettingsModal.addEventListener('click', (e) => {
+                if (e.target === gameSettingsModal) {
+                    this._closeGameSettings();
+                }
+            });
+        }
+        
+        // vision mode selection
+        document.querySelectorAll('[data-vision]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-vision]').forEach(b => b.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+            });
         });
         
-        // add to header if it exists
-        const header = document.querySelector('header');
-        if (header) {
-            header.appendChild(settingsBtn);
+        // character selection
+        document.querySelectorAll('[data-character]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-character]').forEach(b => b.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+            });
+        });
+        
+        // theme selection
+        document.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+            });
+        });
+        
+        // save and cancel buttons in settings modal
+        const saveGameSettings = document.getElementById('saveGameSettings');
+        if (saveGameSettings) {
+            saveGameSettings.addEventListener('click', () => {
+                this._saveGameSettings();
+            });
         }
+        
+        const closeGameSettings = document.getElementById('closeGameSettings');
+        if (closeGameSettings) {
+            closeGameSettings.addEventListener('click', () => {
+                this._closeGameSettings();
+            });
+        }
+    }
+    
+    _openGameSettings() {
+        document.getElementById('gameSettingsModal').classList.remove('hidden');
+    }
+    
+    _closeGameSettings() {
+        document.getElementById('gameSettingsModal').classList.add('hidden');
+    }
+    
+    _loadGameSettings() {
+        // Load saved settings and update UI
+        const visionMode = gameSettings.get('visionMode');
+        const character = gameSettings.get('character');
+        const theme = gameSettings.get('theme');
+        
+        // Update selected states in UI
+        document.querySelectorAll('[data-vision]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.vision === visionMode);
+        });
+        
+        document.querySelectorAll('[data-character]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.character === character);
+        });
+        
+        document.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.theme === theme);
+        });
+        
+        // Apply settings to game
+        this._applyGameSettings();
+    }
+    
+    _saveGameSettings() {
+        // Get selected values from UI
+        const visionMode = document.querySelector('[data-vision].selected')?.dataset.vision || 'flute';
+        const character = document.querySelector('[data-character].selected')?.dataset.character || 'cat';
+        const theme = document.querySelector('[data-theme].selected')?.dataset.theme || 'forest';
+        
+        console.log('Saving game settings:', { visionMode, character, theme });
+        
+        // Save to game settings
+        gameSettings.setMultiple({
+            visionMode,
+            character,
+            theme
+        });
+        
+        // Apply the new settings
+        this._applyGameSettings();
+        
+        // Force a re-render if game is running
+        if (this.gameEngine && this.gameEngine.isRunning) {
+            // The game loop will automatically pick up the new character on next frame
+        }
+        
+        // Close modal
+        this._closeGameSettings();
+    }
+    
+    _applyGameSettings() {
+        // Apply vision mode to camera
+        const visionMode = gameSettings.get('visionMode');
+        console.log('Applying vision mode:', visionMode);
+        if (this.cameraController && this.cameraController.cameraStream) {
+            this.cameraController.cameraStream.setPredictionMode(visionMode);
+        }
+        
+        // Apply theme colors to render system and game settings
+        const themeName = gameSettings.get('theme');
+        const theme = THEMES[themeName] || THEMES.forest;
+        console.log('Applying theme:', themeName, theme);
+        
+        // Update gameSettings with theme colors so obstacles and other entities use them
+        gameSettings.setMultiple({
+            playerColor: theme.playerColor,
+            obstacleColor: theme.obstacleColor
+        });
+        
+        if (this.gameEngine && this.gameEngine.renderSystem) {
+            this.gameEngine.renderSystem.setTheme(theme);
+        }
+        
+        // Apply character
+        const characterName = gameSettings.get('character');
+        const character = CHARACTERS[characterName] || CHARACTERS.cat;
+        console.log('Applying character:', characterName, character);
+        
+        if (this.gameEngine && this.gameEngine.player) {
+            this.gameEngine.player.setCharacter(character);
+            this.gameEngine.player.setColor(theme.playerColor);
+            console.log('Character applied to player:', this.gameEngine.player.character);
+        } else {
+            console.warn('GameEngine or player not initialized yet');
+        }
+    }
+    
+    _togglePause() {
+        if (!this.gameEngine) return;
+        
+        const pauseBtn = document.getElementById('pauseBtn');
+        
+        if (this.gameEngine.isPaused) {
+            // Currently paused, so resume
+            this.gameEngine.resume();
+            if (this.cameraController.isEnabled()) {
+                this.inputManager.startMonitoring((prediction) => {
+                    this._updatePredictionDisplay(prediction);
+                });
+            }
+            pauseBtn.innerHTML = '<span class="pause-icon">⏸</span> PAUSE';
+        } else if (this.gameEngine.isRunning) {
+            // Currently running, so pause
+            this._pauseGame();
+            pauseBtn.innerHTML = '<span class="pause-icon">▶</span> RESUME';
+        }
+    }
+    
+    _stopGame() {
+        if (!this.gameEngine) return;
+        
+        // Stop everything
+        this._pauseGame();
+        this.gameEngine.stop();
+        this.gameEngine.reset();
+        
+        // Show start screen again
+        document.getElementById('startScreenBackdrop').classList.remove('hidden');
+        
+        // Reset pause button
+        const pauseBtn = document.getElementById('pauseBtn');
+        pauseBtn.innerHTML = '<span class="pause-icon">⏸</span> PAUSE';
+        
+        // Reset UI
+        this._updateStatus('Turn on camera (📹 in navbar) to start!');
     }
     
     _startGame() {
@@ -166,7 +354,7 @@ class GameController {
             return;
         }
         
-        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('startScreenBackdrop').classList.add('hidden');
         this._startGameplay();
     }
     
@@ -176,6 +364,9 @@ class GameController {
             this._updateStatus('Camera must be on to play!');
             return;
         }
+        
+        // initialize hearts display
+        this._updateLives(this.gameEngine.lives, this.gameEngine.maxLives);
         
         // extracted common gameplay start logic bc it's used by both start and restart
         // check if using musical test mode
@@ -218,7 +409,7 @@ class GameController {
     }
     
     _restartGame() {
-        document.getElementById('gameOverScreen').classList.add('hidden');
+        document.getElementById('gameOverBackdrop').classList.add('hidden');
         
         // reset game state
         this.gameEngine.reset();
@@ -240,7 +431,7 @@ class GameController {
         // show game over screen
         document.getElementById('finalScore').textContent = finalScore;
         document.getElementById('finalCombo').textContent = maxCombo;
-        document.getElementById('gameOverScreen').classList.remove('hidden');
+        document.getElementById('gameOverBackdrop').classList.remove('hidden');
     }
     
     _handleNoteChange(gesture, time) {
@@ -265,18 +456,16 @@ class GameController {
     
     _updatePredictionDisplay(prediction) {
         const gestureEl = document.getElementById('currentGesture');
-        const fillEl = document.getElementById('confidenceFill');
         
         if (prediction.success) {
             gestureEl.textContent = prediction.gesture;
-            fillEl.style.width = `${prediction.confidence * 100}%`;
             
             // green if matches target
             const isCorrect = prediction.gesture === this.currentTargetGesture;
-            gestureEl.style.color = isCorrect ? GameConstants.COLOR_SUCCESS : '#666';
+            gestureEl.style.color = isCorrect ? '#00ff00' : '#ffffff';
         } else {
             gestureEl.textContent = '-';
-            fillEl.style.width = '0%';
+            gestureEl.style.color = '#ffffff';
         }
     }
     
@@ -285,9 +474,31 @@ class GameController {
     }
     
     _updateScore(score, highScore, combo) {
-        document.getElementById('score').textContent = score;
-        document.getElementById('highScore').textContent = highScore;
-        document.getElementById('combo').textContent = combo > 1 ? `x${combo}` : '';
+        document.getElementById('headerScore').textContent = score;
+    }
+    
+    _updateLives(lives, maxLives) {
+        const heartsContainer = document.getElementById('heartsContainer');
+        if (!heartsContainer) return;
+        
+        // clear existing hearts
+        heartsContainer.innerHTML = '';
+        
+        // create hearts based on max lives
+        for (let i = 0; i < maxLives; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            if (i < lives) {
+                heart.classList.add('filled');
+                heart.textContent = '❤️';
+            } else {
+                heart.classList.add('empty');
+                heart.textContent = '❤️';
+            }
+            
+            heartsContainer.appendChild(heart);
+        }
     }
     
     _flashSuccess() {

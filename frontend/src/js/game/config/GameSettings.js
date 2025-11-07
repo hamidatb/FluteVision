@@ -20,6 +20,11 @@ export class GameSettings {
     
     _getDefaults() {
         return {
+            // game settings
+            visionMode: 'flute', // 'flute' or 'hand'
+            character: 'cat', // 'cat', 'dog', 'bear', 'fox', 'owl', 'frog'
+            theme: 'forest', // 'forest', 'garden', 'beach', 'peak', 'park', 'night'
+            
             // visual customization
             playerImage: null, // null means use default rectangle
             backgroundImage: null,

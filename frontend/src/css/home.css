@@ -1,21 +1,112 @@
 /* landing page specific styles */
+.container {
+    position: relative;
+    overflow: visible;
+}
+
+
 .hero {
     text-align: center;
-    padding: 20px 20px 40px;
-    color: white;
+    padding: 40px 20px 50px;
+    position: relative;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 700px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, 
+        rgba(255, 203, 47, 0.65) 0%,
+        rgba(236, 72, 153, 0.85) 30%,
+        rgba(167, 139, 250, 0.2) 60%,
+        transparent 100%
+    );
+    filter: blur(70px);
+    animation: softGlow 10s ease-in-out infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes softGlow {
+    0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 0.5;
+    }
+    25% {
+        transform: translate(-40%, -60%) scale(1.15) rotate(90deg);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translate(-60%, -40%) scale(1.1) rotate(180deg);
+        opacity: 0.6;
+    }
+    75% {
+        transform: translate(-45%, -55%) scale(1.2) rotate(270deg);
+        opacity: 0.75;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(360deg);
+        opacity: 0.5;
+    }
+}
+
+.hero-box {
+    background: white;
+    border: 8px solid #000;
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 1);
+    padding: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 0;
+    gap: 20px;
+    box-sizing: border-box;
+    animation: fadeInUp 0.8s ease;
+    margin-bottom: 20px;
+    overflow: visible;
 }
 
 .hero h1 {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
-    animation: fadeInUp 0.8s ease;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2rem;
+    margin: 0;
+    color: #000;
+    background: linear-gradient(90deg, #9333ea 0%, #db2777 50%, #f97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+}
+
+.hero-icons {
+  font-size: 1.5rem;
 }
 
 .hero .tagline {
-    font-size: 1.5rem;
-    margin-bottom: 40px;
-    opacity: 0.95;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
+    color: black;
     animation: fadeInUp 1s ease;
+    z-index: 2;
+    position: relative;
+}
+
+.tagline-highlight {
+    background: #FFD700;
+    border: 4px solid #000;
+    padding: 10px 20px;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 1);
+    display: inline-block;
+    margin-left: 10px;
 }
 
 .features {
@@ -25,57 +116,119 @@
     margin: 40px 0;
 }
 
+.feature-card-link {
+    text-decoration: none;
+    display: block;
+}
+
 .feature-card {
-    background: white;
-    border-radius: 20px;
-    padding: 40px 30px;
-    text-align: center;
+    position: relative;
+    border: 8px solid #000;
+    border-radius: 0;
+    padding: 40px 30px 30px;
+    text-align: left;
     transition: all 0.3s;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 1);
     animation: fadeInUp 1.2s ease;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
 }
 
 .feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    transform: translate(-4px, -4px);
+    box-shadow: 16px 16px 0 rgba(0, 0, 0, 1);
 }
 
-.feature-icon {
-    font-size: 4rem;
+.sticky-note {
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    background: #FFD700;
+    border: 4px solid #000;
+    transform: rotate(8deg);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.sticky-icon {
+    font-size: 2.5rem;
+    transform: rotate(-8deg);
+}
+
+.feature-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
+    color: #fff;
     margin-bottom: 20px;
+    line-height: 1.4;
+    letter-spacing: 1px;
 }
 
-.feature-card h3 {
-    font-size: 1.8rem;
-    color: #667eea;
-    margin-bottom: 15px;
+.feature-description {
+    color: #fff;
+    line-height: 1.8;
+    margin-bottom: auto;
+    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
 }
 
-.feature-card p {
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 20px;
+.feature-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.feature-tag {
+    font-family: 'Press Start 2P', cursive;
+    background: rgba(255, 255, 255, 0.3);
+    border: 3px solid #fff;
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 0.6rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    backdrop-filter: blur(10px);
 }
 
 .getting-started {
     background: white;
-    border-radius: 20px;
-    padding: 40px;
-    margin: 40px 0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 8px solid #000;
+    padding: 50px 40px;
+    margin: 60px 0;
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 1);
+    position: relative;
 }
 
 .getting-started h2 {
-    color: #667eea;
+    font-family: 'Press Start 2P', cursive;
+    color: #000;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.getting-started h2::before,
+.getting-started h2::after {
+    content: '✨';
     font-size: 2rem;
 }
 
 .steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
 }
 
 .step {
@@ -83,28 +236,23 @@
     padding: 20px;
 }
 
-.step-number {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 auto 15px;
+.step-emoji {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
 }
 
-.step h3 {
-    color: #333;
-    margin-bottom: 10px;
+.step-number {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
+    color: #000;
+    margin-bottom: 15px;
 }
 
 .step p {
     color: #666;
-    line-height: 1.5;
+    line-height: 1.6;
+    font-size: 0.95rem;
 }
 
 @keyframes fadeInUp {
@@ -120,12 +268,59 @@
 
 /* Tablet and below */
 @media (max-width: 1024px) {
+    .hero {
+        padding: 35px 20px 45px;
+    }
+
+    .hero-box::before {
+        width: 500px;
+        height: 500px;
+        filter: blur(60px);
+    }
+
+    .hero-box {
+        padding: 28px 45px;
+        margin-bottom: 18px;
+    }
+
     .hero h1 {
-        font-size: 3rem;
+        font-size: 2.8rem;
+    }
+    
+    .hero-icon-left {
+        left: -18px;
+    }
+    
+    .hero-icon-right {
+        right: -18px;
     }
     
     .hero .tagline {
-        font-size: 1.3rem;
+        font-size: 1rem;
+    }
+    
+    .tagline-highlight {
+        padding: 8px 16px;
+        border: 3px solid #000;
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, 1);
+    }
+    
+    .getting-started h2 {
+        font-size: 1.5rem;
+        gap: 15px;
+    }
+    
+    .getting-started h2::before,
+    .getting-started h2::after {
+        font-size: 1.5rem;
+    }
+    
+    .step-emoji {
+        font-size: 3.5rem;
+    }
+    
+    .step-number {
+        font-size: 1rem;
     }
     
     .features {
@@ -134,24 +329,105 @@
     }
     
     .feature-card {
-        padding: 30px 20px;
+        padding: 35px 25px 25px;
+        min-height: 320px;
+    }
+    
+    .sticky-note {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .sticky-icon {
+        font-size: 2rem;
+    }
+    
+    .feature-title {
+        font-size: 1.2rem;
     }
 }
 
 /* Mobile devices */
 @media (max-width: 768px) {
     .hero {
-        padding: 15px 15px 30px;
+        padding: 30px 15px 40px;
     }
     
-    .hero h1 {
-        font-size: 2.2rem;
+    .hero-box::before {
+        width: 450px;
+        height: 450px;
+        filter: blur(55px);
+    }
+
+    .hero-box {
+        padding: 20px 35px;
+        border: 6px solid #000;
+        box-shadow: 8px 8px 0 rgba(0, 0, 0, 1);
         margin-bottom: 15px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-icons {
+        font-size: 2rem;
+    }
+    
+    .hero-icon-left {
+        left: -12px;
+    }
+    
+    .hero-icon-right {
+        right: -12px;
     }
     
     .hero .tagline {
-        font-size: 1.1rem;
-        margin-bottom: 30px;
+        font-size: 0.8rem;
+    }
+    
+    .tagline-highlight {
+        padding: 8px 14px;
+        border: 3px solid #000;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 1);
+        margin-left: 5px;
+    }
+    
+    .getting-started {
+        padding: 35px 20px;
+        border: 6px solid #000;
+        box-shadow: 8px 8px 0 rgba(0, 0, 0, 1);
+    }
+    
+    .getting-started h2 {
+        font-size: 1.2rem;
+        margin-bottom: 35px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .getting-started h2::before,
+    .getting-started h2::after {
+        font-size: 1.2rem;
+    }
+    
+    .steps {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .step-emoji {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+    
+    .step-number {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+    
+    .step p {
+        font-size: 0.9rem;
     }
     
     .features {
@@ -161,69 +437,130 @@
     }
     
     .feature-card {
-        padding: 30px 20px;
+        padding: 30px 20px 25px;
+        min-height: 300px;
+        border: 6px solid #000;
+        box-shadow: 8px 8px 0 rgba(0, 0, 0, 1);
     }
     
-    .feature-icon {
-        font-size: 3rem;
+    .feature-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, 1);
+    }
+    
+    .sticky-note {
+        width: 60px;
+        height: 60px;
+        top: -10px;
+        right: 15px;
+        border: 3px solid #000;
+    }
+    
+    .sticky-icon {
+        font-size: 1.8rem;
+    }
+    
+    .feature-title {
+        font-size: 1rem;
         margin-bottom: 15px;
     }
     
-    .feature-card h3 {
-        font-size: 1.5rem;
-        margin-bottom: 12px;
+    .feature-description {
+        font-size: 0.9rem;
+        line-height: 1.6;
     }
     
-    .feature-card p {
-        font-size: 0.95rem;
-        margin-bottom: 15px;
+    .feature-tags {
+        gap: 8px;
+        margin-top: 20px;
     }
     
-    .getting-started {
-        padding: 30px 20px;
-        margin: 30px 0;
-    }
-    
-    .getting-started h2 {
-        font-size: 1.7rem;
-        margin-bottom: 25px;
-    }
-    
-    .steps {
-        grid-template-columns: 1fr;
-        gap: 25px;
-    }
-    
-    .step {
-        padding: 15px;
-    }
-    
-    .step-number {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-        margin: 0 auto 12px;
-    }
-    
-    .step h3 {
-        font-size: 1.2rem;
-    }
-    
-    .step p {
-        font-size: 0.95rem;
+    .feature-tag {
+        font-size: 0.5rem;
+        padding: 6px 10px;
+        border: 2px solid #fff;
     }
 }
 
 /* Small mobile devices */
 @media (max-width: 480px) {
-    .hero h1 {
-        font-size: 1.8rem;
+    .hero {
+        padding: 25px 10px 35px;
+    }
+
+    .hero-box::before {
+        width: 400px;
+        height: 400px;
+        filter: blur(50px);
+    }
+
+    .hero-box {
+        padding: 15px 25px;
+        border: 5px solid #000;
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 1);
         margin-bottom: 12px;
+    }
+
+    .hero h1 {
+        font-size: 1.4rem;
+    }
+    
+    .hero-icons {
+        font-size: 1.3rem;
+    }
+    
+    .hero-icon-left {
+        left: -10px;
+    }
+    
+    .hero-icon-right {
+        right: -10px;
     }
     
     .hero .tagline {
+        font-size: 0.6rem;
+    }
+    
+    .tagline-highlight {
+        padding: 6px 10px;
+        border: 2px solid #000;
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 1);
+        margin-left: 4px;
+    }
+    
+    .getting-started {
+        padding: 25px 15px;
+        border: 5px solid #000;
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 1);
+    }
+    
+    .getting-started h2 {
         font-size: 1rem;
-        margin-bottom: 25px;
+        margin-bottom: 30px;
+        gap: 8px;
+    }
+    
+    .getting-started h2::before,
+    .getting-started h2::after {
+        font-size: 1rem;
+    }
+    
+    .steps {
+        gap: 25px;
+    }
+    
+    .step-emoji {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+    
+    .step-number {
+        font-size: 0.75rem;
+        margin-bottom: 10px;
+    }
+    
+    .step p {
+        font-size: 0.85rem;
     }
     
     .features {
@@ -232,50 +569,107 @@
     }
     
     .feature-card {
-        padding: 25px 15px;
+        padding: 25px 15px 20px;
+        min-height: 280px;
+        border: 5px solid #000;
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 1);
     }
     
-    .feature-icon {
-        font-size: 2.5rem;
+    .feature-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 rgba(0, 0, 0, 1);
     }
     
-    .feature-card h3 {
-        font-size: 1.3rem;
+    .sticky-note {
+        width: 55px;
+        height: 55px;
+        top: -8px;
+        right: 10px;
     }
     
-    .feature-card p {
-        font-size: 0.9rem;
-    }
-    
-    .getting-started {
-        padding: 25px 15px;
-        margin: 20px 0;
-    }
-    
-    .getting-started h2 {
+    .sticky-icon {
         font-size: 1.5rem;
-        margin-bottom: 20px;
     }
     
-    .steps {
-        gap: 20px;
+    .feature-title {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+    
+    .feature-description {
+        font-size: 0.85rem;
+    }
+    
+    .feature-tags {
+        gap: 6px;
+        margin-top: 15px;
+    }
+    
+    .feature-tag {
+        font-size: 0.45rem;
+        padding: 5px 8px;
     }
 }
 
 /* Landscape mobile */
 @media (max-width: 768px) and (orientation: landscape) {
     .hero {
-        padding: 10px 15px 20px;
+        padding: 25px 15px 35px;
     }
     
+    .hero-box::before {
+        width: 420px;
+        height: 420px;
+        filter: blur(52px);
+    }
+
+    .hero-box {
+        padding: 15px 30px;
+        margin-bottom: 12px;
+    }
+
     .hero h1 {
-        font-size: 1.8rem;
-        margin-bottom: 10px;
+        font-size: 1.5rem;
+    }
+    
+    .hero-icons {
+        font-size: 1.3rem;
     }
     
     .hero .tagline {
-        font-size: 1rem;
-        margin-bottom: 20px;
+        font-size: 0.65rem;
+    }
+    
+    .tagline-highlight {
+        padding: 6px 12px;
+        border: 2px solid #000;
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 1);
+    }
+    
+    .getting-started {
+        padding: 30px 20px;
+    }
+    
+    .getting-started h2 {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .steps {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    
+    .step-emoji {
+        font-size: 2.5rem;
+    }
+    
+    .step-number {
+        font-size: 0.7rem;
+    }
+    
+    .step p {
+        font-size: 0.8rem;
     }
     
     .features {
@@ -284,7 +678,36 @@
     }
     
     .feature-card {
-        padding: 20px 15px;
+        padding: 25px 20px 20px;
+        min-height: 280px;
+    }
+    
+    .sticky-note {
+        width: 55px;
+        height: 55px;
+        top: -8px;
+    }
+    
+    .sticky-icon {
+        font-size: 1.5rem;
+    }
+    
+    .feature-title {
+        font-size: 0.9rem;
+    }
+    
+    .feature-description {
+        font-size: 0.85rem;
+    }
+    
+    .feature-tags {
+        gap: 6px;
+        margin-top: 15px;
+    }
+    
+    .feature-tag {
+        font-size: 0.45rem;
+        padding: 5px 8px;
     }
     
     .getting-started {

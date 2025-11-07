@@ -1,0 +1,114 @@
+---
+/**
+ * Game Settings Modal Component
+ * Allows player to customize game settings including vision mode, character, and theme
+ */
+---
+
+<div id="gameSettingsModal" class="game-settings-modal hidden">
+    <div class="game-settings-content">
+        <div class="settings-header">
+            <span class="settings-gear">⚙️</span>
+            <h2>SETTINGS</h2>
+        </div>
+
+        <!-- Vision Mode Section -->
+        <section class="settings-section">
+            <h3><span class="section-icon">📹</span> VISION MODE:</h3>
+            <div class="option-grid two-col">
+                <button class="option-card selected" data-vision="flute" id="visionFlute">
+                    <div class="option-icon">🎵</div>
+                    <div class="option-title">FLUTE</div>
+                    <div class="option-desc">Detect notes</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card" data-vision="hand" id="visionHand">
+                    <div class="option-icon">✋</div>
+                    <div class="option-title">HAND TEST</div>
+                    <div class="option-desc">For testing</div>
+                    <span class="check-mark">✓</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Character Section -->
+        <section class="settings-section">
+            <h3><span class="section-icon">🎭</span> CHARACTER:</h3>
+            <div class="option-grid six-col">
+                <button class="option-card selected" data-character="cat" id="charCat">
+                    <div class="option-icon">🐱</div>
+                    <div class="option-title">Melody Cat</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card" data-character="dog" id="charDog">
+                    <div class="option-icon">🐶</div>
+                    <div class="option-title">Rhythm Pup</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card" data-character="bear" id="charBear">
+                    <div class="option-icon">🐻</div>
+                    <div class="option-title">Jazz Bear</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card" data-character="fox" id="charFox">
+                    <div class="option-icon">🦊</div>
+                    <div class="option-title">Tune Fox</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card" data-character="owl" id="charOwl">
+                    <div class="option-icon">🦉</div>
+                    <div class="option-title">Harmony Owl</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card" data-character="frog" id="charFrog">
+                    <div class="option-icon">🐸</div>
+                    <div class="option-title">Beat Frog</div>
+                    <span class="check-mark">✓</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Theme Section -->
+        <section class="settings-section">
+            <h3><span class="section-icon">🎨</span> THEME:</h3>
+            <div class="option-grid three-col">
+                <button class="option-card theme-card selected" data-theme="forest" id="themeForest">
+                    <div class="theme-preview forest-bg"></div>
+                    <div class="option-title">Mystic Forest</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card theme-card" data-theme="garden" id="themeGarden">
+                    <div class="theme-preview garden-bg"></div>
+                    <div class="option-title">Cozy Garden</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card theme-card" data-theme="beach" id="themeBeach">
+                    <div class="theme-preview beach-bg"></div>
+                    <div class="option-title">Sunset Beach</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card theme-card" data-theme="peak" id="themePeak">
+                    <div class="theme-preview peak-bg"></div>
+                    <div class="option-title">Alpine Peak</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card theme-card" data-theme="park" id="themePark">
+                    <div class="theme-preview park-bg"></div>
+                    <div class="option-title">Autumn Park</div>
+                    <span class="check-mark">✓</span>
+                </button>
+                <button class="option-card theme-card" data-theme="night" id="themeNight">
+                    <div class="theme-preview night-bg"></div>
+                    <div class="option-title">Starry Night</div>
+                    <span class="check-mark">✓</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="settings-actions">
+            <button id="saveGameSettings" class="settings-btn primary">SAVE</button>
+            <button id="closeGameSettings" class="settings-btn secondary">CANCEL</button>
+        </div>
+    </div>
+</div>

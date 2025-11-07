@@ -16,6 +16,16 @@ export class Player {
         this.canJump = true;
         
         this.assetManager = assetManager;
+        this.character = '🐱'; // default character
+        this.themeColor = gameSettings.get('playerColor'); // default color
+    }
+    
+    setCharacter(character) {
+        this.character = character;
+    }
+    
+    setColor(color) {
+        this.themeColor = color;
     }
     
     jump() {
@@ -46,9 +56,22 @@ export class Player {
         if (playerImage) {
             // draw custom image if loaded
             ctx.drawImage(playerImage, this.x, this.y, this.width, this.height);
+        } else if (this.character) {
+            // draw character emoji without stretching
+            // Use width as base size since emojis are naturally square
+            const emojiSize = this.width;
+            ctx.font = `${emojiSize}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            // Center the emoji within the player bounds
+            const centerX = this.x + this.width / 2;
+            const centerY = this.y + this.height / 2;
+            ctx.fillText(this.character, centerX, centerY);
+            // Reset text align for other rendering
+            ctx.textAlign = 'start';
         } else {
             // fallback to colored rectangle with face
-            ctx.fillStyle = gameSettings.get('playerColor');
+            ctx.fillStyle = this.themeColor;
             ctx.fillRect(this.x, this.y, this.width, this.height);
             
             // simple face so it's not just a box
