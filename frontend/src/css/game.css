@@ -777,24 +777,6 @@
     position: relative;
 }
 
-.close-settings {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #333;
-    padding: 0;
-    line-height: 1;
-    transition: transform 0.15s;
-}
-
-.close-settings:hover {
-    transform: scale(1.2);
-}
-
 .settings-header {
     display: flex;
     align-items: center;
@@ -948,6 +930,54 @@
     background: linear-gradient(180deg, #0d47a1 0%, #1565c0 50%, #0d47a1 100%);
 }
 
+/* Settings action buttons */
+.settings-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 3px solid #000;
+}
+
+.settings-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    padding: 15px 40px;
+    border: 4px solid #000;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.8);
+    text-transform: uppercase;
+}
+
+.settings-btn.primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.settings-btn.primary:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.8);
+}
+
+.settings-btn.secondary {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.settings-btn.secondary:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.8);
+}
+
+.settings-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .option-grid.six-col {
@@ -1030,5 +1060,15 @@
     
     .theme-preview {
         height: 120px;
+    }
+    
+    .settings-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .settings-btn {
+        font-size: 0.75rem;
+        padding: 12px 25px;
     }
 }

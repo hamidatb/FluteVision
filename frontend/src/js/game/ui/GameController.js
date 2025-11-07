@@ -7,6 +7,7 @@ import { assetManager } from '../assets/AssetManager';
 import { InputManager } from '../../game/managers/InputManager';
 import { gameSettings } from '../../game/config/GameSettings';
 import { GameConstants } from '../../game/config/GameConstants';
+import { THEMES, CHARACTERS } from '../../game/config/ThemeConfig';
 
 // main orchestrator - ties everything together
 // using facade pattern bc other code shouldn't need to know about all the internal systems
@@ -86,6 +87,9 @@ class GameController {
         
         // Initialize lives display
         this._updateLives(this.gameEngine.lives, this.gameEngine.maxLives);
+        
+        // Load and apply game settings (theme, character, vision mode)
+        this._loadGameSettings();
     }
     
     _handleCameraStateChange(state, isEnabled) {
@@ -158,15 +162,7 @@ class GameController {
             });
         }
         
-        // close game settings
-        const closeGameSettings = document.getElementById('closeGameSettings');
-        if (closeGameSettings) {
-            closeGameSettings.addEventListener('click', () => {
-                this._closeGameSettings();
-            });
-        }
-        
-        // game settings modal backdrop click
+        // game settings modal backdrop click (close when clicking outside)
         const gameSettingsModal = document.getElementById('gameSettingsModal');
         if (gameSettingsModal) {
             gameSettingsModal.addEventListener('click', (e) => {
@@ -199,6 +195,21 @@ class GameController {
                 e.currentTarget.classList.add('selected');
             });
         });
+        
+        // save and cancel buttons in settings modal
+        const saveGameSettings = document.getElementById('saveGameSettings');
+        if (saveGameSettings) {
+            saveGameSettings.addEventListener('click', () => {
+                this._saveGameSettings();
+            });
+        }
+        
+        const closeGameSettings = document.getElementById('closeGameSettings');
+        if (closeGameSettings) {
+            closeGameSettings.addEventListener('click', () => {
+                this._closeGameSettings();
+            });
+        }
     }
     
     _openGameSettings() {
@@ -207,6 +218,93 @@ class GameController {
     
     _closeGameSettings() {
         document.getElementById('gameSettingsModal').classList.add('hidden');
+    }
+    
+    _loadGameSettings() {
+        // Load saved settings and update UI
+        const visionMode = gameSettings.get('visionMode');
+        const character = gameSettings.get('character');
+        const theme = gameSettings.get('theme');
+        
+        // Update selected states in UI
+        document.querySelectorAll('[data-vision]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.vision === visionMode);
+        });
+        
+        document.querySelectorAll('[data-character]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.character === character);
+        });
+        
+        document.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.theme === theme);
+        });
+        
+        // Apply settings to game
+        this._applyGameSettings();
+    }
+    
+    _saveGameSettings() {
+        // Get selected values from UI
+        const visionMode = document.querySelector('[data-vision].selected')?.dataset.vision || 'flute';
+        const character = document.querySelector('[data-character].selected')?.dataset.character || 'cat';
+        const theme = document.querySelector('[data-theme].selected')?.dataset.theme || 'forest';
+        
+        console.log('Saving game settings:', { visionMode, character, theme });
+        
+        // Save to game settings
+        gameSettings.setMultiple({
+            visionMode,
+            character,
+            theme
+        });
+        
+        // Apply the new settings
+        this._applyGameSettings();
+        
+        // Force a re-render if game is running
+        if (this.gameEngine && this.gameEngine.isRunning) {
+            // The game loop will automatically pick up the new character on next frame
+        }
+        
+        // Close modal
+        this._closeGameSettings();
+    }
+    
+    _applyGameSettings() {
+        // Apply vision mode to camera
+        const visionMode = gameSettings.get('visionMode');
+        console.log('Applying vision mode:', visionMode);
+        if (this.cameraController && this.cameraController.cameraStream) {
+            this.cameraController.cameraStream.setPredictionMode(visionMode);
+        }
+        
+        // Apply theme colors to render system and game settings
+        const themeName = gameSettings.get('theme');
+        const theme = THEMES[themeName] || THEMES.forest;
+        console.log('Applying theme:', themeName, theme);
+        
+        // Update gameSettings with theme colors so obstacles and other entities use them
+        gameSettings.setMultiple({
+            playerColor: theme.playerColor,
+            obstacleColor: theme.obstacleColor
+        });
+        
+        if (this.gameEngine && this.gameEngine.renderSystem) {
+            this.gameEngine.renderSystem.setTheme(theme);
+        }
+        
+        // Apply character
+        const characterName = gameSettings.get('character');
+        const character = CHARACTERS[characterName] || CHARACTERS.cat;
+        console.log('Applying character:', characterName, character);
+        
+        if (this.gameEngine && this.gameEngine.player) {
+            this.gameEngine.player.setCharacter(character);
+            this.gameEngine.player.setColor(theme.playerColor);
+            console.log('Character applied to player:', this.gameEngine.player.character);
+        } else {
+            console.warn('GameEngine or player not initialized yet');
+        }
     }
     
     _togglePause() {
