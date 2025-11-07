@@ -14,7 +14,7 @@ interface Props {
 const { videoId = 'video' } = Astro.props;
 ---
 
-<video id={videoId} autoplay playsinline></video>
+<video id={videoId} autoplay playsinline muted></video>
 
 <style>
     video {
