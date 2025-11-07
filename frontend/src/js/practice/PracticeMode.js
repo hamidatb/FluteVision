@@ -97,9 +97,6 @@ class PracticeMode {
             this.targetGesture = e.target.value || null;
             this.updateTargetDisplay();
         });
-        document.getElementById('randomTargetBtn').addEventListener('click', () => {
-            this.selectRandomGesture();
-        });
     }
 
     start() {
@@ -177,20 +174,6 @@ class PracticeMode {
             container.innerHTML = '<p style="color: #666;">No detections yet</p>';
             return;
         }
-
-        const sorted = Object.entries(probabilities)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 5);
-
-        container.innerHTML = sorted.map(([gesture, prob]) => `
-            <div class="probability-item">
-                <span class="prob-gesture">${gesture}</span>
-                <span class="prob-bar-container">
-                    <span class="prob-bar" style="width: ${prob * 100}%"></span>
-                </span>
-                <span class="prob-value">${(prob * 100).toFixed(0)}%</span>
-            </div>
-        `).join('');
     }
 
     selectRandomGesture() {

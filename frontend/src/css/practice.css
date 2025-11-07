@@ -125,6 +125,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 100%;
 }
 
 .section-header {
@@ -208,6 +209,7 @@
     color: #667eea;
     transition: all 0.3s;
     font-family: 'Press Start 2P', cursive;
+    height: 50px;
 }
 
 .current-gesture.correct {
@@ -258,6 +260,8 @@
     background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
     border: 3px solid #000;
     margin-top: 15px;
+    height: 150px;
+    box-sizing: border-box;
 }
 
 .target-label {
@@ -274,6 +278,7 @@
     color: #667eea;
     margin: 15px 0;
     font-family: 'Press Start 2P', cursive;
+    height: 30px;
 }
 
 .target-selector {
@@ -281,7 +286,6 @@
     padding: 12px;
     font-size: 0.9rem;
     border: 3px solid #000;
-    margin-top: 15px;
     font-family: 'Press Start 2P', cursive;
     background: white;
     cursor: pointer;
