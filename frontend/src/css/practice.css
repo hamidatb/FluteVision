@@ -1,32 +1,191 @@
-/* practice mode specific styles */
-.practice-container {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 20px;
+/* Practice Mode - Retro Pixel Style */
+
+#practice-container {
     margin-top: 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
 }
 
+/* Header Bar */
+.practice-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 6px solid #000;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.8);
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.header-left, .header-right {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.practice-title {
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+}
+
+.timer-display {
+    font-size: 1.3rem;
+    color: white;
+    background: rgba(0,0,0,0.3);
+    padding: 10px 20px;
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Buttons */
+.practice-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    padding: 12px 24px;
+    border: 4px solid #000;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+}
+
+.practice-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.practice-btn:not(:disabled):hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.8);
+}
+
+.practice-btn:not(:disabled):active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+}
+
+.start-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.stop-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.practice-btn.secondary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.practice-btn.full-width {
+    width: 100%;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.btn-icon {
+    font-size: 1rem;
+}
+
+/* Main Grid */
+.practice-main {
+    min-height: calc(100vh - 250px);
+}
+
+.practice-grid {
+    display: grid;
+    grid-template-columns: 1fr 450px;
+    gap: 20px;
+}
+
+/* Camera Section */
 .camera-section {
     background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 6px solid #000;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.8);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 4px solid #000;
+}
+
+.section-header h3 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    color: #667eea;
+    margin: 0;
+}
+
+.section-icon {
+    font-size: 1.5rem;
 }
 
 #practiceVideo {
     width: 100%;
-    border-radius: 10px;
+    max-width: 100%;
+    max-height: 500px;
+    height: auto;
     background: #000;
     display: block;
+    border: 4px solid #000;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    object-fit: cover;
 }
 
-.controls {
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+/* Status Messages */
+.status-message {
+    padding: 12px;
+    text-align: center;
+    margin-top: 12px;
+    font-weight: 600;
+    border: 3px solid #000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.75rem;
 }
 
+.status-message.info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+}
+
+.status-message.success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+}
+
+.status-message.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+}
+
+/* Info Panel */
 .info-panel {
     display: flex;
     flex-direction: column;
@@ -35,19 +194,12 @@
 
 .info-card {
     background: white;
-    border-radius: 15px;
+    border: 6px solid #000;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.8);
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.info-card h3 {
-    color: #667eea;
-    margin-bottom: 15px;
-    font-size: 1.3rem;
-    border-bottom: 2px solid #667eea;
-    padding-bottom: 8px;
-}
-
+/* Current Gesture */
 .current-gesture {
     font-size: 4rem;
     font-weight: bold;
@@ -55,137 +207,140 @@
     margin: 20px 0;
     color: #667eea;
     transition: all 0.3s;
+    font-family: 'Press Start 2P', cursive;
 }
 
 .current-gesture.correct {
     color: #10b981;
     transform: scale(1.1);
+    text-shadow: 4px 4px 0 rgba(16, 185, 129, 0.3);
 }
 
+/* Confidence Display */
 .confidence-display {
-    margin-top: 10px;
+    margin-top: 15px;
+}
+
+.confidence-label {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    color: #666;
+    margin-bottom: 8px;
+    text-align: center;
 }
 
 .confidence-bar {
     width: 100%;
-    height: 30px;
+    height: 35px;
     background: #e5e7eb;
-    border-radius: 15px;
+    border: 3px solid #000;
     overflow: hidden;
-    margin-top: 10px;
+    position: relative;
 }
 
 .confidence-fill {
     height: 100%;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
     transition: width 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: bold;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.75rem;
 }
 
+/* Target Section */
 .target-section {
     text-align: center;
     padding: 20px;
-    background: #f9fafb;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+    border: 3px solid #000;
     margin-top: 15px;
 }
 
 .target-label {
-    font-size: 0.9rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
     color: #666;
     margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .target-gesture {
     font-size: 3rem;
     font-weight: bold;
     color: #667eea;
-    margin-bottom: 10px;
+    margin: 15px 0;
+    font-family: 'Press Start 2P', cursive;
 }
 
 .target-selector {
     width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 2px solid #667eea;
-    border-radius: 8px;
-    margin-top: 10px;
+    padding: 12px;
+    font-size: 0.9rem;
+    border: 3px solid #000;
+    margin-top: 15px;
+    font-family: 'Press Start 2P', cursive;
+    background: white;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
 }
 
+/* Probability Items */
 .probability-item {
     display: grid;
-    grid-template-columns: 60px 1fr 60px;
+    grid-template-columns: 80px 1fr 70px;
     gap: 10px;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 8px;
-    background: #f9fafb;
-    border-radius: 6px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+    border: 3px solid #000;
 }
 
 .prob-gesture {
     font-weight: 600;
     color: #667eea;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
 }
 
 .prob-bar-container {
     background: #e5e7eb;
-    height: 20px;
-    border-radius: 10px;
+    height: 25px;
+    border: 2px solid #000;
     overflow: hidden;
 }
 
 .prob-bar {
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
     height: 100%;
     transition: width 0.3s;
 }
 
 .prob-value {
     text-align: right;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: #666;
+    font-family: 'Press Start 2P', cursive;
 }
 
-.status-message {
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    margin-top: 10px;
-    font-weight: 500;
-}
-
-.status-message.info {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.status-message.success {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.status-message.warning {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.timer {
-    font-size: 1.5rem;
-    text-align: center;
-    color: #667eea;
-    font-weight: bold;
-}
-
-/* Tablet and below */
+/* Responsive - Tablet */
 @media (max-width: 1024px) {
-    .practice-container {
-        grid-template-columns: 1fr 350px;
+    .practice-grid {
+        grid-template-columns: 1fr 400px;
         gap: 15px;
+    }
+    
+    .practice-title {
+        font-size: 1.2rem;
+    }
+    
+    .timer-display {
+        font-size: 1.1rem;
+        padding: 8px 16px;
     }
     
     .info-card {
@@ -193,48 +348,64 @@
     }
 }
 
-/* Mobile devices */
+/* Responsive - Mobile */
 @media (max-width: 768px) {
-    .practice-container {
-        grid-template-columns: 1fr;
-        gap: 15px;
+    #practice-container {
+        padding: 0 10px;
         margin-top: 15px;
     }
     
-    .camera-section {
+    .practice-header {
+        flex-direction: column;
+        gap: 15px;
         padding: 15px;
+        margin-bottom: 15px;
     }
     
-    #practiceVideo {
-        max-height: 400px;
+    .header-left, .header-right {
+        width: 100%;
+        justify-content: center;
     }
     
-    .controls {
-        margin-top: 12px;
-        gap: 8px;
-        flex-wrap: wrap;
+    .header-center {
+        order: -1;
     }
     
-    .controls .btn {
-        flex: 1;
-        min-width: 120px;
-        padding: 12px 20px;
-        font-size: 0.95rem;
-        min-height: 44px;
+    .practice-title {
+        font-size: 1rem;
     }
     
-    .info-panel {
+    .timer-display {
+        font-size: 1rem;
+        width: 100%;
+    }
+    
+    .practice-btn {
+        font-size: 0.75rem;
+        padding: 10px 18px;
+    }
+    
+    .practice-grid {
+        grid-template-columns: 1fr;
         gap: 15px;
     }
     
-    .info-card {
-        padding: 15px;
+    .camera-section, .info-card {
+        padding: 12px;
     }
     
-    .info-card h3 {
-        font-size: 1.2rem;
-        margin-bottom: 12px;
+    .section-header {
+        margin-bottom: 10px;
         padding-bottom: 6px;
+    }
+    
+    .section-header h3 {
+        font-size: 0.85rem;
+    }
+    
+    #practiceVideo {
+        max-width: 100%;
+        max-height: 400px;
     }
     
     .current-gesture {
@@ -243,97 +414,109 @@
     }
     
     .confidence-bar {
-        height: 25px;
+        height: 30px;
     }
     
     .confidence-fill {
-        font-size: 0.9rem;
+        font-size: 0.7rem;
     }
     
     .target-section {
         padding: 15px;
-        margin-top: 12px;
-    }
-    
-    .target-label {
-        font-size: 0.85rem;
     }
     
     .target-gesture {
         font-size: 2.5rem;
-        margin-bottom: 8px;
+        margin: 12px 0;
     }
     
     .target-selector {
         padding: 10px;
-        font-size: 0.95rem;
-        margin-top: 8px;
+        font-size: 0.8rem;
     }
     
     .probability-item {
-        grid-template-columns: 50px 1fr 55px;
+        grid-template-columns: 70px 1fr 60px;
         gap: 8px;
-        padding: 6px;
-        margin-bottom: 8px;
+        padding: 8px;
+        margin-bottom: 10px;
     }
     
     .prob-gesture {
-        font-size: 0.95rem;
+        font-size: 0.7rem;
     }
     
     .prob-bar-container {
-        height: 18px;
+        height: 22px;
     }
     
     .prob-value {
-        font-size: 0.85rem;
+        font-size: 0.65rem;
     }
     
     .status-message {
         padding: 12px;
-        font-size: 0.95rem;
-        margin-top: 8px;
-    }
-    
-    .timer {
-        font-size: 1.3rem;
+        font-size: 0.7rem;
     }
 }
 
-/* Small mobile devices */
+/* Small Mobile */
 @media (max-width: 480px) {
-    .practice-container {
-        gap: 12px;
-        margin-top: 12px;
+    #practice-container {
+        margin-top: 10px;
+    }
+    
+    .practice-header {
+        padding: 12px;
+        border: 4px solid #000;
+        box-shadow: 4px 4px 0 rgba(0,0,0,0.8);
+    }
+    
+    .practice-title {
+        font-size: 0.85rem;
+    }
+    
+    .timer-display {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        border: 2px solid #000;
+    }
+    
+    .practice-btn {
+        font-size: 0.7rem;
+        padding: 10px 15px;
+        border: 3px solid #000;
+        box-shadow: 3px 3px 0 rgba(0,0,0,0.8);
+    }
+    
+    .practice-btn:not(:disabled):hover {
+        box-shadow: 4px 4px 0 rgba(0,0,0,0.8);
     }
     
     .camera-section, .info-card {
-        padding: 12px;
+        padding: 10px;
+        border: 4px solid #000;
+        box-shadow: 4px 4px 0 rgba(0,0,0,0.8);
+    }
+    
+    .section-header {
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+        border-bottom: 3px solid #000;
+    }
+    
+    .section-header h3 {
+        font-size: 0.75rem;
+    }
+    
+    .section-icon {
+        font-size: 1.2rem;
     }
     
     #practiceVideo {
-        max-height: 300px;
-    }
-    
-    .controls {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .controls .btn {
-        width: 100%;
-        min-width: auto;
-        padding: 12px;
-        font-size: 0.95rem;
-    }
-    
-    .info-panel {
-        gap: 12px;
-    }
-    
-    .info-card h3 {
-        font-size: 1.1rem;
-        margin-bottom: 10px;
+        max-width: 100%;
+        max-height: 350px;
+        border: 3px solid #000;
     }
     
     .current-gesture {
@@ -342,15 +525,17 @@
     }
     
     .confidence-bar {
-        height: 22px;
+        height: 28px;
+        border: 2px solid #000;
     }
     
     .confidence-fill {
-        font-size: 0.85rem;
+        font-size: 0.65rem;
     }
     
     .target-section {
         padding: 12px;
+        border: 2px solid #000;
     }
     
     .target-gesture {
@@ -359,76 +544,73 @@
     
     .target-selector {
         padding: 8px;
-        font-size: 0.9rem;
+        font-size: 0.75rem;
+        border: 2px solid #000;
     }
     
     .probability-item {
-        grid-template-columns: 45px 1fr 50px;
+        grid-template-columns: 60px 1fr 55px;
         gap: 6px;
-        padding: 5px;
+        padding: 6px;
+        border: 2px solid #000;
     }
     
     .prob-gesture {
-        font-size: 0.9rem;
+        font-size: 0.65rem;
     }
     
     .prob-bar-container {
-        height: 16px;
+        height: 20px;
     }
     
     .prob-value {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
     }
     
     .status-message {
         padding: 10px;
-        font-size: 0.9rem;
-    }
-    
-    .timer {
-        font-size: 1.2rem;
-    }
-    
-    #randomTargetBtn {
-        padding: 10px;
-        font-size: 0.9rem;
+        font-size: 0.65rem;
+        border: 2px solid #000;
     }
 }
 
-/* Landscape mobile */
+/* Landscape Mobile */
 @media (max-width: 768px) and (orientation: landscape) {
-    .practice-container {
-        grid-template-columns: 1fr 300px;
+    .practice-grid {
+        grid-template-columns: 1fr 350px;
         gap: 10px;
     }
     
-    .camera-section {
+    .practice-header {
+        flex-direction: row;
+        padding: 10px 15px;
+    }
+    
+    .header-center {
+        order: 0;
+    }
+    
+    .practice-title {
+        font-size: 0.9rem;
+    }
+    
+    .timer-display {
+        font-size: 0.85rem;
+        min-width: 100px;
+    }
+    
+    .camera-section, .info-card {
         padding: 10px;
+    }
+    
+    .section-header {
+        margin-bottom: 8px;
+        padding-bottom: 5px;
     }
     
     #practiceVideo {
-        max-height: 250px;
-    }
-    
-    .controls {
-        flex-direction: row;
-        gap: 8px;
-        margin-top: 8px;
-    }
-    
-    .controls .btn {
-        padding: 8px 15px;
-        font-size: 0.85rem;
-        min-height: 36px;
-    }
-    
-    .info-card {
-        padding: 10px;
-    }
-    
-    .info-card h3 {
-        font-size: 1rem;
-        margin-bottom: 8px;
+        max-width: 100%;
+        max-height: 300px;
     }
     
     .current-gesture {
@@ -436,20 +618,7 @@
         margin: 10px 0;
     }
     
-    .confidence-bar {
-        height: 20px;
-    }
-    
-    .target-section {
-        padding: 10px;
-    }
-    
     .target-gesture {
         font-size: 2rem;
     }
-    
-    .timer {
-        font-size: 1.1rem;
-    }
 }
-
