@@ -4,6 +4,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px;
+    margin-top: 40px;
     position: relative;
 }
 
@@ -24,7 +25,13 @@
     align-items: center;
 }
 
-.pause-btn, .stop-btn {
+.header-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pause-btn, .stop-btn, .game-settings-btn {
     background: white;
     border: 4px solid #000;
     padding: 12px 24px;
@@ -44,17 +51,22 @@
     color: white;
 }
 
-.pause-btn:hover, .stop-btn:hover {
+.game-settings-btn {
+    background: #ffa500;
+    color: white;
+}
+
+.pause-btn:hover, .stop-btn:hover, .game-settings-btn:hover {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
 }
 
-.pause-btn:active, .stop-btn:active {
+.pause-btn:active, .stop-btn:active, .game-settings-btn:active {
     transform: translate(4px, 4px);
     box-shadow: none;
 }
 
-.pause-icon, .stop-icon {
+.pause-icon, .stop-icon, .settings-icon {
     font-size: 1rem;
 }
 
@@ -332,104 +344,11 @@
     margin-left: 10px;
 }
 
-/* settings panel - needs higher z-index than fixed header */
-.settings-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
-
-/* ensure hidden class actually hides it */
-.settings-panel.hidden {
-    display: none !important;
-}
-
-.settings-content {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-.settings-content h2 {
-    color: #667eea;
-    margin-bottom: 20px;
-}
-
-.setting-group {
-    margin-bottom: 20px;
-}
-
-.setting-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.setting-group select,
-.setting-group input[type="color"],
-.setting-group input[type="file"],
-.setting-group input[type="range"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #e5e7eb;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-.setting-group input[type="color"] {
-    height: 40px;
-    cursor: pointer;
-}
-
-.setting-group input[type="range"] {
-    padding: 0;
-}
-
-.small-btn {
-    margin-top: 5px;
-    padding: 5px 10px;
-    font-size: 0.9rem;
-    background: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.small-btn:hover {
-    background: #dc2626;
-}
-
-.settings-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.game-btn.secondary {
-    background: #6b7280;
-}
-
-.game-btn.secondary:hover {
-    background: #4b5563;
-}
-
 /* Tablet and below */
 @media (max-width: 1024px) {
     #game-container {
         padding: 30px;
+        margin-top: 30px;
     }
     
     .game-header {
@@ -441,7 +360,11 @@
         gap: 8px;
     }
     
-    .pause-btn, .stop-btn {
+    .header-right {
+        gap: 8px;
+    }
+    
+    .pause-btn, .stop-btn, .game-settings-btn {
         padding: 10px 20px;
         font-size: 0.7rem;
     }
@@ -477,16 +400,13 @@
     .now-label {
         font-size: 0.6rem;
     }
-    
-    .settings-content {
-        max-width: 450px;
-    }
 }
 
 /* Mobile devices */
 @media (max-width: 768px) {
     #game-container {
         padding: 20px;
+        margin-top: 20px;
     }
     
     .game-header {
@@ -501,7 +421,13 @@
         justify-content: center;
     }
     
-    .pause-btn, .stop-btn {
+    .header-right {
+        gap: 8px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .pause-btn, .stop-btn, .game-settings-btn {
         padding: 8px 16px;
         font-size: 0.6rem;
         flex: 1;
@@ -613,40 +539,13 @@
         width: 100%;
         min-height: 44px;
     }
-    
-    .settings-content {
-        max-width: 90%;
-        padding: 25px 20px;
-        max-height: 85vh;
-    }
-    
-    .settings-content h2 {
-        font-size: 1.5rem;
-        margin-bottom: 18px;
-    }
-    
-    .setting-group {
-        margin-bottom: 18px;
-    }
-    
-    .setting-group label {
-        font-size: 0.95rem;
-    }
-    
-    .settings-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .settings-buttons .game-btn {
-        width: 100%;
-    }
 }
 
 /* Small mobile devices */
 @media (max-width: 480px) {
     #game-container {
         padding: 15px;
+        margin-top: 15px;
     }
     
     .game-header {
@@ -658,7 +557,11 @@
         gap: 6px;
     }
     
-    .pause-btn, .stop-btn {
+    .header-right {
+        gap: 6px;
+    }
+    
+    .pause-btn, .stop-btn, .game-settings-btn {
         padding: 6px 12px;
         font-size: 0.5rem;
     }
@@ -764,36 +667,30 @@
         padding: 10px 25px;
         font-size: 0.6rem;
     }
-    
-    .settings-content {
-        padding: 20px 15px;
-    }
-    
-    .settings-content h2 {
-        font-size: 1.3rem;
-    }
-    
-    .setting-group {
-        margin-bottom: 15px;
-    }
 }
 
 /* Landscape mobile */
 @media (max-width: 768px) and (orientation: landscape) {
     #game-container {
         padding: 15px;
+        margin-top: 15px;
     }
     
     .game-header {
         padding: 8px 15px;
         flex-direction: row;
+        flex-wrap: wrap;
     }
     
     .header-left {
         gap: 6px;
     }
     
-    .pause-btn, .stop-btn {
+    .header-right {
+        gap: 6px;
+    }
+    
+    .pause-btn, .stop-btn, .game-settings-btn {
         padding: 6px 12px;
         font-size: 0.55rem;
     }
@@ -844,3 +741,294 @@
     }
 }
 
+
+
+.game-settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.game-settings-modal.hidden {
+    display: none !important;
+}
+
+.game-settings-content {
+    background: #f0e6f6;
+    padding: 40px;
+    border: 6px solid #000;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.8);
+    max-width: 1200px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    font-family: 'Press Start 2P', cursive;
+    position: relative;
+}
+
+.close-settings {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #333;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.15s;
+}
+
+.close-settings:hover {
+    transform: scale(1.2);
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    justify-content: center;
+}
+
+.settings-gear {
+    font-size: 2.5rem;
+}
+
+.settings-header h2 {
+    font-size: 2rem;
+    margin: 0;
+    color: #000;
+}
+
+.settings-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 3px solid #000;
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.settings-section h3 {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-icon {
+    font-size: 1.2rem;
+}
+
+.option-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.option-grid.two-col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.option-grid.three-col {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.option-grid.six-col {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.option-card {
+    background: white;
+    border: 5px solid #000;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+.option-card:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+}
+
+.option-card.selected {
+    background: #ffeb3b;
+    border-color: #000;
+}
+
+.check-mark {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #4caf50;
+    color: white;
+    width: 25px;
+    height: 25px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: 3px solid #000;
+}
+
+.option-card.selected .check-mark {
+    display: flex;
+}
+
+.option-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.option-title {
+    font-size: 0.7rem;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.option-desc {
+    font-size: 0.6rem;
+    color: #666;
+}
+
+.theme-card .option-icon {
+    display: none;
+}
+
+.theme-preview {
+    width: 100%;
+    height: 150px;
+    border: 3px solid #000;
+    margin-bottom: 10px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Theme backgrounds */
+.forest-bg {
+    background: linear-gradient(180deg, #4a148c 0%, #7b1fa2 50%, #e91e63 100%);
+}
+
+.garden-bg {
+    background: linear-gradient(180deg, #1565c0 0%, #4fc3f7 100%);
+}
+
+.beach-bg {
+    background: linear-gradient(180deg, #ff6f00 0%, #ffb74d 50%, #263238 100%);
+}
+
+.peak-bg {
+    background: linear-gradient(180deg, #37474f 0%, #546e7a 50%, #b0bec5 100%);
+}
+
+.park-bg {
+    background: linear-gradient(180deg, #8d6e63 0%, #d7ccc8 100%);
+}
+
+.night-bg {
+    background: linear-gradient(180deg, #0d47a1 0%, #1565c0 50%, #0d47a1 100%);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .option-grid.six-col {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .settings-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .settings-gear {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-settings-content {
+        padding: 30px 20px;
+    }
+    
+    .settings-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .settings-section h3 {
+        font-size: 0.8rem;
+    }
+    
+    .option-grid.three-col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .option-grid.six-col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .option-title {
+        font-size: 0.6rem;
+    }
+    
+    .option-desc {
+        font-size: 0.5rem;
+    }
+    
+    .theme-preview {
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-settings-content {
+        padding: 25px 15px;
+    }
+    
+    .settings-header h2 {
+        font-size: 1rem;
+    }
+    
+    .settings-gear {
+        font-size: 1.5rem;
+    }
+    
+    .settings-section h3 {
+        font-size: 0.7rem;
+    }
+    
+    .option-grid.two-col,
+    .option-grid.three-col,
+    .option-grid.six-col {
+        grid-template-columns: 1fr;
+    }
+    
+    .option-card {
+        padding: 15px;
+    }
+    
+    .option-icon {
+        font-size: 2.5rem;
+    }
+    
+    .theme-preview {
+        height: 120px;
+    }
+}

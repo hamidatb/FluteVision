@@ -46,10 +46,17 @@ export class GameEngine {
         this.testMode = false;
         this.processedNotes = new Set(); // track which notes we've spawned obstacles for
         
+        // lives system
+        this.lives = 3;
+        this.maxLives = 3;
+        this.invulnerable = false;
+        this.invulnerabilityTime = 2000; // 2 seconds of invulnerability after getting hit
+        
         // callbacks
         this.onGameOver = null;
         this.onScoreUpdate = null;
         this.onNoteChange = null; // tells UI what gesture to show
+        this.onLivesUpdate = null; // tells UI when lives change
     }
     
     setMusicalTest(test) {
@@ -96,9 +103,15 @@ export class GameEngine {
         this.lastObstacleTime = 0;
         this.elapsedTime = 0;
         this.processedNotes.clear();
+        this.lives = this.maxLives;
+        this.invulnerable = false;
         
         if (this.onScoreUpdate) {
             this.onScoreUpdate(0, this.scoreManager.getHighScore(), 0);
+        }
+        
+        if (this.onLivesUpdate) {
+            this.onLivesUpdate(this.lives, this.maxLives);
         }
     }
     
@@ -149,13 +162,15 @@ export class GameEngine {
         });
         
         // check collisions
-        const hitObstacle = this.collisionSystem.checkPlayerObstacleCollision(
-            this.player, 
-            this.obstacles
-        );
-        
-        if (hitObstacle) {
-            this._handleGameOver();
+        if (!this.invulnerable) {
+            const hitObstacle = this.collisionSystem.checkPlayerObstacleCollision(
+                this.player, 
+                this.obstacles
+            );
+            
+            if (hitObstacle) {
+                this._handleCollision(hitObstacle);
+            }
         }
         
         // update difficulty in random mode
@@ -219,7 +234,32 @@ export class GameEngine {
     }
     
     _render() {
-        this.renderSystem.render(this.player, this.obstacles);
+        this.renderSystem.render(this.player, this.obstacles, this.invulnerable);
+    }
+    
+    _handleCollision(hitObstacle) {
+        // remove the obstacle that was hit
+        this.obstacles = this.obstacles.filter(obs => obs !== hitObstacle);
+        
+        // lose a life
+        this.lives--;
+        this.scoreManager.resetCombo();
+        
+        // notify UI about lives change
+        if (this.onLivesUpdate) {
+            this.onLivesUpdate(this.lives, this.maxLives);
+        }
+        
+        // check if game over
+        if (this.lives <= 0) {
+            this._handleGameOver();
+        } else {
+            // give temporary invulnerability
+            this.invulnerable = true;
+            setTimeout(() => {
+                this.invulnerable = false;
+            }, this.invulnerabilityTime);
+        }
     }
     
     _handleGameOver() {

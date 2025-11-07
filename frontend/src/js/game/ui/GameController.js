@@ -5,7 +5,6 @@ import { GameEngine } from '../../game/core/GameEngine';
 import { testLibrary } from '../music/MusicalTest';
 import { assetManager } from '../assets/AssetManager';
 import { InputManager } from '../../game/managers/InputManager';
-import { SettingsUI } from '../../game/ui/SettingsUI';
 import { gameSettings } from '../../game/config/GameSettings';
 import { GameConstants } from '../../game/config/GameConstants';
 
@@ -22,7 +21,6 @@ class GameController {
         // core systems
         this.gameEngine = null;
         this.inputManager = null;
-        this.settingsUI = null;
         this.cameraToggleUI = null;
         
         // state
@@ -76,9 +74,6 @@ class GameController {
             this._flashSuccess();
         };
         
-        // create settings UI
-        this.settingsUI = new SettingsUI(this.assetManager, this.testLibrary);
-        
         // initialize camera toggle UI
         this.cameraToggleUI = new CameraToggleUI(this.cameraController);
         this.cameraToggleUI.initialize('cameraToggleBtn');
@@ -88,6 +83,9 @@ class GameController {
         
         this._updateStatus('Turn on camera (📹 in navbar) to start!');
         document.getElementById('startBtn').disabled = false;
+        
+        // Initialize lives display
+        this._updateLives(this.gameEngine.lives, this.gameEngine.maxLives);
     }
     
     _handleCameraStateChange(state, isEnabled) {
@@ -150,15 +148,65 @@ class GameController {
             });
         }
         
-        // settings button (now in navbar) - just hook up the click handler
-        const settingsBtn = document.getElementById('settingsBtn');
-        if (settingsBtn) {
-            settingsBtn.addEventListener('click', (e) => {
+        // game settings button in header
+        const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+        if (gameSettingsBtn) {
+            gameSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                console.log('Settings button clicked');
-                this.settingsUI.toggle();
+                console.log('Game settings button clicked');
+                this._openGameSettings();
             });
         }
+        
+        // close game settings
+        const closeGameSettings = document.getElementById('closeGameSettings');
+        if (closeGameSettings) {
+            closeGameSettings.addEventListener('click', () => {
+                this._closeGameSettings();
+            });
+        }
+        
+        // game settings modal backdrop click
+        const gameSettingsModal = document.getElementById('gameSettingsModal');
+        if (gameSettingsModal) {
+            gameSettingsModal.addEventListener('click', (e) => {
+                if (e.target === gameSettingsModal) {
+                    this._closeGameSettings();
+                }
+            });
+        }
+        
+        // vision mode selection
+        document.querySelectorAll('[data-vision]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-vision]').forEach(b => b.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+            });
+        });
+        
+        // character selection
+        document.querySelectorAll('[data-character]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-character]').forEach(b => b.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+            });
+        });
+        
+        // theme selection
+        document.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+            });
+        });
+    }
+    
+    _openGameSettings() {
+        document.getElementById('gameSettingsModal').classList.remove('hidden');
+    }
+    
+    _closeGameSettings() {
+        document.getElementById('gameSettingsModal').classList.add('hidden');
     }
     
     _togglePause() {
