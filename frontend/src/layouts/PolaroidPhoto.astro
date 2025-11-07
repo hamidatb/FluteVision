@@ -1,0 +1,9 @@
+---
+
+const { photopath, photoCaption, photoAltCaption } = Astro.props;
+
+---
+<section class="photo-card">
+    <img src={photopath} alt={photoAltCaption} />
+    <p class="photo-caption">{photoCaption}</p>
+</section>

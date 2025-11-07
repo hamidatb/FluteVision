@@ -24,10 +24,16 @@ const { selectedPage } = Astro.props;
           <span class="icon">🎓</span> PRACTICE
         </a>
       </li>
+      <!-- CSS sets the line div after the third child -->
       <li>
         <button id="cameraToggleBtn" class="nav-btn camera-toggle" title="Toggle Camera">
-          📹
+          <span class="icon">📹</span> CAMERA
         </button>
+      </li>
+      <li>
+        <a href="/about" class={`nav-btn ${selectedPage === 'about' ? 'active' : ''}`}>
+          <span class="icon">📊</span> ABOUT
+        </a>
       </li>
     </ul>
   </nav>
