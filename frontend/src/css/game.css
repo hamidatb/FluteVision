@@ -841,6 +841,10 @@
     grid-template-columns: repeat(3, 1fr);
 }
 
+.option-grid.four-col {
+    grid-template-columns: repeat(4, 1fr);
+}
+
 .option-grid.six-col {
     grid-template-columns: repeat(6, 1fr);
 }

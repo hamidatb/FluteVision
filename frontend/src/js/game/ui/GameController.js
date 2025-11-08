@@ -109,6 +109,11 @@ class GameController {
             const allGestures = gesturesData.fingerings || [];
             this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
             console.log('Refreshed gestures for', newMode, ':', this.availableGestures);
+            // Update test options if settings modal is open
+            const modal = document.getElementById('gameSettingsModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                this._populateTestOptions();
+            }
         });
 
         // set up UI event listeners
@@ -122,6 +127,9 @@ class GameController {
         
         // Load and apply game settings (theme, character, vision mode)
         this._loadGameSettings();
+        
+        // Populate test options initially
+        this._populateTestOptions();
     }
     
     _handleCameraStateChange(state, isEnabled) {
@@ -213,12 +221,12 @@ class GameController {
             });
         }
         
-        // vision mode selection
-        document.querySelectorAll('[data-vision]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('[data-vision]').forEach(b => b.classList.remove('selected'));
-                e.currentTarget.classList.add('selected');
-            });
+        // test selection
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('[data-test]')) {
+                document.querySelectorAll('[data-test]').forEach(b => b.classList.remove('selected'));
+                e.target.closest('[data-test]').classList.add('selected');
+            }
         });
         
         // character selection
@@ -255,6 +263,7 @@ class GameController {
     
     _openGameSettings() {
         document.getElementById('gameSettingsModal').classList.remove('hidden');
+        this._populateTestOptions();
     }
     
     _closeGameSettings() {
@@ -263,15 +272,10 @@ class GameController {
     
     _loadGameSettings() {
         // Load saved settings and update UI
-        const visionMode = gameSettings.get('visionMode');
         const character = gameSettings.get('character');
         const theme = gameSettings.get('theme');
         
         // Update selected states in UI
-        document.querySelectorAll('[data-vision]').forEach(btn => {
-            btn.classList.toggle('selected', btn.dataset.vision === visionMode);
-        });
-        
         document.querySelectorAll('[data-character]').forEach(btn => {
             btn.classList.toggle('selected', btn.dataset.character === character);
         });
@@ -284,19 +288,86 @@ class GameController {
         this._applyGameSettings();
     }
     
+    _populateTestOptions() {
+        const container = document.getElementById('testOptionsContainer');
+        if (!container) return;
+        
+        // Get current vision mode (from navbar toggle or saved setting)
+        const visionMode = gameSettings.get('visionMode');
+        
+        // Only show tests for flute mode
+        if (visionMode !== 'flute') {
+            container.innerHTML = '<p style="color: #999; padding: 1rem; text-align: center;">Tests are only available in Flute Mode</p>';
+            return;
+        }
+        
+        // Get all available tests and filter to only show the 3 specified tests
+        const allTests = this.testLibrary.getAllTests();
+        const allowedTestNames = ['Hot Cross Buns', 'C Major Scale', 'Beginner Pattern (Bb-C-D)'];
+        const tests = allTests.filter(test => allowedTestNames.includes(test.name));
+        const currentTest = gameSettings.get('currentTest');
+        const musicMode = gameSettings.get('musicMode');
+        
+        // Clear container
+        container.innerHTML = '';
+        
+        // Add "Random" option (for random mode)
+        const randomCard = document.createElement('button');
+        randomCard.className = 'option-card';
+        randomCard.dataset.test = 'random';
+        randomCard.innerHTML = `
+            <div class="option-icon">🎲</div>
+            <div class="option-title">Random</div>
+            <span class="check-mark">✓</span>
+        `;
+        if (musicMode === 'random' || !currentTest) {
+            randomCard.classList.add('selected');
+        }
+        container.appendChild(randomCard);
+        
+        // Add test options (only the 3 specified tests)
+        tests.forEach(test => {
+            const testCard = document.createElement('button');
+            testCard.className = 'option-card';
+            testCard.dataset.test = test.name;
+            testCard.innerHTML = `
+                <div class="option-icon">🎵</div>
+                <div class="option-title">${test.name}</div>
+                <span class="check-mark">✓</span>
+            `;
+            if (currentTest === test.name && musicMode === 'test') {
+                testCard.classList.add('selected');
+            }
+            container.appendChild(testCard);
+        });
+    }
+    
     _saveGameSettings() {
         // Get selected values from UI
-        const visionMode = document.querySelector('[data-vision].selected')?.dataset.vision || 'flute';
+        // Vision mode is controlled via navbar toggle, so get it from gameSettings
+        const visionMode = gameSettings.get('visionMode');
         const character = document.querySelector('[data-character].selected')?.dataset.character || 'cat';
         const theme = document.querySelector('[data-theme].selected')?.dataset.theme || 'forest';
         
-        console.log('Saving game settings:', { visionMode, character, theme });
+        // Get selected test
+        const selectedTest = document.querySelector('[data-test].selected')?.dataset.test;
+        let musicMode = 'random';
+        let currentTest = null;
+        
+        if (selectedTest && selectedTest !== 'random') {
+            musicMode = 'test';
+            currentTest = selectedTest;
+        }
+        
+        console.log('Saving game settings:', { visionMode, character, theme, musicMode, currentTest });
         
         // Save to game settings
         gameSettings.setMultiple({
             visionMode,
             character,
-            theme
+            theme,
+            musicMode,
+            currentTest
         });
         
         // Apply the new settings
