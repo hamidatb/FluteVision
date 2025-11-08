@@ -175,7 +175,10 @@ class PracticeMode {
         // show all detected gestures ranked by confidence
         const container = document.getElementById('allProbabilities');
         if (!probabilities) {
-            container.innerHTML = '<p style="color: #666;">No detections yet</p>';
+            const message = document.createElement('p');
+            message.style.color = '#666';
+            message.textContent = 'No detections yet';
+            container.replaceChildren(message);
             return;
         }
     }

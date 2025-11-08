@@ -333,7 +333,12 @@ class GameController {
         
         // Only show tests for flute mode
         if (visionMode !== 'flute') {
-            container.innerHTML = '<p style="color: #999; padding: 1rem; text-align: center;">Tests are only available in Flute Mode</p>';
+            const message = document.createElement('p');
+            message.style.color = '#999';
+            message.style.padding = '1rem';
+            message.style.textAlign = 'center';
+            message.textContent = 'Tests are only available in Flute Mode';
+            container.replaceChildren(message);
             return;
         }
         
@@ -345,17 +350,29 @@ class GameController {
         const musicMode = gameSettings.get('musicMode');
         
         // Clear container
-        container.innerHTML = '';
+        container.replaceChildren();
         
         // Add "Random" option (for random mode)
         const randomCard = document.createElement('button');
         randomCard.className = 'option-card';
         randomCard.dataset.test = 'random';
-        randomCard.innerHTML = `
-            <div class="option-icon">🎲</div>
-            <div class="option-title">Random</div>
-            <span class="check-mark">✓</span>
-        `;
+        
+        const randomIcon = document.createElement('div');
+        randomIcon.className = 'option-icon';
+        randomIcon.textContent = '🎲';
+        
+        const randomTitle = document.createElement('div');
+        randomTitle.className = 'option-title';
+        randomTitle.textContent = 'Random';
+        
+        const randomCheck = document.createElement('span');
+        randomCheck.className = 'check-mark';
+        randomCheck.textContent = '✓';
+        
+        randomCard.appendChild(randomIcon);
+        randomCard.appendChild(randomTitle);
+        randomCard.appendChild(randomCheck);
+        
         if (musicMode === 'random' || !currentTest) {
             randomCard.classList.add('selected');
         }
@@ -366,11 +383,23 @@ class GameController {
             const testCard = document.createElement('button');
             testCard.className = 'option-card';
             testCard.dataset.test = test.name;
-            testCard.innerHTML = `
-                <div class="option-icon">🎵</div>
-                <div class="option-title">${test.name}</div>
-                <span class="check-mark">✓</span>
-            `;
+            
+            const testIcon = document.createElement('div');
+            testIcon.className = 'option-icon';
+            testIcon.textContent = '🎵';
+            
+            const testTitle = document.createElement('div');
+            testTitle.className = 'option-title';
+            testTitle.textContent = test.name;
+            
+            const testCheck = document.createElement('span');
+            testCheck.className = 'check-mark';
+            testCheck.textContent = '✓';
+            
+            testCard.appendChild(testIcon);
+            testCard.appendChild(testTitle);
+            testCard.appendChild(testCheck);
+            
             if (currentTest === test.name && musicMode === 'test') {
                 testCard.classList.add('selected');
             }
@@ -468,11 +497,21 @@ class GameController {
                     this._updatePredictionDisplay(prediction);
                 });
             }
-            pauseBtn.innerHTML = '<span class="pause-icon">⏸</span> PAUSE';
+            pauseBtn.replaceChildren();
+            const pauseIcon = document.createElement('span');
+            pauseIcon.className = 'pause-icon';
+            pauseIcon.textContent = '⏸';
+            pauseBtn.appendChild(pauseIcon);
+            pauseBtn.appendChild(document.createTextNode(' PAUSE'));
         } else if (this.gameEngine.isRunning) {
             // Currently running, so pause
             this._pauseGame();
-            pauseBtn.innerHTML = '<span class="pause-icon">▶</span> RESUME';
+            pauseBtn.replaceChildren();
+            const resumeIcon = document.createElement('span');
+            resumeIcon.className = 'pause-icon';
+            resumeIcon.textContent = '▶';
+            pauseBtn.appendChild(resumeIcon);
+            pauseBtn.appendChild(document.createTextNode(' RESUME'));
         }
     }
     
@@ -489,7 +528,12 @@ class GameController {
         
         // Reset pause button
         const pauseBtn = document.getElementById('pauseBtn');
-        pauseBtn.innerHTML = '<span class="pause-icon">⏸</span> PAUSE';
+        pauseBtn.replaceChildren();
+        const pauseIcon = document.createElement('span');
+        pauseIcon.className = 'pause-icon';
+        pauseIcon.textContent = '⏸';
+        pauseBtn.appendChild(pauseIcon);
+        pauseBtn.appendChild(document.createTextNode(' PAUSE'));
         
         // Reset UI
         this._updateStatus('Turn on camera (📹 in navbar) to start!');
@@ -665,7 +709,7 @@ class GameController {
         if (!heartsContainer) return;
         
         // clear existing hearts
-        heartsContainer.innerHTML = '';
+        heartsContainer.replaceChildren();
         
         // create hearts based on max lives
         for (let i = 0; i < maxLives; i++) {
