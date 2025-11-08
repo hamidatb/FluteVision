@@ -21,9 +21,9 @@ export class FluteVisionAPI {
         }
     }
 
-    async getAvailableGestures() {
+    async getAvailableGestures(mode = 'flute') {
         try {
-            const response = await fetch(`${this.baseUrl}/fingerings`);
+            const response = await fetch(`${this.baseUrl}/fingerings?mode=${mode}`);
             return await response.json();
         } catch (error) {
             console.error('Failed to get gestures:', error);

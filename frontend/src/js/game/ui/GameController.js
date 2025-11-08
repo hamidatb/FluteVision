@@ -41,9 +41,15 @@ class GameController {
             return;
         }
         
-        // get available gestures from model
-        const gesturesData = await this.api.getAvailableGestures();
-        this.availableGestures = gesturesData.fingerings || [];
+        // get available gestures from model for the saved vision mode
+        const savedVisionMode = gameSettings.get('visionMode');
+        const gesturesData = await this.api.getAvailableGestures(savedVisionMode);
+        const allGestures = gesturesData.fingerings || [];
+        
+        // filtering out "neutral", it's for CV detection only, not a target gesture
+        this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
+        console.log(`Loaded gestures for ${savedVisionMode} mode:`, this.availableGestures);
+        console.log(`(Filtered out 'neutral' from targets)`);
         
         if (this.availableGestures.length === 0) {
             this._showError('No gestures trained. Train the model first.');
@@ -82,14 +88,16 @@ class GameController {
         
         // 🎵 initialize vision mode toggle (for flute vs hand)
         this.visionModeToggleUI = new VisionModeToggleUI(this.cameraController);
-        this.visionModeToggleUI.initialize('visionModeToggleBtn');
-
-        // restore saved vision mode if available
+        
+        // restore saved vision mode BEFORE initializing UI
         const visionMode = gameSettings.get('visionMode');
         if (visionMode && this.cameraController.stream) {
             this.cameraController.stream.predictionMode = visionMode;
             console.log(`Restored saved vision mode: ${visionMode}`);
         }
+        
+        // NOW initialize the UI so it shows the correct mode
+        this.visionModeToggleUI.initialize('visionModeToggleBtn');
 
         // set up UI event listeners
         this._setupEventListeners();
@@ -170,6 +178,15 @@ class GameController {
             gameSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 console.log('Game settings button clicked');
+                this._openGameSettings();
+            });
+        }
+        
+        // game settings button on start screen 
+        const startScreenSettingsBtn = document.getElementById('startScreenSettingsBtn');
+        if (startScreenSettingsBtn) {
+            startScreenSettingsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 this._openGameSettings();
             });
         }
@@ -370,7 +387,15 @@ class GameController {
         this._startGameplay();
     }
     
-    _startGameplay() {
+    async _startGameplay() {
+        // Refresh gestures before starting in case vision mode was changed
+        const visionMode = gameSettings.get('visionMode');
+        const gesturesData = await this.api.getAvailableGestures(visionMode);
+        const allGestures = gesturesData.fingerings || [];
+        
+        this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
+        console.log('Refreshed gestures for', visionMode, ':', this.availableGestures);
+        
         // check camera state before starting gameplay
         if (!this.cameraController.isEnabled()) {
             this._updateStatus('Camera must be on to play!');
@@ -386,9 +411,10 @@ class GameController {
         
         if (mode === 'test') {
             const testName = gameSettings.get('currentTest');
-            const test = this.testLibrary.getTest(testName);
+            let test = this.testLibrary.getTest(testName);
             
             if (test) {
+                // note: Tests are only for flute mode. Hand mode uses random only
                 this.gameEngine.setMusicalTest(test);
                 console.log(`Starting musical test: ${testName}`);
             } else {
@@ -464,6 +490,7 @@ class GameController {
         this.currentTargetGesture = newGesture;
         this.inputManager.setTargetGesture(newGesture);
         this._updateTargetDisplay(newGesture);
+        console.log('Selected target gesture:', newGesture, 'from available:', this.availableGestures);
     }
     
     _updatePredictionDisplay(prediction) {
@@ -475,6 +502,11 @@ class GameController {
             // green if matches target
             const isCorrect = prediction.gesture === this.currentTargetGesture;
             gestureEl.style.color = isCorrect ? '#00ff00' : '#ffffff';
+            
+            // Debug log when gestures match
+            if (isCorrect) {
+                console.log('✓ MATCH! Detected:', prediction.gesture, 'Target:', this.currentTargetGesture);
+            }
         } else {
             gestureEl.textContent = '-';
             gestureEl.style.color = '#ffffff';

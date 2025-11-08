@@ -27,8 +27,14 @@ class PracticeMode {
             return;
         }
 
-        const gesturesData = await this.api.getAvailableGestures();
-        this.availableGestures = gesturesData.fingerings || [];
+        // Get gestures for current vision mode
+        const visionMode = this.cameraController.stream.predictionMode || 'flute';
+        const gesturesData = await this.api.getAvailableGestures(visionMode);
+        const allGestures = gesturesData.fingerings || [];
+        
+        // filtering out 'neutral' - it's for CV detection only, not a practice target
+        this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
+        console.log(`Loaded gestures for ${visionMode} mode:`, this.availableGestures);
 
         if (this.availableGestures.length === 0) {
             this.updateStatus('No gestures available. Train the model first.', 'warning');
