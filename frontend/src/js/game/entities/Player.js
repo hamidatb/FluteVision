@@ -29,7 +29,9 @@ export class Player {
     }
     
     jump() {
-        if (!this.canJump) return;
+        // allow jump even if slightly above ground for more responsive rapid jumps
+        const nearGround = this.y >= this.groundY - 5;
+        if (!this.canJump && !nearGround) return;
         
         this.velocityY = GameConstants.JUMP_VELOCITY;
         this.isJumping = true;

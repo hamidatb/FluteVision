@@ -72,6 +72,8 @@ class GameController {
             this._handleNoteChange(gesture, time);
         this.gameEngine.onLivesUpdate = (lives, maxLives) =>
             this._updateLives(lives, maxLives);
+        this.gameEngine.onTestComplete = (stats) =>
+            this._handleTestComplete(stats);
         
         // create input manager - pass the camera stream (backward compatible)
         this.inputManager = new InputManager(this.cameraController.stream);
@@ -104,15 +106,40 @@ class GameController {
         window.addEventListener('visionModeChanged', async (e) => {
             const newMode = e.detail.mode;
             console.log('Vision mode changed to:', newMode);
+            
             // Refresh available gestures for the new mode
             const gesturesData = await this.api.getAvailableGestures(newMode);
             const allGestures = gesturesData.fingerings || [];
             this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
             console.log('Refreshed gestures for', newMode, ':', this.availableGestures);
+            
             // Update test options if settings modal is open
             const modal = document.getElementById('gameSettingsModal');
             if (modal && !modal.classList.contains('hidden')) {
                 this._populateTestOptions();
+            }
+            
+            // If game is running, restart it with new mode
+            if (this.gameEngine && this.gameEngine.isRunning) {
+                console.log('Game is running - restarting with new mode');
+                this._pauseGame();
+                
+                // Stop current input monitoring
+                if (this.inputManager) {
+                    this.inputManager.stopMonitoring();
+                }
+                
+                // Stop gesture change interval
+                if (this.gestureChangeInterval) {
+                    clearInterval(this.gestureChangeInterval);
+                }
+                
+                // Reset and restart gameplay with new mode
+                this.gameEngine.reset();
+                this._startGameplay();
+            } else if (this.gameEngine) {
+                // Game exists but not running - just update the target display
+                this._updateTargetDisplay('-');
             }
         });
 
@@ -174,6 +201,15 @@ class GameController {
         
         document.getElementById('restartBtn').addEventListener('click', () => {
             this._restartGame();
+        });
+        
+        // test complete buttons
+        document.getElementById('testPlayAgainBtn')?.addEventListener('click', () => {
+            this._restartGame();
+        });
+        
+        document.getElementById('testMenuBtn')?.addEventListener('click', () => {
+            this._stopGame();
         });
         
         // pause button
@@ -489,22 +525,26 @@ class GameController {
         this._updateLives(this.gameEngine.lives, this.gameEngine.maxLives);
         
         // extracted common gameplay start logic bc it's used by both start and restart
-        // check if using musical test mode
+        // check if using musical test mode (only available in flute mode)
         const mode = gameSettings.get('musicMode');
         
-        if (mode === 'test') {
+        if (mode === 'test' && visionMode === 'flute') {
             const testName = gameSettings.get('currentTest');
             let test = this.testLibrary.getTest(testName);
             
             if (test) {
-                // note: Tests are only for flute mode. Hand mode uses random only
                 this.gameEngine.setMusicalTest(test);
                 console.log(`Starting musical test: ${testName}`);
             } else {
                 console.warn('Test not found, falling back to random mode');
+                this.gameEngine.setMusicalTest(null);
             }
         } else {
-            this.gameEngine.setMusicalTest(null); // random mode
+            // hand mode always uses random mode (tests are flute-only)
+            this.gameEngine.setMusicalTest(null);
+            if (mode === 'test' && visionMode === 'hand') {
+                console.log('Hand mode detected - using random mode (tests are flute-only)');
+            }
         }
         
         // start monitoring input (keyboard + gestures)
@@ -531,6 +571,7 @@ class GameController {
     
     _restartGame() {
         document.getElementById('gameOverBackdrop').classList.add('hidden');
+        document.getElementById('testCompleteBackdrop').classList.add('hidden');
         
         // reset game state
         this.gameEngine.reset();
@@ -553,6 +594,26 @@ class GameController {
         document.getElementById('finalScore').textContent = finalScore;
         document.getElementById('finalCombo').textContent = maxCombo;
         document.getElementById('gameOverBackdrop').classList.remove('hidden');
+    }
+    
+    _handleTestComplete(stats) {
+        // stop input monitoring
+        this.inputManager.stopMonitoring();
+        
+        // stop gesture changes
+        if (this.gestureChangeInterval) {
+            clearInterval(this.gestureChangeInterval);
+        }
+        
+        // show test complete screen with stats
+        document.getElementById('completedTestName').textContent = stats.testName;
+        document.getElementById('testFinalScore').textContent = stats.score;
+        document.getElementById('testMaxCombo').textContent = stats.maxCombo;
+        document.getElementById('testAccuracy').textContent = `${stats.accuracy}%`;
+        document.getElementById('testNotesHit').textContent = stats.notesHit;
+        document.getElementById('testTotalNotes').textContent = stats.totalNotes;
+        document.getElementById('testDuration').textContent = (stats.duration / 1000).toFixed(1);
+        document.getElementById('testCompleteBackdrop').classList.remove('hidden');
     }
     
     _handleNoteChange(gesture, time) {

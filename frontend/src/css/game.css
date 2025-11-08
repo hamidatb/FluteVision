@@ -233,7 +233,7 @@
 }
 
 /* Modal screens */
-.start-screen, .game-over {
+.start-screen, .game-over, .test-complete {
     position: relative;
     background: white;
     padding: 40px;
@@ -243,6 +243,36 @@
     min-width: 300px;
     max-width: 500px;
     font-family: 'Press Start 2P', cursive;
+}
+
+.test-complete {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    max-width: 600px;
+}
+
+.test-name {
+    font-size: 1rem;
+    color: #065f46;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.test-stats {
+    background: white;
+    padding: 20px;
+    border: 4px solid #000;
+    margin: 20px 0;
+}
+
+.test-stats p {
+    margin: 10px 0;
+    font-size: 0.7rem;
+    color: #333;
+}
+
+.test-accuracy {
+    color: #065f46;
+    font-weight: bold;
 }
 
 .hidden {

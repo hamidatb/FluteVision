@@ -1,17 +1,16 @@
 // immutable game constants - things that define core mechanics and shouldn't change during gameplay
-// separated from settings bc settings are user-configurable but constants are system-level
 export class GameConstants {
     // canvas
     static CANVAS_WIDTH = 800;
     static CANVAS_HEIGHT = 300;
     
-    // player physics - tuned these values to feel good, like the chrome dino
+    // player physics - tuned for fast note sequences in musical tests
     static PLAYER_WIDTH = 40;
     static PLAYER_HEIGHT = 60;
     static PLAYER_X = 100; // fixed x position bc it's a runner game
     static PLAYER_GROUND_Y = 200;
-    static JUMP_VELOCITY = -12; // negative bc y increases downward
-    static GRAVITY = 0.6; // feels natural, not too floaty
+    static JUMP_VELOCITY = -12; // negative y increases downward
+    static GRAVITY = 0.8; // 0.8 so not tooo floaty
     
     // obstacle generation
     static OBSTACLE_MIN_WIDTH = 20;

@@ -74,7 +74,7 @@ export class TestLibrary {
             'Beginner Pattern (Bb-C-D)',
             'Basic three-note pattern',
             'Bb:0 C:1 D:2 Bb:3 C:4 D:5 Bb:6 C:7 D:8',
-            100 // slower tempo for beginners
+            80 // slower tempo for beginners to have time between notes
         ));
         
         // simple scale - good for general practice
@@ -82,7 +82,7 @@ export class TestLibrary {
             'C Major Scale',
             'Basic scale exercise',
             'C:0 D:1 E:2 F:3 G:4 A:5 Bb:6',
-            120
+            90 // slower for comfortable practice
         ));
         
         // arpeggio pattern
@@ -90,7 +90,7 @@ export class TestLibrary {
             'Simple Arpeggio',
             'Jump between notes',
             'C:0 E:1 G:2 C:3 G:4 E:5 C:6',
-            140
+            100 // slower for accurate jumps
         ));
         
         // hot cross buns - classic beginner song
@@ -98,7 +98,7 @@ export class TestLibrary {
             'Hot Cross Buns',
             'Traditional melody',
             'E:0 D:1 C:2 E:4 D:5 C:6 C:8 C:8.5 C:9 C:9.5 D:10 D:10.5 D:11 D:11.5 E:12 D:13 C:14',
-            100
+            75 // much slower for rapid note sequences to be playable
         ));
         
         // mary had a little lamb

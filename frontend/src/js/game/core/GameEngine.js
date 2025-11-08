@@ -45,6 +45,7 @@ export class GameEngine {
         this.musicalTest = null;
         this.testMode = false;
         this.processedNotes = new Set(); // track which notes we've spawned obstacles for
+        this.testCompleted = false;
         
         // lives system
         this.lives = 3;
@@ -57,6 +58,7 @@ export class GameEngine {
         this.onScoreUpdate = null;
         this.onNoteChange = null; // tells UI what gesture to show
         this.onLivesUpdate = null; // tells UI when lives change
+        this.onTestComplete = null; // tells UI when test is finished
     }
     
     setMusicalTest(test) {
@@ -64,6 +66,7 @@ export class GameEngine {
         this.musicalTest = test;
         this.testMode = test !== null;
         this.processedNotes.clear();
+        this.testCompleted = false;
     }
     
     start() {
@@ -103,6 +106,7 @@ export class GameEngine {
         this.lastObstacleTime = 0;
         this.elapsedTime = 0;
         this.processedNotes.clear();
+        this.testCompleted = false;
         this.lives = this.maxLives;
         this.invulnerable = false;
         
@@ -160,6 +164,11 @@ export class GameEngine {
             }
             return true;
         });
+        
+        // check if test is complete
+        if (this.testMode && !this.testCompleted) {
+            this._checkTestCompletion();
+        }
         
         // check collisions
         if (!this.invulnerable) {
@@ -259,6 +268,37 @@ export class GameEngine {
             setTimeout(() => {
                 this.invulnerable = false;
             }, this.invulnerabilityTime);
+        }
+    }
+    
+    _checkTestCompletion() {
+        if (!this.musicalTest) return;
+        
+        const totalNotes = this.musicalTest.notes.length;
+        const allNotesSpawned = this.processedNotes.size === totalNotes;
+        const noObstaclesLeft = this.obstacles.length === 0;
+        
+        // test is complete when all notes spawned and all obstacles cleared
+        if (allNotesSpawned && noObstaclesLeft) {
+            this.testCompleted = true;
+            this.stop();
+            
+            if (this.onTestComplete) {
+                // notes hit = total notes - lives lost (each miss = 1 life lost)
+                const livesLost = this.maxLives - this.lives;
+                const notesHit = totalNotes - livesLost;
+                const accuracy = totalNotes > 0 ? Math.round((notesHit / totalNotes) * 100) : 100;
+                
+                this.onTestComplete({
+                    testName: this.musicalTest.name,
+                    score: this.scoreManager.getScore(),
+                    maxCombo: this.scoreManager.maxCombo,
+                    accuracy: accuracy,
+                    notesHit: notesHit,
+                    totalNotes: totalNotes,
+                    duration: this.musicalTest.getTotalDuration()
+                });
+            }
         }
     }
     
