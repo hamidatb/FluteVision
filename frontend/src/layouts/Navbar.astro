@@ -8,6 +8,10 @@ const { selectedPage } = Astro.props;
   </div>
 
   <nav class="navbar">
+    <button class="nav-btn" id="navbar-toggle" aria-label="Toggle navigation" onclick="toggleNavLinksForMobile()">
+      ☰
+    </button>
+
     <ul class="nav-list">
       <li>
         <a href="/" class={`nav-btn ${selectedPage === 'home' ? 'active' : ''}`}>
@@ -39,5 +43,12 @@ const { selectedPage } = Astro.props;
     </ul>
   </nav>
 </header>
+
+<script is:inline>
+  function toggleNavLinksForMobile() {
+    const navLinks = document.querySelector(".nav-list");
+    navLinks?.classList.toggle("open");
+  }
+</script>
 
 
