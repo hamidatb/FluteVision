@@ -8,6 +8,7 @@ The flags are:
 --user: The user ID
 --replace: Replace existing photos for keys (default: keeps old photos and adds new ones)
 --output-dir: The directory to save the output to
+--mode: flute or hand
 
 e.g. python scripts/capture_data.py --keys Bb C D --samples 300 --user john
 
@@ -29,7 +30,7 @@ from dataclasses import dataclass
 import tkinter as tk
 from tkinter import filedialog
 import argparse
-from config import PROJECT_ROOT, SCRIPTS_DIR, SAVED_DATASETS_DIR
+from config import PROJECT_ROOT, SCRIPTS_DIR, SAVED_DATASETS_DIR, SAVED_HAND_DATASETS_DIR
 
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(SCRIPTS_DIR))
@@ -44,6 +45,7 @@ class CaptureSession:
     user_id: str
     output_dir: Path
     keep_old: bool
+    mode: str # flute or hand, default flute
 
 
 class StorageManager:
@@ -209,6 +211,7 @@ class CaptureController:
     def __init__(self, session: CaptureSession):
         self.session = session
         self.storage = StorageManager(session.output_dir)
+        print(f"Output dir for this run: {session.output_dir}")
         self.webcam = WebcamManager()
         self.ui = CaptureUIRenderer()
     
@@ -253,6 +256,7 @@ class CaptureController:
         print("FluteVision Data Capture")
         print("="*60)
         print(f"Keys to collect: {', '.join(self.session.keys)}")
+        print(f"Capture mode: {self.session.mode}")
         print(f"Samples per key: {self.session.samples_per_key}")
         print(f"User: {self.session.user_id}")
         print(f"Output directory: {self.session.output_dir}")
@@ -449,7 +453,14 @@ def main():
         '--keys',
         nargs='+',
         required=True,
-        help='Keys to capture (e.g., --keys Bb C D)'
+        help='Keys to capture (e.g., --keys Bb C D or open close if hand mode)'
+    )
+
+    parser.add_argument(
+        '--mode',
+        default="flute",
+        required=True,
+        help='mode of capture (flute or hand)'
     )
     
     parser.add_argument(
@@ -480,6 +491,9 @@ def main():
     args = parser.parse_args()
     
     try:
+        if args.mode == "hand":
+            args.output_dir = str(SAVED_HAND_DATASETS_DIR)
+        
         # Handle output directory selection
         if args.output_dir == 'datasets/raw':
             output_dir = select_output_directory()
@@ -496,7 +510,8 @@ def main():
             samples_per_key=args.samples,
             user_id=args.user,
             output_dir=output_dir,
-            keep_old=not args.replace
+            keep_old=not args.replace,
+            mode=args.mode
         )
         
         controller = CaptureController(session)
