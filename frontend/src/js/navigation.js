@@ -136,7 +136,7 @@ export class VisionModeToggleUI {
     }
 
     handleToggle() {
-        this.cameraController.stream.toggleVisionMode();
+        this.cameraController.toggleVisionMode();
         const newMode = this.cameraController.stream.predictionMode;
         this.updateUI(newMode);
         

@@ -1,3 +1,5 @@
+import { getApiUrl } from './config/apiConfig.js';
+
 /**
  * CameraStateManager, this manages camera state
  */
@@ -49,16 +51,7 @@ class CameraStateManager {
  */
 class CameraStream {
     constructor(apiUrl = null) {
-        // dynamically determine API URL based on environment
-        if (apiUrl) {
-            this.apiUrl = apiUrl;
-        } else if (window.location.hostname.includes('herokuapp.com')) {
-            // on heroku, use the deployed backend API
-            this.apiUrl = 'https://flutevision-api-2aeac29f3245.herokuapp.com/api/v1';
-        } else {
-            // local development
-            this.apiUrl = 'http://localhost:8000/api/v1';
-        }
+        this.apiUrl = apiUrl || getApiUrl();
         
         this.video = null;
         this.canvas = null;
