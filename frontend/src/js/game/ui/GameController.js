@@ -1,6 +1,6 @@
 import { CameraController } from '../../camera';
 import { FluteVisionAPI } from '../../api';
-import { CameraToggleUI } from '../../navigation';
+import { CameraToggleUI, VisionModeToggleUI } from '../../navigation';
 import { GameEngine } from '../../game/core/GameEngine';
 import { testLibrary } from '../music/MusicalTest';
 import { assetManager } from '../assets/AssetManager';
@@ -23,6 +23,7 @@ class GameController {
         this.gameEngine = null;
         this.inputManager = null;
         this.cameraToggleUI = null;
+        this.visionModeToggleUI = null;
         
         // state
         this.availableGestures = [];
@@ -40,9 +41,13 @@ class GameController {
             return;
         }
         
-        // get available gestures from model
-        const gesturesData = await this.api.getAvailableGestures();
-        this.availableGestures = gesturesData.fingerings || [];
+        // get available gestures from model by using camera stream's current mode (navbar state)
+        const currentVisionMode = this.cameraController.stream?.predictionMode || gameSettings.get('visionMode');
+        const gesturesData = await this.api.getAvailableGestures(currentVisionMode);
+        const allGestures = gesturesData.fingerings || [];
+        
+        // filtering out "neutral", it's for CV detection only, not a target gesture
+        this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
         
         if (this.availableGestures.length === 0) {
             this._showError('No gestures trained. Train the model first.');
@@ -79,6 +84,33 @@ class GameController {
         this.cameraToggleUI = new CameraToggleUI(this.cameraController);
         this.cameraToggleUI.initialize('cameraToggleBtn');
         
+        // 🎵 initialize vision mode toggle (for flute vs hand)
+        this.visionModeToggleUI = new VisionModeToggleUI(this.cameraController);
+        
+        // restore saved vision mode BEFORE initializing UI
+        const visionMode = gameSettings.get('visionMode');
+        if (visionMode && this.cameraController.stream) {
+            this.cameraController.stream.predictionMode = visionMode;
+            console.log(`Restored saved vision mode: ${visionMode}`);
+        }
+        
+        // NOW initialize the UI so it shows the correct mode
+        this.visionModeToggleUI.initialize('visionModeToggleBtn');
+        
+        // Make gameSettings available globally so navbar can update it
+        window.gameSettings = gameSettings;
+        
+        // Listen for vision mode changes from navbar toggle
+        window.addEventListener('visionModeChanged', async (e) => {
+            const newMode = e.detail.mode;
+            console.log('Vision mode changed to:', newMode);
+            // Refresh available gestures for the new mode
+            const gesturesData = await this.api.getAvailableGestures(newMode);
+            const allGestures = gesturesData.fingerings || [];
+            this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
+            console.log('Refreshed gestures for', newMode, ':', this.availableGestures);
+        });
+
         // set up UI event listeners
         this._setupEventListeners();
         
@@ -158,6 +190,15 @@ class GameController {
             gameSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 console.log('Game settings button clicked');
+                this._openGameSettings();
+            });
+        }
+        
+        // game settings button on start screen 
+        const startScreenSettingsBtn = document.getElementById('startScreenSettingsBtn');
+        if (startScreenSettingsBtn) {
+            startScreenSettingsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 this._openGameSettings();
             });
         }
@@ -275,7 +316,7 @@ class GameController {
         const visionMode = gameSettings.get('visionMode');
         console.log('Applying vision mode:', visionMode);
         if (this.cameraController && this.cameraController.cameraStream) {
-            this.cameraController.cameraStream.setPredictionMode(visionMode);
+            this.cameraController.cameraStream.predictionMode = visionMode;
         }
         
         // Apply theme colors to render system and game settings
@@ -358,7 +399,15 @@ class GameController {
         this._startGameplay();
     }
     
-    _startGameplay() {
+    async _startGameplay() {
+        // Refresh gestures before starting in case vision mode was changed
+        const visionMode = gameSettings.get('visionMode');
+        const gesturesData = await this.api.getAvailableGestures(visionMode);
+        const allGestures = gesturesData.fingerings || [];
+        
+        this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
+        console.log('Refreshed gestures for', visionMode, ':', this.availableGestures);
+        
         // check camera state before starting gameplay
         if (!this.cameraController.isEnabled()) {
             this._updateStatus('Camera must be on to play!');
@@ -374,9 +423,10 @@ class GameController {
         
         if (mode === 'test') {
             const testName = gameSettings.get('currentTest');
-            const test = this.testLibrary.getTest(testName);
+            let test = this.testLibrary.getTest(testName);
             
             if (test) {
+                // note: Tests are only for flute mode. Hand mode uses random only
                 this.gameEngine.setMusicalTest(test);
                 console.log(`Starting musical test: ${testName}`);
             } else {
@@ -452,6 +502,7 @@ class GameController {
         this.currentTargetGesture = newGesture;
         this.inputManager.setTargetGesture(newGesture);
         this._updateTargetDisplay(newGesture);
+        console.log('Selected target gesture:', newGesture, 'from available:', this.availableGestures);
     }
     
     _updatePredictionDisplay(prediction) {

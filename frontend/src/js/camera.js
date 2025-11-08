@@ -67,17 +67,12 @@ class CameraStream {
         this.isStreaming = false;
         this.frameInterval = null;
         this.lastRequestTime = 0;
-        this.minRequestInterval = 100; // throttle to 10 FPS bc sending every frame would overwhelm the backend and cause lag. Backend has rate limit of (600/minute)
+        this.minRequestInterval = 50; // throttle to 20 FPS bc sending every frame would overwhelm the backend and cause lag. Backend has rate limit of (1200/minute)
         this.pendingRequest = false;
         this.predictionEndpoint = 'predict/base64'; // default to flute mode
+        this.predictionMode = "flute";
     }
     
-    setPredictionMode(mode) {
-        // Set the API endpoint based on vision mode
-        // 'flute' mode uses standard prediction, 'hand' mode uses hand gesture prediction
-        this.predictionEndpoint = mode === 'hand' ? 'predict/hand' : 'predict/base64';
-    }
-
     async initialize(videoElementId = 'video') {
         try {
             // allow specifying which video element to use bc different pages use different IDs
@@ -145,6 +140,14 @@ class CameraStream {
         console.log('Camera turned off');
     }
 
+    toggleVisionMode() {
+        if (this.predictionMode === "flute") {
+            this.predictionMode = "hand";
+        } else {
+             this.predictionMode = "flute";
+        }
+    }
+
     // check if camera is available (hardware initialized)
     isAvailable() {
         return this.stream !== null && this.video !== null;
@@ -196,7 +199,11 @@ class CameraStream {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ image: imageData })
+            body: JSON.stringify(
+                { image: imageData,
+                  mode: this.predictionMode
+                }
+            )
         });
         
         if (!response.ok) {            
@@ -258,6 +265,11 @@ export class CameraController {
         } else {
             return await this.turnOn();
         }
+    }
+
+    toggleVisionMode() {
+        this.stream.toggleVisionMode(); 
+        console.log(`Prediction mode switched to: ${this.stream.predictionMode}`);
     }
 
     startStreaming(onPrediction) {

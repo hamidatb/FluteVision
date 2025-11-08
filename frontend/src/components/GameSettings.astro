@@ -11,26 +11,7 @@
             <span class="settings-gear">⚙️</span>
             <h2>SETTINGS</h2>
         </div>
-
-        <!-- Vision Mode Section -->
-        <section class="settings-section">
-            <h3><span class="section-icon">📹</span> VISION MODE:</h3>
-            <div class="option-grid two-col">
-                <button class="option-card selected" data-vision="flute" id="visionFlute">
-                    <div class="option-icon">🎵</div>
-                    <div class="option-title">FLUTE</div>
-                    <div class="option-desc">Detect notes</div>
-                    <span class="check-mark">✓</span>
-                </button>
-                <button class="option-card" data-vision="hand" id="visionHand">
-                    <div class="option-icon">✋</div>
-                    <div class="option-title">HAND TEST</div>
-                    <div class="option-desc">For testing</div>
-                    <span class="check-mark">✓</span>
-                </button>
-            </div>
-        </section>
-
+        
         <!-- Character Section -->
         <section class="settings-section">
             <h3><span class="section-icon">🎭</span> CHARACTER:</h3>
@@ -102,6 +83,14 @@
                     <div class="option-title">Starry Night</div>
                     <span class="check-mark">✓</span>
                 </button>
+            </div>
+        </section>
+
+        <!-- Game Test Section -->
+        <section class="settings-section">
+            <h3><span class="section-icon">🎮</span> GAME MODE:</h3>
+            <div id="testOptionsContainer" class="option-grid two-col">
+                <!-- Tests will be dynamically populated based on vision mode -->
             </div>
         </section>
 

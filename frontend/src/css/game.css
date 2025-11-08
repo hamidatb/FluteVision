@@ -305,6 +305,15 @@
     cursor: not-allowed;
 }
 
+.game-btn.secondary {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    border: 4px solid #000;
+}
+
+.game-btn.secondary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #7b8390, #5b6573);
+}
+
 .final-score {
     font-size: 0.9rem;
     color: #333;
