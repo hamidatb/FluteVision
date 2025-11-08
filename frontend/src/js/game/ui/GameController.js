@@ -337,7 +337,7 @@ class GameController {
             message.style.color = '#999';
             message.style.padding = '1rem';
             message.style.textAlign = 'center';
-            message.textContent = 'Tests are only available in Flute Mode';
+            message.textContent = 'Tests are only available in Flute Mode.';
             container.replaceChildren(message);
             return;
         }
