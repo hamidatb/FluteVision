@@ -140,6 +140,14 @@ class CameraStream {
         console.log('Camera turned off');
     }
 
+    toggleVisionMode() {
+        if (this.predictionMode === "flute") {
+            this.predictionMode = "hand";
+        } else {
+             this.predictionMode = "flute";
+        }
+    }
+
     // check if camera is available (hardware initialized)
     isAvailable() {
         return this.stream !== null && this.video !== null;
@@ -257,6 +265,11 @@ export class CameraController {
         } else {
             return await this.turnOn();
         }
+    }
+
+    toggleVisionMode() {
+        this.stream.toggleVisionMode(); 
+        console.log(`Prediction mode switched to: ${this.stream.predictionMode}`);
     }
 
     startStreaming(onPrediction) {

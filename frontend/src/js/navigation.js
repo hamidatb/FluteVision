@@ -112,6 +112,45 @@ export class CameraToggleUI {
     }
 }
 
+/**
+ * VisionModeToggleUI - Handles switching between flute and hand prediction modes
+ * Keeps UI in sync with the CameraController
+ */
+export class VisionModeToggleUI {
+    constructor(cameraController) {
+        this.cameraController = cameraController;
+        this.toggleButton = null;
+        this.iconElement = null;
+    }
+
+    initialize(buttonId = 'visionModeToggleBtn') {
+        this.toggleButton = document.getElementById(buttonId);
+        if (!this.toggleButton) return;
+        this.iconElement = this.toggleButton.querySelector('.icon');
+
+        // Initialize with current mode
+        this.updateUI(this.cameraController.stream.predictionMode);
+
+        // Add click listener
+        this.toggleButton.addEventListener('click', () => this.handleToggle());
+    }
+
+    handleToggle() {
+        this.cameraController.stream.toggleVisionMode();
+        const newMode = this.cameraController.stream.predictionMode;
+        this.updateUI(newMode);
+    }
+
+    updateUI(mode) {
+        if (!this.iconElement || !this.toggleButton) return;
+        if (mode === 'flute') {
+            this.iconElement.textContent = '🎵  FLUTE MODE';
+        } else {
+            this.iconElement.textContent = '🖐️ HAND MODE';
+        }
+    }
+}
+
 // Auto-initialize navigation on page load
 if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {

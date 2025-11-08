@@ -1,6 +1,6 @@
 import { CameraController } from '../../camera';
 import { FluteVisionAPI } from '../../api';
-import { CameraToggleUI } from '../../navigation';
+import { CameraToggleUI, VisionModeToggleUI } from '../../navigation';
 import { GameEngine } from '../../game/core/GameEngine';
 import { testLibrary } from '../music/MusicalTest';
 import { assetManager } from '../assets/AssetManager';
@@ -23,6 +23,7 @@ class GameController {
         this.gameEngine = null;
         this.inputManager = null;
         this.cameraToggleUI = null;
+        this.visionModeToggleUI = null;
         
         // state
         this.availableGestures = [];
@@ -79,6 +80,17 @@ class GameController {
         this.cameraToggleUI = new CameraToggleUI(this.cameraController);
         this.cameraToggleUI.initialize('cameraToggleBtn');
         
+        // 🎵 initialize vision mode toggle (for flute vs hand)
+        this.visionModeToggleUI = new VisionModeToggleUI(this.cameraController);
+        this.visionModeToggleUI.initialize('visionModeToggleBtn');
+
+        // restore saved vision mode if available
+        const visionMode = gameSettings.get('visionMode');
+        if (visionMode && this.cameraController.stream) {
+            this.cameraController.stream.predictionMode = visionMode;
+            console.log(`Restored saved vision mode: ${visionMode}`);
+        }
+
         // set up UI event listeners
         this._setupEventListeners();
         

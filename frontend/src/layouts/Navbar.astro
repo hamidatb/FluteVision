@@ -36,6 +36,11 @@ const { selectedPage } = Astro.props;
         </button>
       </li>
       <li>
+        <button id="visionModeToggleBtn" class="nav-btn vision-mode-toggle" title="Toggle Vision Mode" style={`display: ${(selectedPage === 'game') || selectedPage === 'practice' ? '' : 'none'};`}>
+          <span class="icon" style="display: block;">🎵</span>
+        </button>
+      </li>
+      <li>
         <a href="/about" class={`nav-btn ${selectedPage === 'about' ? 'active' : ''}`}>
           <span class="icon">📊</span> ABOUT
         </a>
