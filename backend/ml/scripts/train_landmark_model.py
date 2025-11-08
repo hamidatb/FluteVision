@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import cv2
 import os
-from config import PROJECT_ROOT
+from config import PROJECT_ROOT, SAVED_HAND_DATASETS_DIR, MODEL_SAVE_PATH
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -32,9 +32,10 @@ except ImportError:
 
 
 @dataclass
-class TrainingConfig:
+class TrainingConfig():
     """Configuration for model training."""
     raw_data_dir: Path
+    model_type: str 
     test_size: float = 0.3
     val_size: float = 0.33
     n_estimators: int = 100
@@ -490,11 +491,12 @@ class ModelEvaluator:
 
 
 class ModelPersistence:
-    """Handles saving and loading trained models."""
+    """Handles saving trained models."""
     
-    def __init__(self, models_dir: Path):
+    def __init__(self, models_dir: Path, model_type="flute"):
         self.models_dir = models_dir
         self.models_dir.mkdir(exist_ok=True)
+        self.model_name = f"landmark_model_{model_type}.pkl"
     
     def save(
         self,
@@ -507,7 +509,7 @@ class ModelPersistence:
         
         I save the class list with the model because the model outputs class indices, and we need the mapping back to class names for inference.
         """
-        model_path = self.models_dir / 'landmark_model.pkl'
+        model_path = self.models_dir / self.model_name
         
         with open(model_path, 'wb') as f:
             pickle.dump({
@@ -530,7 +532,9 @@ class TrainingOrchestrator:
         self.splitter = DatasetSplitter(config)
         self.trainer = ModelTrainer(config)
         self.evaluator = ModelEvaluator()
-        self.persistence = ModelPersistence(PROJECT_ROOT / 'trained_models')
+        self.persistence = ModelPersistence(
+            models_dir= MODEL_SAVE_PATH,
+            model_type=config.model_type)
     
     def run(self) -> Optional[Path]:
         """Execute the complete training workflow."""
@@ -604,12 +608,28 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description='Train landmark-based flute classifier')
-    parser.add_argument('--raw-dir', default='datasets/raw', help='Raw data directory')
     
+    parser.add_argument(
+        '--mode',
+        default="flute",
+        required=True,
+        help='mode of capture (flute or hand)'
+    )
+
+    parser.add_argument(
+        '--raw-dir',
+        default='datasets/raw',
+        help='Raw data directory for captured images (default: datasets/raw)'
+    )
+
     args = parser.parse_args()
-    
+
     try:
-        config = TrainingConfig(raw_data_dir=Path(args.raw_dir))
+        if args.mode == "hand":
+            args.raw_dir = str(SAVED_HAND_DATASETS_DIR)
+        config = TrainingConfig(
+            raw_data_dir=Path(args.raw_dir), 
+            model_type=args.mode)
         orchestrator = TrainingOrchestrator(config)
         orchestrator.run()
     except KeyboardInterrupt:

@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 import tkinter as tk
 from tkinter import filedialog
 from typing import List, Optional
-from config import PROJECT_ROOT, MODEL_PATH, SAVED_DATASETS_DIR
+from config import SAVED_DATASETS_DIR, SCRIPTS_DIR
 
 class Logger:
     """Wrapper around Python's logging to provide consistent interface across commands."""
@@ -189,11 +189,15 @@ class TrainModelCommand(TrainingCommand):
         self.logger.info("Using MediaPipe hand landmarks as features")
         
         try:
+            TRAIN_SCRIPT = SCRIPTS_DIR / "train_landmark_model.py"
+
             result = subprocess.run([
                 sys.executable,
-                str(MODEL_PATH),
-                "--raw-dir", input_dir
+                str(TRAIN_SCRIPT),
+                "--raw-dir", input_dir,
+                "--mode", self.args.mode
             ])
+
             return result.returncode
         except Exception as e:
             self.logger.error(f"Training failed: {str(e)}")
@@ -252,6 +256,15 @@ def create_argument_parser() -> argparse.ArgumentParser:
         action='store_true',
         help='Train on all available keys'
     )
+
+    train_parser.add_argument(
+        '--mode',
+        default="flute",
+        required=True,
+        choices=["flute", "hand"],
+        help='Mode of training (flute or hand)'
+    )
+
     train_parser.add_argument(
         '--keys',
         nargs='+',
