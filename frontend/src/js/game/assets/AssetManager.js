@@ -54,22 +54,6 @@ export class AssetManager {
         return Promise.all(promises);
     }
     
-    // load from user file input
-    async loadFromFile(key, file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            
-            reader.onload = (e) => {
-                this.loadImage(key, e.target.result)
-                    .then(resolve)
-                    .catch(reject);
-            };
-            
-            reader.onerror = () => reject(new Error('Failed to read file'));
-            reader.readAsDataURL(file);
-        });
-    }
-    
     clear() {
         this.images.clear();
         this.loadingPromises.clear();

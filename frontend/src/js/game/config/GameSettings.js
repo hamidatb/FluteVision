@@ -26,8 +26,6 @@ export class GameSettings {
             theme: 'forest', // 'forest', 'garden', 'beach', 'peak', 'park', 'night'
             
             // visual customization
-            playerImage: null, // null means use default rectangle
-            backgroundImage: null,
             playerColor: '#667eea',
             obstacleColor: '#ef4444',
             
