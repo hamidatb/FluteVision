@@ -54,7 +54,6 @@ class ModelLoader:
         """
         if not self.model_path.exists():
             print(f"❌ Model not found at {self.model_path}")
-            print("   Run: python scripts/train_landmark_model.py")
             return False
         
         with open(self.model_path, 'rb') as f:

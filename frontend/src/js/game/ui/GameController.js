@@ -275,7 +275,7 @@ class GameController {
         const visionMode = gameSettings.get('visionMode');
         console.log('Applying vision mode:', visionMode);
         if (this.cameraController && this.cameraController.cameraStream) {
-            this.cameraController.cameraStream.setPredictionMode(visionMode);
+            this.cameraController.cameraStream.predictionMode = visionMode;
         }
         
         // Apply theme colors to render system and game settings

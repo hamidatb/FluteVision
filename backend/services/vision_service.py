@@ -24,10 +24,13 @@ class VisionService:
     """
     
     def __init__(self):
-        self.model_loader = ModelLoader(settings.MODEL_PATH)
+        self.model_loaders = {
+            "flute": ModelLoader(settings.MODEL_PATH),
+            "hand": ModelLoader(settings.HAND_MODEL_PATH),
+        }
         self.hand_detector = MediaPipeHandDetector()
         self.feature_extractor = HandLandmarkExtractor()
-        self.prediction_engine: Optional[PredictionEngine] = None
+        self.prediction_engines: Dict[str, Optional[PredictionEngine]] = {"flute": None, "hand": None}
         self._is_initialized = False
     
     def initialize(self) -> bool:
@@ -35,20 +38,27 @@ class VisionService:
         if self._is_initialized:
             return True
         
-        print(f"Loading model from {settings.MODEL_PATH}...")
-        if not self.model_loader.load():
-            print("Failed to load model!")
+        for mode, loader in self.model_loaders.items():
+            print(f"→ Loading {mode} model from {loader.model_path}...")
+            if loader.load():
+                self.prediction_engines[mode] = PredictionEngine(
+                    loader.model,
+                    loader.classes
+                )
+                print(f"✓ {mode.capitalize()} model loaded successfully.")
+            else:
+                print(f" Failed to load {mode} model ({loader.model_path})")
+
+
+        if not any(self.prediction_engines.values()):
+            print("No models could be loaded.")
             return False
-        
-        self.prediction_engine = PredictionEngine(
-            self.model_loader.model,
-            self.model_loader.classes
-        )
+
+        print("✓ VisionService initialized and ready!")
         self._is_initialized = True
-        print("✓Vision service initialized!")
         return True
     
-    def predict_from_image_bytes(self, image_bytes: bytes) -> Dict[str, Any]:
+    def predict_from_image_bytes(self, image_bytes: bytes, model_mode: str) -> Dict[str, Any]:
         """
         Process an image and return gesture prediction.
         
@@ -60,6 +70,14 @@ class VisionService:
         """
         if not self._is_initialized:
             return {"error": "Service not initialized"}
+
+        if model_mode not in self.prediction_engines:
+            return {"error": f"Invalid model mode '{model_mode}'"}
+        print(f"PREDICT: Model mode {model_mode}")
+
+        engine = self.prediction_engines.get(model_mode)
+        if engine is None:
+            return {"error": f"Model not loaded for mode '{model_mode}'"}
         
         # Decode image
         nparr = np.frombuffer(image_bytes, np.uint8)
@@ -88,7 +106,7 @@ class VisionService:
                 "message": "Could not extract features"
             }
         
-        prediction_result: PredictionResult = self.prediction_engine.predict(features)
+        prediction_result: PredictionResult = engine.predict(features)
         
         return {
             "success": True,
@@ -100,15 +118,23 @@ class VisionService:
             }
         }
     
-    def get_available_fingerings(self) -> list:
+    def get_available_fingerings(self, model_mode: str) -> list:
         """Return list of fingerings the model can recognize."""
         if not self._is_initialized:
             return []
-        return self.model_loader.classes
-    
+
+        if model_mode not in self.prediction_engines:
+            return {"error": f"Invalid model mode '{model_mode}'"}
+
+        loader = self.model_loaders.get(model_mode)
+        if loader is None or loader.classes is None:
+            return {"error": f"Model '{model_mode}' not loaded or classes unavailable"}
+
+        return loader.classes
+
     def is_ready(self) -> bool:
         """Check if service is ready to make predictions."""
-        return self._is_initialized and self.prediction_engine is not None
+        return self._is_initialized and self.prediction_engines is not None
     
     def cleanup(self):
         """Clean up resources."""

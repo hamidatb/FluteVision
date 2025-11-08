@@ -24,7 +24,7 @@ class Settings:
     PROJECT_ROOT: Path = Path(__file__).parent.parent  # backend folder
     SCRIPTS_PATH: Path = PROJECT_ROOT / "ml" / "scripts"
     MODEL_PATH: Path = PROJECT_ROOT / "ml" / "models" / "landmark_model.pkl"
-    HAND_MODEL_PATH= PROJECT_ROOT / "ml" / "models" / "hand_test_model.pkl"
+    HAND_MODEL_PATH= PROJECT_ROOT / "ml" / "models" / "landmark_model_hand.pkl"
     SAVED_DATASETS_DIR = PROJECT_ROOT / "ml" / "datasets" / "raw"
     SAVED_HAND_DATASETS_DIR = PROJECT_ROOT / "ml" / "datasets" / "raw_hand"
     

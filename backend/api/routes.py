@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, File, UploadFile, HTTPException, Request
+from fastapi import APIRouter, File, UploadFile, HTTPException, Request, Query
 from typing import Dict, Any
 
 from services import vision_service
@@ -24,7 +24,7 @@ async def health_check() -> Dict[str, Any]:
     health check so frontend knows if backend is alive and model is loaded before trying to use camera
     """
     is_ready = vision_service.is_ready()
-    gestures = vision_service.get_available_fingerings()
+    gestures = vision_service.get_available_fingerings(model_mode="flute") # flute for health check
     
     return {
         "status": "healthy" if is_ready else "not ready",
@@ -66,6 +66,11 @@ async def predict_gesture_base64(request: Request, data: dict) -> Dict[str, Any]
     
     try:
         import base64
+
+        mode = data.get("mode")
+        if mode not in ("hand", "flute"):
+            raise HTTPException(status_code=400, detail="Invalid mode. Must be 'hand' or 'flute'.")
+
         image_data = data.get("image")
         if not image_data:
             raise HTTPException(status_code=400, detail="No image data provided")
@@ -75,8 +80,8 @@ async def predict_gesture_base64(request: Request, data: dict) -> Dict[str, Any]
             image_data = image_data.split(",")[1]
         
         image_bytes = base64.b64decode(image_data)
-        result = vision_service.predict_from_image_bytes(image_bytes)
-        
+        result = vision_service.predict_from_image_bytes(image_bytes=image_bytes, model_mode=mode)
+
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])
         
@@ -86,12 +91,15 @@ async def predict_gesture_base64(request: Request, data: dict) -> Dict[str, Any]
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
     
 @router.get("/fingerings")
-async def list_gestures():
-    """returns what gestures the model knows so frontend can display them"""
+async def list_gestures(mode: str = Query("flute", description="Model mode: 'hand' or 'flute'")):
+    """Return gestures the model recognizes."""
     if not vision_service.is_ready():
         raise HTTPException(status_code=503, detail="Service not ready")
     
-    fingerings = vision_service.get_available_fingerings()
+    if mode not in ("hand", "flute"):
+        raise HTTPException(status_code=400, detail="Invalid mode. Must be 'hand' or 'flute'.")
+    
+    fingerings = vision_service.get_available_fingerings(model_mode=mode)
     return {
         "fingerings": fingerings,
         "count": len(fingerings)
