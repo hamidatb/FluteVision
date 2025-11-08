@@ -10,7 +10,7 @@ The flags are:
 --output-dir: The directory to save the output to
 --mode: flute or hand
 
-e.g. python scripts/capture_data.py --keys Bb C D --samples 300 --user john
+e.g. python ml/scripts/capture_data.py --keys neutral open close --samples 30 --mode hand
 
 The script will open a webcam and show you the keys to collect data for.
 Press 'B' to begin capturing, 'S' to skip, or 'Q' to quit.

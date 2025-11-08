@@ -55,7 +55,7 @@ async def predict_gesture(file: UploadFile = File(...)) -> Dict[str, Any]:
     return result
 
 @router.post("/predict/base64")
-@limiter.limit("600/minute")  # 10 FPS for thr prediction stream
+@limiter.limit("1200/minute")
 async def predict_gesture_base64(request: Request, data: dict) -> Dict[str, Any]:
     """
     predict from base64 image - much faster than multipart bc less overhead, perfect for real-time streaming
