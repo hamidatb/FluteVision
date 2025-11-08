@@ -1,6 +1,6 @@
 import { CameraController } from '../camera';
 import { FluteVisionAPI } from '../api';
-import { CameraToggleUI } from '../navigation';
+import { CameraToggleUI, VisionModeToggleUI } from '../navigation';
 
 // practice mode controller - handles real-time detection without game logic
 class PracticeMode {
@@ -9,6 +9,7 @@ class PracticeMode {
         this.cameraController = new CameraController('practiceVideo');
         this.api = new FluteVisionAPI();
         this.cameraToggleUI = null;
+        this.visionModeToggleUI = null;
         this.isRunning = false;
         this.targetGesture = null;
         this.availableGestures = [];
@@ -46,6 +47,10 @@ class PracticeMode {
         // initialize camera toggle UI
         this.cameraToggleUI = new CameraToggleUI(this.cameraController);
         this.cameraToggleUI.initialize('cameraToggleBtn');
+
+        // 🎵 initialize vision mode toggle (for flute vs hand)
+        this.visionModeToggleUI = new VisionModeToggleUI(this.cameraController);
+        this.visionModeToggleUI.initialize('visionModeToggleBtn');
 
         this.setupEventListeners();
         this.updateStatus('Turn on the camera to enable practice mode :)', 'warning');
