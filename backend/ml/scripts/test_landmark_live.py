@@ -17,7 +17,7 @@ SCRIPTS_DIR = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-from config import MODEL_PATH
+from config import MODEL_PATH, HAND_MODEL_PATH
 from ui_utils import PredictionUIRenderer
 
 try:
@@ -480,9 +480,24 @@ def print_header():
 
 def main() -> int:
     """Entry point for live recognition."""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Test hand landmark models')
+
+    parser.add_argument(
+        '--mode',
+        required=True,
+        help='mode of capture (flute or hand)'
+    )
+
+    args = parser.parse_args()
+
     print_header()
     
-    model_loader = ModelLoader(MODEL_PATH)
+    if args.mode == "hand":
+        model_loader = ModelLoader(HAND_MODEL_PATH)
+    elif args.mode == "flute":
+        model_loader = ModelLoader(MODEL_PATH) 
     
     webcam = WebcamCapture(camera_index=0)
     hand_detector = MediaPipeHandDetector()
