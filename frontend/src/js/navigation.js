@@ -139,6 +139,15 @@ export class VisionModeToggleUI {
         this.cameraController.stream.toggleVisionMode();
         const newMode = this.cameraController.stream.predictionMode;
         this.updateUI(newMode);
+        
+        // update gameSettings to keep everything in sync
+        if (typeof window !== 'undefined' && window.gameSettings) {
+            window.gameSettings.set('visionMode', newMode);
+            console.log(`Updated gameSettings visionMode to: ${newMode}`);
+            
+            // trigger custom event so GameController can refresh gestures
+            window.dispatchEvent(new CustomEvent('visionModeChanged', { detail: { mode: newMode } }));
+        }
     }
 
     updateUI(mode) {

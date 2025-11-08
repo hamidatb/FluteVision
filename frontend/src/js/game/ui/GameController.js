@@ -41,15 +41,13 @@ class GameController {
             return;
         }
         
-        // get available gestures from model for the saved vision mode
-        const savedVisionMode = gameSettings.get('visionMode');
-        const gesturesData = await this.api.getAvailableGestures(savedVisionMode);
+        // get available gestures from model by using camera stream's current mode (navbar state)
+        const currentVisionMode = this.cameraController.stream?.predictionMode || gameSettings.get('visionMode');
+        const gesturesData = await this.api.getAvailableGestures(currentVisionMode);
         const allGestures = gesturesData.fingerings || [];
         
         // filtering out "neutral", it's for CV detection only, not a target gesture
         this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
-        console.log(`Loaded gestures for ${savedVisionMode} mode:`, this.availableGestures);
-        console.log(`(Filtered out 'neutral' from targets)`);
         
         if (this.availableGestures.length === 0) {
             this._showError('No gestures trained. Train the model first.');
@@ -98,6 +96,20 @@ class GameController {
         
         // NOW initialize the UI so it shows the correct mode
         this.visionModeToggleUI.initialize('visionModeToggleBtn');
+        
+        // Make gameSettings available globally so navbar can update it
+        window.gameSettings = gameSettings;
+        
+        // Listen for vision mode changes from navbar toggle
+        window.addEventListener('visionModeChanged', async (e) => {
+            const newMode = e.detail.mode;
+            console.log('Vision mode changed to:', newMode);
+            // Refresh available gestures for the new mode
+            const gesturesData = await this.api.getAvailableGestures(newMode);
+            const allGestures = gesturesData.fingerings || [];
+            this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
+            console.log('Refreshed gestures for', newMode, ':', this.availableGestures);
+        });
 
         // set up UI event listeners
         this._setupEventListeners();
@@ -502,11 +514,6 @@ class GameController {
             // green if matches target
             const isCorrect = prediction.gesture === this.currentTargetGesture;
             gestureEl.style.color = isCorrect ? '#00ff00' : '#ffffff';
-            
-            // Debug log when gestures match
-            if (isCorrect) {
-                console.log('✓ MATCH! Detected:', prediction.gesture, 'Target:', this.currentTargetGesture);
-            }
         } else {
             gestureEl.textContent = '-';
             gestureEl.style.color = '#ffffff';
