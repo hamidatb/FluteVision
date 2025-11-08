@@ -1,5 +1,4 @@
 import { GameConstants } from '../../game/config/GameConstants';
-import { CollisionSystem } from '../../game/systems/CollisionSystem';
 
 // rendering system - handles all drawing operations
 // separated bc rendering logic should be independent of game logic

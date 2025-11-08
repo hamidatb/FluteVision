@@ -37,12 +37,6 @@ class PracticeMode {
         this.populateGestureSelector();
 
         this.updateStatus('Initializing camera...', 'info');
-        const cameraReady = await this.cameraController.initialize();
-
-        if (!cameraReady) {
-            this.updateStatus('Could not access camera', 'warning');
-            return;
-        }
 
         // set up camera state observer
         this.cameraController.onStateChange((state, isEnabled) => {
@@ -54,8 +48,7 @@ class PracticeMode {
         this.cameraToggleUI.initialize('cameraToggleBtn');
 
         this.setupEventListeners();
-        this.updateStatus('Ready to practice!', 'success');
-        document.getElementById('startBtn').disabled = false;
+        this.updateStatus('Turn on the camera to enable practice mode :)', 'warning');
     }
 
     handleCameraStateChange(state, isEnabled) {
