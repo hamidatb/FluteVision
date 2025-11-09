@@ -32,35 +32,19 @@ export class RenderSystem {
         const bgImage = this.imageManager.getImage(this.theme.backgroundImage) || 
                        this.imageManager.getImage('background');
         
-        if (bgImage) {
-            // draw background image stretched to canvas
-            this.ctx.drawImage(bgImage, 0, 0, this.canvas.width, this.canvas.height);
-        } else {
-            // use theme sky color fallback
-            this.ctx.fillStyle = this.theme.skyColor;
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        }
+        // draw background image stretched to canvas
+        this.ctx.drawImage(bgImage, 0, 0, this.canvas.width, this.canvas.height);
         
-        // ground - draw thick ground with theme image or color
         // Ground is drawn at PLAYER_GROUND_Y (where player's feet are)
         const groundY = GameConstants.PLAYER_GROUND_Y;
         const groundHeight = this.canvas.height - groundY;
         
-        const groundImage = this.imageManager.getImage(this.theme.groundImage) ||
-                           this.imageManager.getImage('ground');
-        
-        if (groundImage) {
-            // draw ground image stretched to fit ground area
-            this.ctx.drawImage(groundImage, 0, groundY, this.canvas.width, groundHeight);
-        } else {
-            // fallback to theme ground color
-            this.ctx.fillStyle = this.theme.groundColor;
-            this.ctx.fillRect(0, groundY, this.canvas.width, groundHeight);
-        }
+        const groundImage = this.imageManager.getImage(this.theme.groundImage)
+        this.ctx.drawImage(groundImage, 0, groundY, this.canvas.width, groundHeight);
         
         // ground line on top for definition
-        this.ctx.strokeStyle = '#000000';
-        this.ctx.lineWidth = 3;
+        // this.ctx.strokeStyle = '#000000';
+        // this.ctx.lineWidth = 3;
         this.ctx.beginPath();
         this.ctx.moveTo(0, groundY);
         this.ctx.lineTo(this.canvas.width, groundY);

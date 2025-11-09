@@ -379,16 +379,8 @@ class GameController {
         }
         
         // Get all available tests and filter to only show the 3 specified tests
-        const allTests = this.testLibrary.getAllTests();
-        const tests = allTests.filter(test => allowedTestNames.includes(test.name));
         const currentTest = gameSettings.get('currentTest');
         const musicMode = gameSettings.get('musicMode');
-        
-        
-        if (musicMode === 'random' || !currentTest) {
-            randomCard.classList.add('selected');
-        }
-        container.appendChild(randomCard);
     }
     
     _populateCharacterPreviews() {
@@ -424,7 +416,7 @@ class GameController {
             const themeImage = this.imageManager.getImage(themeBgURL); 
             img.src = themeImage.src;
             img.style.display = 'block';
-            console.log("Printed theme image successfully");
+            //console.log("Printed theme image successfully");
         });
     }
     
@@ -481,12 +473,6 @@ class GameController {
         const theme = getTheme(themeName) || getDefaultTheme();
         console.log('Applying theme:', themeName, theme);
         
-        // Update gameSettings with theme colors so obstacles and other entities use them
-        gameSettings.setMultiple({
-            playerColor: theme.playerColor,
-            obstacleColor: theme.obstacleColor
-        });
-        
         if (this.gameEngine && this.gameEngine.renderSystem) {
             this.gameEngine.renderSystem.setTheme(theme);
         }
@@ -501,8 +487,6 @@ class GameController {
         
         if (this.gameEngine && this.gameEngine.player) {
             this.gameEngine.player.setCharacter(characterName);
-            this.gameEngine.player.setColor(theme.playerColor);
-            console.log('Character applied to player:', this.gameEngine.player.character);
         } else {
             console.warn('GameEngine or player not initialized yet');
         }
