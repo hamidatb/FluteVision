@@ -3,11 +3,11 @@ import { gameSettings } from '../../game/config/GameSettings';
 
 // obstacle entity - knows how to move and draw itself
 export class Obstacle {
-    constructor(x, groundY, speed, assetManager = null, obstacleImagePath = null) {
+    constructor(x, groundY, speed, imageManager = null, obstacleImagePath = null) {
         this.x = x;
         this.groundY = groundY;
         this.speed = speed;
-        this.assetManager = assetManager;
+        this.imageManager = imageManager;
         this.obstacleImagePath = obstacleImagePath;
         
         // randomize size for variety bc playing against identical obstacles is boring
@@ -30,8 +30,8 @@ export class Obstacle {
     render(ctx) {
         // try to render witj theme-specific obstacle image
         let obstacleImage = null;
-        if (this.assetManager && this.obstacleImagePath) {
-            obstacleImage = this.assetManager.getImage(this.obstacleImagePath);
+        if (this.imageManager && this.obstacleImagePath) {
+            obstacleImage = this.imageManager.getImage(this.obstacleImagePath);
         }
         
         if (obstacleImage) {

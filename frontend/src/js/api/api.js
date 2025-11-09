@@ -1,4 +1,4 @@
-import { getApiUrl } from './config/apiConfig.js';
+import { getApiUrl } from './apiConfig.js';
 
 export class FluteVisionAPI {
     constructor(baseUrl = null) {

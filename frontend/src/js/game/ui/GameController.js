@@ -1,9 +1,9 @@
 import { CameraController } from '../../camera';
-import { FluteVisionAPI } from '../../api';
+import { FluteVisionAPI } from '../../api/api';
 import { CameraToggleUI, VisionModeToggleUI } from '../../navigation';
 import { GameEngine } from '../../game/core/GameEngine';
 import { testLibrary } from '../music/MusicalTest';
-import { assetManager } from '../assets/AssetManager';
+import { imageManager } from '../assets/imageManager';
 import { InputManager } from '../../game/managers/InputManager';
 import { gameSettings } from '../../game/config/GameSettings';
 import { GameConstants } from '../../game/config/GameConstants';
@@ -16,7 +16,7 @@ class GameController {
         // infrastructure - using CameraController for SOLID design
         this.cameraController = new CameraController('video');
         this.api = new FluteVisionAPI();
-        this.assetManager = assetManager; // singleton
+        this.imageManager = imageManager; // singleton
         this.testLibrary = testLibrary; // singleton
         
         // core systems
@@ -62,7 +62,7 @@ class GameController {
         // preloading all character PNGs before creating the game engine
         try {
             this._updateStatus('Loading assets...');
-            await this.assetManager.preloadImages(CHARACTERS);
+            await this.imageManager.preloadImages(CHARACTERS);
             console.log('Character PNGs preloaded:', Object.keys(CHARACTERS));
         } catch (err) {
             console.error('Failed to preload character images:', err);
@@ -76,7 +76,7 @@ class GameController {
                 if (theme.groundImage) themeAssets[theme.groundImage] = theme.groundImage;
                 if (theme.obstacleImage) themeAssets[theme.obstacleImage] = theme.obstacleImage;
             });
-            await this.assetManager.preloadImages(themeAssets);
+            await this.imageManager.preloadImages(themeAssets);
             console.log('Theme assets preloaded:', Object.keys(themeAssets).length);
         } catch (err) {
             console.warn('Failed to preload theme images (will fallback to colors):', err);
@@ -84,7 +84,7 @@ class GameController {
                 
         // create game engine
         const canvas = document.getElementById('gameCanvas');
-        this.gameEngine = new GameEngine(canvas, this.assetManager);
+        this.gameEngine = new GameEngine(canvas, this.imageManager);
         
         // set up callbacks
         this.gameEngine.onGameOver = (score, combo, maxCombo) => 
@@ -483,8 +483,8 @@ class GameController {
         // Update character preview images in settings modal
         document.querySelectorAll('.character-preview').forEach(img => {
             const characterKey = img.dataset.characterKey;
-            if (characterKey && this.assetManager) {
-                const characterImage = this.assetManager.getImage(characterKey);
+            if (characterKey && this.imageManager) {
+                const characterImage = this.imageManager.getImage(characterKey);
                 if (characterImage) {
                     img.src = characterImage.src;
                     img.style.display = 'block';

@@ -3,10 +3,10 @@ import { GameConstants } from '../../game/config/GameConstants';
 // rendering system - handles all drawing operations
 // separated bc rendering logic should be independent of game logic
 export class RenderSystem {
-    constructor(canvas, assetManager) {
+    constructor(canvas, imageManager) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.assetManager = assetManager;
+        this.imageManager = imageManager;
         
         this.canvas.width = GameConstants.CANVAS_WIDTH;
         this.canvas.height = GameConstants.CANVAS_HEIGHT;
@@ -33,8 +33,8 @@ export class RenderSystem {
     
     clear() {
         // try to get theme-specific background image, fallback to 'background' key
-        const bgImage = this.assetManager.getImage(this.theme.backgroundImage) || 
-                       this.assetManager.getImage('background');
+        const bgImage = this.imageManager.getImage(this.theme.backgroundImage) || 
+                       this.imageManager.getImage('background');
         
         if (bgImage) {
             // draw background image stretched to canvas
@@ -50,8 +50,8 @@ export class RenderSystem {
         const groundY = GameConstants.PLAYER_GROUND_Y;
         const groundHeight = this.canvas.height - groundY;
         
-        const groundImage = this.assetManager.getImage(this.theme.groundImage) ||
-                           this.assetManager.getImage('ground');
+        const groundImage = this.imageManager.getImage(this.theme.groundImage) ||
+                           this.imageManager.getImage('ground');
         
         if (groundImage) {
             // draw ground image stretched to fit ground area

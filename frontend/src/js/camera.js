@@ -1,4 +1,4 @@
-import { getApiUrl } from './config/apiConfig.js';
+import { getApiUrl } from './api/apiConfig.js';
 
 /**
  * CameraStateManager, this manages camera state

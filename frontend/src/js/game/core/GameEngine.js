@@ -10,19 +10,19 @@ import { ScoreManager } from '../../game/managers/ScoreManager';
 // core game loop and state - the heart of the game
 // handles update/render cycle and coordinates all systems
 export class GameEngine {
-    constructor(canvas, assetManager) {
-        this.assetManager = assetManager;
+    constructor(canvas, imageManager) {
+        this.imageManager = imageManager;
         
         // entities
         this.player = new Player(
             GameConstants.PLAYER_X,
             GameConstants.PLAYER_GROUND_Y,
-            assetManager
+            imageManager
         );
         this.obstacles = [];
         
         // systems
-        this.renderSystem = new RenderSystem(canvas, assetManager);
+        this.renderSystem = new RenderSystem(canvas, imageManager);
         this.collisionSystem = new CollisionSystem();
         this.scoreManager = new ScoreManager();
         
@@ -233,7 +233,7 @@ export class GameEngine {
             GameConstants.CANVAS_WIDTH,
             GameConstants.PLAYER_GROUND_Y, // obstacles align with player's ground level
             this.gameSpeed,
-            this.assetManager,
+            this.imageManager,
             this.currentObstacleImage
         );
         this.obstacles.push(obstacle);

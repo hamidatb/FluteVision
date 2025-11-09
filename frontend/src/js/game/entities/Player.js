@@ -4,7 +4,7 @@ import { gameSettings } from '../../game/config/GameSettings';
 // player entity - separated bc entities should only know about themselves
 // SRP: only handles player state, physics, and rendering itself
 export class Player {
-    constructor(x, groundY, assetManager) {
+    constructor(x, groundY, imageManager) {
         this.x = x;
         this.groundY = groundY;
         this.width = GameConstants.PLAYER_WIDTH;
@@ -16,7 +16,7 @@ export class Player {
         this.isJumping = false;
         this.canJump = true;
         
-        this.assetManager = assetManager;
+        this.imageManager = imageManager;
         this.characterKey = '🐱'; // default fallback (emoji)
         this.themeColor = gameSettings.get('playerColor');
     }
@@ -60,7 +60,7 @@ export class Player {
         const playerBottom = this.y + this.height;
         const isInAir = playerBottom < this.groundY;
         const imageKey = isInAir ? `${this.characterKey}_jump` : this.characterKey;
-        const img = this.assetManager.getImage(imageKey) || this.assetManager.getImage(this.characterKey);
+        const img = this.imageManager.getImage(imageKey) || this.imageManager.getImage(this.characterKey);
         
         if (img) {
             // draw custom image as the char icon

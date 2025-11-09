@@ -1,6 +1,6 @@
 // handles loading and caching of images
 // using promise-based loading bc images load async and we need to wait for them
-export class AssetManager {
+export class ImageManager {
     constructor() {
         this.images = new Map();
         this.loadingPromises = new Map();
@@ -61,5 +61,5 @@ export class AssetManager {
 }
 
 // singleton
-export const assetManager = new AssetManager();
+export const imageManager = new ImageManager();
 
