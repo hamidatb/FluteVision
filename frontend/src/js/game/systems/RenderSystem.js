@@ -19,32 +19,48 @@ export class RenderSystem {
     }
     
     setTheme(theme) {
-        // Update rendering colors based on selected theme
+        // Update rendering colors and asset paths based on selected theme
         this.theme = {
             skyColor: theme.skyColor,
             groundColor: theme.groundColor,
             obstacleColor: theme.obstacleColor,
-            playerColor: theme.playerColor
+            playerColor: theme.playerColor,
+            backgroundImage: theme.backgroundImage,
+            groundImage: theme.groundImage,
+            obstacleImage: theme.obstacleImage
         };
     }
     
     clear() {
-        const bgImage = this.assetManager.getImage('background');
+        // try to get theme-specific background image, fallback to 'background' key
+        const bgImage = this.assetManager.getImage(this.theme.backgroundImage) || 
+                       this.assetManager.getImage('background');
         
         if (bgImage) {
-            // draw tiled background if custom image loaded
+            // draw background image stretched to canvas
             this.ctx.drawImage(bgImage, 0, 0, this.canvas.width, this.canvas.height);
         } else {
-            // use theme sky color
+            // use theme sky color fallback
             this.ctx.fillStyle = this.theme.skyColor;
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         }
         
-        // ground - draw thick ground with theme color
-        const groundY = GameConstants.PLAYER_GROUND_Y + GameConstants.PLAYER_HEIGHT;
+        // ground - draw thick ground with theme image or color
+        // Ground is drawn at PLAYER_GROUND_Y (where player's feet are)
+        const groundY = GameConstants.PLAYER_GROUND_Y;
         const groundHeight = this.canvas.height - groundY;
-        this.ctx.fillStyle = this.theme.groundColor;
-        this.ctx.fillRect(0, groundY, this.canvas.width, groundHeight);
+        
+        const groundImage = this.assetManager.getImage(this.theme.groundImage) ||
+                           this.assetManager.getImage('ground');
+        
+        if (groundImage) {
+            // draw ground image stretched to fit ground area
+            this.ctx.drawImage(groundImage, 0, groundY, this.canvas.width, groundHeight);
+        } else {
+            // fallback to theme ground color
+            this.ctx.fillStyle = this.theme.groundColor;
+            this.ctx.fillRect(0, groundY, this.canvas.width, groundHeight);
+        }
         
         // ground line on top for definition
         this.ctx.strokeStyle = '#000000';

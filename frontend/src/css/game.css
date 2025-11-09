@@ -924,6 +924,14 @@
     margin-bottom: 10px;
 }
 
+.character-preview {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin: 0 auto 10px;
+    display: block;
+}
+
 .option-title {
     font-size: 0.7rem;
     color: #000;
@@ -948,30 +956,6 @@
     background-position: center;
 }
 
-/* Theme backgrounds */
-.forest-bg {
-    background: linear-gradient(180deg, #4a148c 0%, #7b1fa2 50%, #e91e63 100%);
-}
-
-.garden-bg {
-    background: linear-gradient(180deg, #1565c0 0%, #4fc3f7 100%);
-}
-
-.beach-bg {
-    background: linear-gradient(180deg, #ff6f00 0%, #ffb74d 50%, #263238 100%);
-}
-
-.peak-bg {
-    background: linear-gradient(180deg, #37474f 0%, #546e7a 50%, #b0bec5 100%);
-}
-
-.park-bg {
-    background: linear-gradient(180deg, #8d6e63 0%, #d7ccc8 100%);
-}
-
-.night-bg {
-    background: linear-gradient(180deg, #0d47a1 0%, #1565c0 50%, #0d47a1 100%);
-}
 
 /* Settings action buttons */
 .settings-actions {

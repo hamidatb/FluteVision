@@ -7,7 +7,7 @@ import { assetManager } from '../assets/AssetManager';
 import { InputManager } from '../../game/managers/InputManager';
 import { gameSettings } from '../../game/config/GameSettings';
 import { GameConstants } from '../../game/config/GameConstants';
-import { THEMES, CHARACTERS } from '../../game/config/ThemeConfig';
+import { THEMES, CHARACTERS, getTheme, getDefaultTheme, getDefaultThemeName } from '../../game/config/ThemeConfig';
 
 // main orchestrator - ties everything together
 // using facade pattern bc other code shouldn't need to know about all the internal systems
@@ -58,7 +58,30 @@ class GameController {
         this.cameraController.onStateChange((state, isEnabled) => {
             this._handleCameraStateChange(state, isEnabled);
         });
+
+        // preloading all character PNGs before creating the game engine
+        try {
+            this._updateStatus('Loading assets...');
+            await this.assetManager.preloadImages(CHARACTERS);
+            console.log('Character PNGs preloaded:', Object.keys(CHARACTERS));
+        } catch (err) {
+            console.error('Failed to preload character images:', err);
+        }
         
+        // preload theme assets (background, ground, obstacle images)
+        try {
+            const themeAssets = {};
+            Object.entries(THEMES).forEach(([themeName, theme]) => {
+                if (theme.backgroundImage) themeAssets[theme.backgroundImage] = theme.backgroundImage;
+                if (theme.groundImage) themeAssets[theme.groundImage] = theme.groundImage;
+                if (theme.obstacleImage) themeAssets[theme.obstacleImage] = theme.obstacleImage;
+            });
+            await this.assetManager.preloadImages(themeAssets);
+            console.log('Theme assets preloaded:', Object.keys(themeAssets).length);
+        } catch (err) {
+            console.warn('Failed to preload theme images (will fallback to colors):', err);
+        }
+                
         // create game engine
         const canvas = document.getElementById('gameCanvas');
         this.gameEngine = new GameEngine(canvas, this.assetManager);
@@ -299,7 +322,9 @@ class GameController {
     
     _openGameSettings() {
         document.getElementById('gameSettingsModal').classList.remove('hidden');
+        this._populateThemeOptions();
         this._populateTestOptions();
+        this._populateCharacterPreviews();
     }
     
     _closeGameSettings() {
@@ -311,6 +336,9 @@ class GameController {
         const character = gameSettings.get('character');
         const theme = gameSettings.get('theme');
         
+        // Populate themes first
+        this._populateThemeOptions();
+        
         // Update selected states in UI
         document.querySelectorAll('[data-character]').forEach(btn => {
             btn.classList.toggle('selected', btn.dataset.character === character);
@@ -320,8 +348,52 @@ class GameController {
             btn.classList.toggle('selected', btn.dataset.theme === theme);
         });
         
+        // Populate character preview images
+        this._populateCharacterPreviews();
+        
         // Apply settings to game
         this._applyGameSettings();
+    }
+    
+    _populateThemeOptions() {
+        const container = document.getElementById('themeOptionsContainer');
+        if (!container) return;
+        
+        const currentTheme = gameSettings.get('theme');
+        
+        // Clear container
+        container.replaceChildren();
+        
+        // Generate theme buttons from THEMES object
+        Object.entries(THEMES).forEach(([themeKey, themeData]) => {
+            const themeCard = document.createElement('button');
+            themeCard.className = 'option-card theme-card';
+            themeCard.dataset.theme = themeKey;
+            themeCard.id = `theme${themeKey.charAt(0).toUpperCase() + themeKey.slice(1)}`;
+            
+            const themePreview = document.createElement('div');
+            themePreview.className = 'theme-preview';
+            // Use gradient from theme colors
+            themePreview.style.background = `linear-gradient(180deg, ${themeData.skyColor} 0%, ${themeData.obstacleColor} 50%, ${themeData.playerColor} 100%)`;
+            
+            const themeTitle = document.createElement('div');
+            themeTitle.className = 'option-title';
+            themeTitle.textContent = themeData.name;
+            
+            const themeCheck = document.createElement('span');
+            themeCheck.className = 'check-mark';
+            themeCheck.textContent = '✓';
+            
+            themeCard.appendChild(themePreview);
+            themeCard.appendChild(themeTitle);
+            themeCard.appendChild(themeCheck);
+            
+            if (currentTheme === themeKey) {
+                themeCard.classList.add('selected');
+            }
+            
+            container.appendChild(themeCard);
+        });
     }
     
     _populateTestOptions() {
@@ -407,12 +479,35 @@ class GameController {
         });
     }
     
+    _populateCharacterPreviews() {
+        // Update character preview images in settings modal
+        document.querySelectorAll('.character-preview').forEach(img => {
+            const characterKey = img.dataset.characterKey;
+            if (characterKey && this.assetManager) {
+                const characterImage = this.assetManager.getImage(characterKey);
+                if (characterImage) {
+                    img.src = characterImage.src;
+                    img.style.display = 'block';
+                } else {
+                    // Fallback: try to load from CHARACTERS config
+                    const imageUrl = CHARACTERS[characterKey];
+                    if (imageUrl) {
+                        img.src = imageUrl;
+                        img.style.display = 'block';
+                    } else {
+                        img.style.display = 'none';
+                    }
+                }
+            }
+        });
+    }
+    
     _saveGameSettings() {
         // Get selected values from UI
         // Vision mode is controlled via navbar toggle, so get it from gameSettings
         const visionMode = gameSettings.get('visionMode');
-        const character = document.querySelector('[data-character].selected')?.dataset.character || 'cat';
-        const theme = document.querySelector('[data-theme].selected')?.dataset.theme || 'forest';
+        const character = document.querySelector('[data-character].selected')?.dataset.character || 'Hami';
+        const theme = document.querySelector('[data-theme].selected')?.dataset.theme || getDefaultThemeName();
         
         // Get selected test
         const selectedTest = document.querySelector('[data-test].selected')?.dataset.test;
@@ -457,7 +552,7 @@ class GameController {
         
         // Apply theme colors to render system and game settings
         const themeName = gameSettings.get('theme');
-        const theme = THEMES[themeName] || THEMES.forest;
+        const theme = getTheme(themeName) || getDefaultTheme();
         console.log('Applying theme:', themeName, theme);
         
         // Update gameSettings with theme colors so obstacles and other entities use them
@@ -470,13 +565,16 @@ class GameController {
             this.gameEngine.renderSystem.setTheme(theme);
         }
         
+        if (this.gameEngine && this.gameEngine.setTheme) {
+            this.gameEngine.setTheme(themeName);
+        }
+        
         // Apply character
         const characterName = gameSettings.get('character');
-        const character = CHARACTERS[characterName] || CHARACTERS.cat;
-        console.log('Applying character:', characterName, character);
+        console.log('Applying character:', characterName);
         
         if (this.gameEngine && this.gameEngine.player) {
-            this.gameEngine.player.setCharacter(character);
+            this.gameEngine.player.setCharacter(characterName);
             this.gameEngine.player.setColor(theme.playerColor);
             console.log('Character applied to player:', this.gameEngine.player.character);
         } else {
@@ -751,6 +849,6 @@ class GameController {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-            const controller = new GameController();
-            controller.initialize();
-        });
+    const controller = new GameController();
+    controller.initialize();
+});

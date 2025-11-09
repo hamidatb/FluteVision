@@ -2,23 +2,23 @@
 export class GameConstants {
     // canvas
     static CANVAS_WIDTH = 800;
-    static CANVAS_HEIGHT = 300;
+    static CANVAS_HEIGHT = 380;
     
-    // player physics - tuned for fast note sequences in musical tests
-    static PLAYER_WIDTH = 40;
-    static PLAYER_HEIGHT = 60;
-    static PLAYER_X = 100; // fixed x position bc it's a runner game
-    static PLAYER_GROUND_Y = 200;
-    static JUMP_VELOCITY = -12; // negative y increases downward
-    static GRAVITY = 0.8; // 0.8 so not tooo floaty
+    // player physics, not that I'm the best at that. idk
+    static PLAYER_WIDTH = 80;
+    static PLAYER_HEIGHT = 120;
+    static PLAYER_X = 220; // fixed x position bc it's a runner game - moved to middle-left
+    static PLAYER_GROUND_Y = 320; // floor position - lower on canvas
+    static JUMP_VELOCITY = -16; // negative y increases downward 
+    static GRAVITY = 0.6; // less = more float
     
     // obstacle generation
-    static OBSTACLE_MIN_WIDTH = 20;
-    static OBSTACLE_MAX_WIDTH = 40;
-    static OBSTACLE_MIN_HEIGHT = 30;
-    static OBSTACLE_MAX_HEIGHT = 80;
+    static OBSTACLE_MIN_WIDTH = 30;
+    static OBSTACLE_MAX_WIDTH = 50;
+    static OBSTACLE_MIN_HEIGHT = 45;
+    static OBSTACLE_MAX_HEIGHT = 110;
     
-    // difficulty presets - using object bc it's easier to extend
+    // difficulty presets - these are only relevant on random mode, but right now I dont actually let users pick difficulty.
     static DIFFICULTY_PRESETS = {
         easy: {
             speed: 4,
