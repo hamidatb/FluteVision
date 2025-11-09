@@ -5,6 +5,8 @@
  */
 
 import CharacterPreview from "./CharacterPreview.astro";
+import ThemePreview from "./ThemePreview.astro";
+
 ---
 
 <div id="gameSettingsModal" class="game-settings-modal hidden">
@@ -20,18 +22,17 @@ import CharacterPreview from "./CharacterPreview.astro";
             <div class="option-grid six-col">
                 <CharacterPreview 
                     dataCharacter="Hami"
+                    charDisplayName="Hamidat (me!)"
                     isSelected=true
                 />
                 <CharacterPreview 
                     dataCharacter="Guba"
+                    charDisplayName="Killua"
                     isSelected=false
                 />
                 <CharacterPreview 
                     dataCharacter="Killua"
-                    isSelected=false
-                />
-                <CharacterPreview 
-                    dataCharacter="Natsu"
+                    charDisplayName="Killua"
                     isSelected=false
                 />
             </div>
@@ -41,7 +42,11 @@ import CharacterPreview from "./CharacterPreview.astro";
         <section class="settings-section">
             <h3><span class="section-icon">🎨</span> THEME:</h3>
             <div id="themeOptionsContainer" class="option-grid three-col">
-                <!-- Themes will be dynamically populated from THEMES config -->
+                <ThemePreview 
+                themeName="uofa"
+                themeDisplayName="U of A"
+                isSelected=true
+                />
             </div>
         </section>
 

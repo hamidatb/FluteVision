@@ -18,16 +18,12 @@ export class Player {
         
         this.imageManager = imageManager;
         this.characterKey = '🐱'; // default fallback (emoji)
-        this.themeColor = gameSettings.get('playerColor');
     }
     
     setCharacter(characterKey) {
         this.characterKey = characterKey; 
     }
     
-    setColor(color) {
-        this.themeColor = color;
-    }
     
     jump() {
         // allow jump even if slightly above ground for more responsive rapid jumps
@@ -92,14 +88,6 @@ export class Player {
             ctx.fillText(this.characterKey, centerX, centerY);
             // Reset text align for other rendering
             ctx.textAlign = 'start';
-        } else {
-            // fallback to colored rectangle with face
-            ctx.fillStyle = this.themeColor;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-            
-            ctx.fillStyle = 'white';
-            ctx.fillRect(this.x + 10, this.y + 15, 5, 5);
-            ctx.fillRect(this.x + 25, this.y + 15, 5, 5);
         }
     }
     

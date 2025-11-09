@@ -27,10 +27,6 @@ export class GameSettings {
             character: 'Hami', 
             theme: getDefaultThemeName(),
             
-            // visual customization
-            playerColor: '#667eea',
-            obstacleColor: '#ef4444',
-            
             // gameplay
             difficulty: 'medium', 
             musicMode: 'random', 

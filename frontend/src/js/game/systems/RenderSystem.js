@@ -21,10 +21,6 @@ export class RenderSystem {
     setTheme(theme) {
         // Update rendering colors and asset paths based on selected theme
         this.theme = {
-            skyColor: theme.skyColor,
-            groundColor: theme.groundColor,
-            obstacleColor: theme.obstacleColor,
-            playerColor: theme.playerColor,
             backgroundImage: theme.backgroundImage,
             groundImage: theme.groundImage,
             obstacleImage: theme.obstacleImage

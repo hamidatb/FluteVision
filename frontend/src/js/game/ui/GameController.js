@@ -355,47 +355,6 @@ class GameController {
         this._applyGameSettings();
     }
     
-    _populateThemeOptions() {
-        const container = document.getElementById('themeOptionsContainer');
-        if (!container) return;
-        
-        const currentTheme = gameSettings.get('theme');
-        
-        // Clear container
-        container.replaceChildren();
-        
-        // Generate theme buttons from THEMES object
-        Object.entries(THEMES).forEach(([themeKey, themeData]) => {
-            const themeCard = document.createElement('button');
-            themeCard.className = 'option-card theme-card';
-            themeCard.dataset.theme = themeKey;
-            themeCard.id = `theme${themeKey.charAt(0).toUpperCase() + themeKey.slice(1)}`;
-            
-            const themePreview = document.createElement('div');
-            themePreview.className = 'theme-preview';
-            // Use gradient from theme colors
-            themePreview.style.background = `linear-gradient(180deg, ${themeData.skyColor} 0%, ${themeData.obstacleColor} 50%, ${themeData.playerColor} 100%)`;
-            
-            const themeTitle = document.createElement('div');
-            themeTitle.className = 'option-title';
-            themeTitle.textContent = themeData.name;
-            
-            const themeCheck = document.createElement('span');
-            themeCheck.className = 'check-mark';
-            themeCheck.textContent = '✓';
-            
-            themeCard.appendChild(themePreview);
-            themeCard.appendChild(themeTitle);
-            themeCard.appendChild(themeCheck);
-            
-            if (currentTheme === themeKey) {
-                themeCard.classList.add('selected');
-            }
-            
-            container.appendChild(themeCard);
-        });
-    }
-    
     _populateTestOptions() {
         const container = document.getElementById('testOptionsContainer');
         if (!container) return;
@@ -450,7 +409,7 @@ class GameController {
         }
         container.appendChild(randomCard);
         
-        // Add test options (only the 3 specified tests)
+        // test options (
         tests.forEach(test => {
             const testCard = document.createElement('button');
             testCard.className = 'option-card';
@@ -483,22 +442,36 @@ class GameController {
         // Update character preview images in settings modal
         document.querySelectorAll('.character-preview').forEach(img => {
             const characterKey = img.dataset.characterKey;
-            if (characterKey && this.imageManager) {
-                const characterImage = this.imageManager.getImage(characterKey);
-                if (characterImage) {
-                    img.src = characterImage.src;
-                    img.style.display = 'block';
-                } else {
-                    // Fallback: try to load from CHARACTERS config
-                    const imageUrl = CHARACTERS[characterKey];
-                    if (imageUrl) {
-                        img.src = imageUrl;
-                        img.style.display = 'block';
-                    } else {
-                        img.style.display = 'none';
-                    }
-                }
+            const charImageUrl = CHARACTERS[characterKey];
+
+            if (!charImageUrl) {
+                console.error(`failed to get char url for ${characterKey}`);
+                return;
             }
+
+            const characterImage = this.imageManager.getImage(characterKey);
+            if (characterImage) {
+                img.src = characterImage.src;
+                img.style.display = 'block';
+            }
+        });
+    }
+
+    _populateThemeOptions() {
+        document.querySelectorAll('.theme-preview').forEach(img => {
+            const themeKey = img.dataset.themeKey;
+            const themeConfig = THEMES[themeKey];
+
+            if (!themeConfig) {
+                console.error(`failed to get theme config for ${themeKey}`);
+                return;
+            }
+
+            const themeBgURL = themeConfig.backgroundImage;
+            const themeImage = this.imageManager.getImage(themeBgURL); 
+            img.src = themeImage.src;
+            img.style.display = 'block';
+            console.log("Printed theme image successfully");
         });
     }
     
