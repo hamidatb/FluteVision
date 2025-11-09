@@ -6,6 +6,7 @@
 
 import CharacterPreview from "./CharacterPreview.astro";
 import ThemePreview from "./ThemePreview.astro";
+import FluteTestCard from "./FluteTestCard.astro";
 
 ---
 
@@ -53,8 +54,41 @@ import ThemePreview from "./ThemePreview.astro";
         <!-- Game Test Section -->
         <section class="settings-section" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
             <h3><span class="section-icon">🎮</span> Flute Tests:</h3>
-            <div id="testOptionsContainer" class="option-grid four-col">
-                <!-- Tests will be dynamically populated based on vision mode -->
+            <div id="testOptionsContainer">
+                <!-- hidden tests options that only show if in flute mode -->
+            <section id="fluteTestOptions" class="option-grid four-col" style="display: none;">
+                <FluteTestCard 
+                    dataTest="random"
+                    isSelected="true"
+                    optionDisplayName="Random"
+                    testIcon="🎲"
+                />
+
+                <FluteTestCard 
+                    dataTest="Hot Cross Buns"
+                    isSelected="true"
+                    optionDisplayName="Hot Cross Buns"
+                    testIcon="🎵"
+                />
+
+                <FluteTestCard 
+                    dataTest="C Major Scale"
+                    isSelected="true"
+                    optionDisplayName="C Major Scale"
+                    testIcon="🎵"
+                />
+
+                <FluteTestCard 
+                    dataTest="Beginner Pattern (Bb-C-D)"
+                    isSelected="true"
+                    optionDisplayName="Beginner Pattern (Bb-C-D)"
+                    testIcon="🎵"
+                />
+                </section>
+
+                <section id="handTestOptions" style="color: #999; padding: 1rem; text-align: center;">
+                    <p>Tests are only available in Flute Mode.</p>
+                </section>
             </div>
         </section>
 

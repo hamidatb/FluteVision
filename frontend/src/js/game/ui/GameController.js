@@ -364,78 +364,31 @@ class GameController {
         
         // Only show tests for flute mode
         if (visionMode !== 'flute') {
-            const message = document.createElement('p');
-            message.style.color = '#999';
-            message.style.padding = '1rem';
-            message.style.textAlign = 'center';
-            message.textContent = 'Tests are only available in Flute Mode.';
-            container.replaceChildren(message);
+            const fluteTestOptions = document.getElementById("fluteTestOptions")
+            fluteTestOptions.style.display = "none";
+
+            const handTestOptions = document.getElementById("handTestOptions")
+            handTestOptions.style.display = "block";
             return;
+        } else {
+            const fluteTestOptions = document.getElementById("fluteTestOptions")
+            fluteTestOptions.style.display = "block";
+
+            const handTestOptions = document.getElementById("handTestOptions")
+            handTestOptions.style.display = "none";
         }
         
         // Get all available tests and filter to only show the 3 specified tests
         const allTests = this.testLibrary.getAllTests();
-        const allowedTestNames = ['Hot Cross Buns', 'C Major Scale', 'Beginner Pattern (Bb-C-D)'];
         const tests = allTests.filter(test => allowedTestNames.includes(test.name));
         const currentTest = gameSettings.get('currentTest');
         const musicMode = gameSettings.get('musicMode');
         
-        // Clear container
-        container.replaceChildren();
-        
-        // Add "Random" option (for random mode)
-        const randomCard = document.createElement('button');
-        randomCard.className = 'option-card';
-        randomCard.dataset.test = 'random';
-        
-        const randomIcon = document.createElement('div');
-        randomIcon.className = 'option-icon';
-        randomIcon.textContent = '🎲';
-        
-        const randomTitle = document.createElement('div');
-        randomTitle.className = 'option-title';
-        randomTitle.textContent = 'Random';
-        
-        const randomCheck = document.createElement('span');
-        randomCheck.className = 'check-mark';
-        randomCheck.textContent = '✓';
-        
-        randomCard.appendChild(randomIcon);
-        randomCard.appendChild(randomTitle);
-        randomCard.appendChild(randomCheck);
         
         if (musicMode === 'random' || !currentTest) {
             randomCard.classList.add('selected');
         }
         container.appendChild(randomCard);
-        
-        // test options (
-        tests.forEach(test => {
-            const testCard = document.createElement('button');
-            testCard.className = 'option-card';
-            testCard.dataset.test = test.name;
-            
-            const testIcon = document.createElement('div');
-            testIcon.className = 'option-icon';
-            testIcon.textContent = '🎵';
-            
-            const testTitle = document.createElement('div');
-            testTitle.className = 'option-title';
-            testTitle.textContent = test.name;
-            
-            const testCheck = document.createElement('span');
-            testCheck.className = 'check-mark';
-            testCheck.textContent = '✓';
-            
-            testCard.appendChild(testIcon);
-            testCard.appendChild(testTitle);
-            testCard.appendChild(testCheck);
-            
-            if (currentTest === test.name && musicMode === 'test') {
-                testCard.classList.add('selected');
-            }
-            container.appendChild(testCard);
-        });
     }
     
     _populateCharacterPreviews() {
