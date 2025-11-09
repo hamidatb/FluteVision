@@ -2,7 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CameraFeed from '../components/CameraFeed.astro';
 import GameSettings from '../components/GameSettings.astro';
-
+import TestCompleteScreen from '../components/TestCompleteScreen.astro';
+import TestStartScreen  from '../components/TestStartScreen.astro';
+import GameHeaderBar from  '../components/GameHeaderBar.astro';
 import '../css/game.css';
 ---
 
@@ -10,40 +12,13 @@ import '../css/game.css';
     
     <div id="game-container">
         <!-- Game Header Bar -->
-        <div class="game-header">
-            <div class="header-left">
-                <button class="pause-btn" id="pauseBtn">
-                    <span class="pause-icon">⏸</span> PAUSE
-                </button>
-                <button class="stop-btn" id="stopBtn">
-                    <span class="stop-icon">⏹</span> STOP
-                </button>
-            </div>
-            
-            <div class="score-lives-container">
-                <div class="hearts-container" id="heartsContainer">
-                    <div class="heart filled">❤️</div>
-                    <div class="heart filled">❤️</div>
-                    <div class="heart filled">❤️</div>
-                </div>
-                <div class="score-container">
-                    <div class="score-label">SCORE</div>
-                    <div class="score-value" id="headerScore">0</div>
-                </div>
-            </div>
-            
-            <div class="header-right">
-                <button class="game-settings-btn" id="gameSettingsBtn">
-                    <span class="settings-icon">⚙️</span> SETTINGS
-                </button>
-            </div>
-        </div>
+        <GameHeaderBar />
         
         <!-- Game Main Area -->
         <div class="game-main">
             <!-- Camera feed overlay (small, inside game) -->
             <div class="camera-overlay">
-                <div class="rec-indicator">REC</div>
+                <button id="gameLandmarkToggle" class="game-landmark-toggle" title="Toggle hand landmarks" style="display: none;">📍</button>
                 <CameraFeed videoId="video" />
                 <div class="current-note" id="currentGesture">-</div>
             </div>
@@ -57,7 +32,7 @@ import '../css/game.css';
             <!-- Game canvas -->
             <canvas id="gameCanvas"></canvas>
             
-            <!-- Game over screen -->
+            <!-- Game over screen, go when someone runs out of lives -->
             <div id="gameOverBackdrop" class="modal-backdrop hidden">
                 <div id="gameOverScreen" class="game-over">
                     <h2>Game Over!</h2>
@@ -67,40 +42,11 @@ import '../css/game.css';
                 </div>
             </div>
             
-            <!-- Test complete screen -->
-            <div id="testCompleteBackdrop" class="modal-backdrop hidden">
-                <div id="testCompleteScreen" class="test-complete">
-                    <h2>🎉 Test Complete! 🎉</h2>
-                    <div class="test-name" id="completedTestName"></div>
-                    <div class="test-stats">
-                        <p class="final-score">Score: <span id="testFinalScore">0</span></p>
-                        <p class="final-combo">Max Combo: <span id="testMaxCombo">0</span></p>
-                        <p class="test-accuracy">Accuracy: <span id="testAccuracy">100%</span></p>
-                        <p class="test-notes">Notes Hit: <span id="testNotesHit">0</span>/<span id="testTotalNotes">0</span></p>
-                        <p class="test-duration">Duration: <span id="testDuration">0</span>s</p>
-                    </div>
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <button id="testPlayAgainBtn" class="game-btn">Play Again</button>
-                        <button id="testMenuBtn" class="game-btn secondary">Main Menu</button>
-                    </div>
-                </div>
-            </div>
+            <!-- this is only relevant for flute tests, where it's possible to actually finish a test -->
+            <TestCompleteScreen />
             
             <!-- Start screen -->
-            <div id="startScreenBackdrop" class="modal-backdrop">
-                <div id="startScreen" class="start-screen">
-                    <h2>Ready to Play?</h2>
-                    <p>Watch the NOW display and play the note to make your character jump!</p>
-                    <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-                        <strong>Testing:</strong> Press <kbd style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc;">Space</kbd> to jump
-                    </p>
-                    <div id="status" class="status">Initializing...</div>
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <button id="startBtn" class="game-btn" disabled>Start Game</button>
-                        <button id="startScreenSettingsBtn" class="game-btn secondary">⚙️ Settings</button>
-                    </div>
-                </div>
-            </div>
+            <TestStartScreen />
         </div>
     </div>
     
@@ -116,8 +62,8 @@ import '../css/game.css';
     <script src="../js/game/config/GameConstants.js"></script>
     <script src="../js/game/config/GameSettings.js"></script>
     
-    <!-- Assets & Music -->
-    <script src="../js/game/assets/AssetManager.js"></script>
+    <!-- Assets & Tests -->
+    <script src="../js/game/assets/ImageManager.js"></script>
     <script src="../js/game/music/MusicalTest.js"></script>
     
     <!-- Entities -->

@@ -1,5 +1,5 @@
 import { CameraController } from '../camera';
-import { FluteVisionAPI } from '../api';
+import { FluteVisionAPI } from '../api/api';
 import { CameraToggleUI, VisionModeToggleUI } from '../navigation';
 
 // practice mode controller - handles real-time detection without game logic
@@ -79,6 +79,12 @@ class PracticeMode {
                 document.getElementById('startBtn').disabled = false;
                 this.updateStatus('Camera on - Ready to practice!', 'success');
             }
+
+            // enable landmark visualization by default when camera turns on
+            const landmarkToggle = document.getElementById('landmarkToggle');
+            if (landmarkToggle && this.cameraController.enableLandmarkVisualization()) {
+                landmarkToggle.classList.add('active');
+            }
         }
     }
 
@@ -101,6 +107,19 @@ class PracticeMode {
             this.targetGesture = e.target.value || null;
             this.updateTargetDisplay();
         });
+
+        // landmark visualization toggle
+        const landmarkToggle = document.getElementById('landmarkToggle');
+        if (landmarkToggle) {
+            landmarkToggle.addEventListener('click', () => {
+                const isEnabled = this.cameraController.toggleLandmarkVisualization();
+                if (isEnabled) {
+                    landmarkToggle.classList.add('active');
+                } else {
+                    landmarkToggle.classList.remove('active');
+                }
+            });
+        }
     }
 
     start() {

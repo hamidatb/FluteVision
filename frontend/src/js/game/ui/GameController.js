@@ -1,13 +1,13 @@
 import { CameraController } from '../../camera';
-import { FluteVisionAPI } from '../../api';
+import { FluteVisionAPI } from '../../api/api';
 import { CameraToggleUI, VisionModeToggleUI } from '../../navigation';
 import { GameEngine } from '../../game/core/GameEngine';
 import { testLibrary } from '../music/MusicalTest';
-import { assetManager } from '../assets/AssetManager';
+import { imageManager } from '../assets/imageManager';
 import { InputManager } from '../../game/managers/InputManager';
 import { gameSettings } from '../../game/config/GameSettings';
 import { GameConstants } from '../../game/config/GameConstants';
-import { THEMES, CHARACTERS } from '../../game/config/ThemeConfig';
+import { THEMES, CHARACTERS, getTheme, getDefaultTheme, getDefaultThemeName } from '../../game/config/ThemeConfig';
 
 // main orchestrator - ties everything together
 // using facade pattern bc other code shouldn't need to know about all the internal systems
@@ -16,7 +16,7 @@ class GameController {
         // infrastructure - using CameraController for SOLID design
         this.cameraController = new CameraController('video');
         this.api = new FluteVisionAPI();
-        this.assetManager = assetManager; // singleton
+        this.imageManager = imageManager; // singleton
         this.testLibrary = testLibrary; // singleton
         
         // core systems
@@ -58,10 +58,33 @@ class GameController {
         this.cameraController.onStateChange((state, isEnabled) => {
             this._handleCameraStateChange(state, isEnabled);
         });
+
+        // preloading all character PNGs before creating the game engine
+        try {
+            this._updateStatus('Loading assets...');
+            await this.imageManager.preloadImages(CHARACTERS);
+            console.log('Character PNGs preloaded:', Object.keys(CHARACTERS));
+        } catch (err) {
+            console.error('Failed to preload character images:', err);
+        }
         
+        // preload theme assets (background, ground, obstacle images)
+        try {
+            const themeAssets = {};
+            Object.entries(THEMES).forEach(([themeName, theme]) => {
+                if (theme.backgroundImage) themeAssets[theme.backgroundImage] = theme.backgroundImage;
+                if (theme.groundImage) themeAssets[theme.groundImage] = theme.groundImage;
+                if (theme.obstacleImage) themeAssets[theme.obstacleImage] = theme.obstacleImage;
+            });
+            await this.imageManager.preloadImages(themeAssets);
+            console.log('Theme assets preloaded:', Object.keys(themeAssets).length);
+        } catch (err) {
+            console.warn('Failed to preload theme images (will fallback to colors):', err);
+        }
+                
         // create game engine
         const canvas = document.getElementById('gameCanvas');
-        this.gameEngine = new GameEngine(canvas, this.assetManager);
+        this.gameEngine = new GameEngine(canvas, this.imageManager);
         
         // set up callbacks
         this.gameEngine.onGameOver = (score, combo, maxCombo) => 
@@ -176,6 +199,12 @@ class GameController {
             // camera turned on
             this._updateStatus('Camera on - Ready to play!');
             
+            // TODO, evaluate performance impact (need tests) before making this mandatory
+            const landmarkToggle = document.getElementById('gameLandmarkToggle');
+            if (landmarkToggle && this.cameraController.enableLandmarkVisualization()) {
+                landmarkToggle.classList.add('active');
+            }
+            
             // resume input monitoring if game is running
             if (this.gameEngine && this.gameEngine.isRunning) {
                 this.inputManager.startMonitoring((prediction) => {
@@ -191,6 +220,10 @@ class GameController {
         }
         if (this.gestureChangeInterval) {
             clearInterval(this.gestureChangeInterval);
+        }
+        if (this.inputManager) {
+            this.inputManager.stopMonitoring();
+            console.log('Prediction stream paused.');
         }
     }
     
@@ -295,11 +328,26 @@ class GameController {
                 this._closeGameSettings();
             });
         }
+
+        // landmark visualization toggle
+        const landmarkToggle = document.getElementById('gameLandmarkToggle');
+        if (landmarkToggle) {
+            landmarkToggle.addEventListener('click', () => {
+                const isEnabled = this.cameraController.toggleLandmarkVisualization();
+                if (isEnabled) {
+                    landmarkToggle.classList.add('active');
+                } else {
+                    landmarkToggle.classList.remove('active');
+                }
+            });
+        }
     }
     
     _openGameSettings() {
         document.getElementById('gameSettingsModal').classList.remove('hidden');
+        this._populateThemeOptions();
         this._populateTestOptions();
+        this._populateCharacterPreviews();
     }
     
     _closeGameSettings() {
@@ -311,6 +359,9 @@ class GameController {
         const character = gameSettings.get('character');
         const theme = gameSettings.get('theme');
         
+        // Populate themes first
+        this._populateThemeOptions();
+        
         // Update selected states in UI
         document.querySelectorAll('[data-character]').forEach(btn => {
             btn.classList.toggle('selected', btn.dataset.character === character);
@@ -319,6 +370,9 @@ class GameController {
         document.querySelectorAll('[data-theme]').forEach(btn => {
             btn.classList.toggle('selected', btn.dataset.theme === theme);
         });
+        
+        // Populate character preview images
+        this._populateCharacterPreviews();
         
         // Apply settings to game
         this._applyGameSettings();
@@ -333,77 +387,58 @@ class GameController {
         
         // Only show tests for flute mode
         if (visionMode !== 'flute') {
-            const message = document.createElement('p');
-            message.style.color = '#999';
-            message.style.padding = '1rem';
-            message.style.textAlign = 'center';
-            message.textContent = 'Tests are only available in Flute Mode.';
-            container.replaceChildren(message);
+            const fluteTestOptions = document.getElementById("fluteTestOptions")
+            fluteTestOptions.style.display = "none";
+
+            const handTestOptions = document.getElementById("handTestOptions")
+            handTestOptions.style.display = "block";
             return;
+        } else {
+            const fluteTestOptions = document.getElementById("fluteTestOptions")
+            fluteTestOptions.style.display = "block";
+
+            const handTestOptions = document.getElementById("handTestOptions")
+            handTestOptions.style.display = "none";
         }
         
         // Get all available tests and filter to only show the 3 specified tests
-        const allTests = this.testLibrary.getAllTests();
-        const allowedTestNames = ['Hot Cross Buns', 'C Major Scale', 'Beginner Pattern (Bb-C-D)'];
-        const tests = allTests.filter(test => allowedTestNames.includes(test.name));
         const currentTest = gameSettings.get('currentTest');
         const musicMode = gameSettings.get('musicMode');
-        
-        // Clear container
-        container.replaceChildren();
-        
-        // Add "Random" option (for random mode)
-        const randomCard = document.createElement('button');
-        randomCard.className = 'option-card';
-        randomCard.dataset.test = 'random';
-        
-        const randomIcon = document.createElement('div');
-        randomIcon.className = 'option-icon';
-        randomIcon.textContent = '🎲';
-        
-        const randomTitle = document.createElement('div');
-        randomTitle.className = 'option-title';
-        randomTitle.textContent = 'Random';
-        
-        const randomCheck = document.createElement('span');
-        randomCheck.className = 'check-mark';
-        randomCheck.textContent = '✓';
-        
-        randomCard.appendChild(randomIcon);
-        randomCard.appendChild(randomTitle);
-        randomCard.appendChild(randomCheck);
-        
-        if (musicMode === 'random' || !currentTest) {
-            randomCard.classList.add('selected');
-        }
-        container.appendChild(randomCard);
-        
-        // Add test options (only the 3 specified tests)
-        tests.forEach(test => {
-            const testCard = document.createElement('button');
-            testCard.className = 'option-card';
-            testCard.dataset.test = test.name;
-            
-            const testIcon = document.createElement('div');
-            testIcon.className = 'option-icon';
-            testIcon.textContent = '🎵';
-            
-            const testTitle = document.createElement('div');
-            testTitle.className = 'option-title';
-            testTitle.textContent = test.name;
-            
-            const testCheck = document.createElement('span');
-            testCheck.className = 'check-mark';
-            testCheck.textContent = '✓';
-            
-            testCard.appendChild(testIcon);
-            testCard.appendChild(testTitle);
-            testCard.appendChild(testCheck);
-            
-            if (currentTest === test.name && musicMode === 'test') {
-                testCard.classList.add('selected');
+    }
+    
+    _populateCharacterPreviews() {
+        // Update character preview images in settings modal
+        document.querySelectorAll('.character-preview').forEach(img => {
+            const characterKey = img.dataset.characterKey;
+            const charImageUrl = CHARACTERS[characterKey];
+
+            if (!charImageUrl) {
+                console.error(`failed to get char url for ${characterKey}`);
+                return;
             }
-            container.appendChild(testCard);
+
+            const characterImage = this.imageManager.getImage(characterKey);
+            if (characterImage) {
+                img.src = characterImage.src;
+                img.style.display = 'block';
+            }
+        });
+    }
+
+    _populateThemeOptions() {
+        document.querySelectorAll('.theme-preview').forEach(img => {
+            const themeKey = img.dataset.themeKey;
+            const themeConfig = THEMES[themeKey];
+
+            if (!themeConfig) {
+                console.error(`failed to get theme config for ${themeKey}`);
+                return;
+            }
+
+            const themeBgURL = themeConfig.backgroundImage;
+            const themeImage = this.imageManager.getImage(themeBgURL); 
+            img.src = themeImage.src;
+            img.style.display = 'block';
         });
     }
     
@@ -411,8 +446,8 @@ class GameController {
         // Get selected values from UI
         // Vision mode is controlled via navbar toggle, so get it from gameSettings
         const visionMode = gameSettings.get('visionMode');
-        const character = document.querySelector('[data-character].selected')?.dataset.character || 'cat';
-        const theme = document.querySelector('[data-theme].selected')?.dataset.theme || 'forest';
+        const character = document.querySelector('[data-character].selected')?.dataset.character || 'Hami';
+        const theme = document.querySelector('[data-theme].selected')?.dataset.theme || getDefaultThemeName();
         
         // Get selected test
         const selectedTest = document.querySelector('[data-test].selected')?.dataset.test;
@@ -457,28 +492,23 @@ class GameController {
         
         // Apply theme colors to render system and game settings
         const themeName = gameSettings.get('theme');
-        const theme = THEMES[themeName] || THEMES.forest;
+        const theme = getTheme(themeName) || getDefaultTheme();
         console.log('Applying theme:', themeName, theme);
-        
-        // Update gameSettings with theme colors so obstacles and other entities use them
-        gameSettings.setMultiple({
-            playerColor: theme.playerColor,
-            obstacleColor: theme.obstacleColor
-        });
         
         if (this.gameEngine && this.gameEngine.renderSystem) {
             this.gameEngine.renderSystem.setTheme(theme);
         }
         
+        if (this.gameEngine && this.gameEngine.setTheme) {
+            this.gameEngine.setTheme(themeName);
+        }
+        
         // Apply character
         const characterName = gameSettings.get('character');
-        const character = CHARACTERS[characterName] || CHARACTERS.cat;
-        console.log('Applying character:', characterName, character);
+        console.log('Applying character:', characterName);
         
         if (this.gameEngine && this.gameEngine.player) {
-            this.gameEngine.player.setCharacter(character);
-            this.gameEngine.player.setColor(theme.playerColor);
-            console.log('Character applied to player:', this.gameEngine.player.character);
+            this.gameEngine.player.setCharacter(characterName);
         } else {
             console.warn('GameEngine or player not initialized yet');
         }
@@ -751,6 +781,6 @@ class GameController {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-            const controller = new GameController();
-            controller.initialize();
-        });
+    const controller = new GameController();
+    controller.initialize();
+});

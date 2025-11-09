@@ -142,10 +142,36 @@
     font-size: 1rem;
     color: #667eea;
     margin: 0;
+    flex: 1; /* let the h3 element fill all available space in the flex container. */
 }
 
 .section-icon {
     font-size: 1.5rem;
+}
+
+/* Landmark Toggle Button */
+.landmark-toggle-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.landmark-toggle-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
+}
+
+.landmark-toggle-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+}
+
+.landmark-toggle-btn.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 #practiceVideo {

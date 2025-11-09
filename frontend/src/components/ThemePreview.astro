@@ -1,0 +1,11 @@
+---
+const {themeName, isSelected, themeDisplayName} = Astro.props
+
+let btnClass = isSelected == true ? "option-card theme-card selected" : "option-card theme-card"
+---
+
+<button class={btnClass} data-theme={themeName}>
+    <img class="option-icon theme-preview" data-theme-key={themeName} alt={themeName}/>
+    <div class="option-title">{themeDisplayName}</div>
+    <span class="check-mark">✓</span>
+</button>

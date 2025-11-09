@@ -1,3 +1,5 @@
+import { getDefaultThemeName } from './ThemeConfig';
+
 // centralized settings management using singleton pattern - one source of truth across the entire game
 // storing in localStorage bc we want settings to persist between sessions
 export class GameSettings {
@@ -22,18 +24,12 @@ export class GameSettings {
         return {
             // game settings
             visionMode: 'flute', // 'flute' or 'hand'
-            character: 'cat', // 'cat', 'dog', 'bear', 'fox', 'owl', 'frog'
-            theme: 'forest', // 'forest', 'garden', 'beach', 'peak', 'park', 'night'
-            
-            // visual customization
-            playerImage: null, // null means use default rectangle
-            backgroundImage: null,
-            playerColor: '#667eea',
-            obstacleColor: '#ef4444',
+            character: 'Hami', 
+            theme: getDefaultThemeName(),
             
             // gameplay
-            difficulty: 'medium', // easy, medium, hard
-            musicMode: 'random', // random or test
+            difficulty: 'medium', 
+            musicMode: 'random', 
             currentTest: null, // name of selected musical test
             
             // audio

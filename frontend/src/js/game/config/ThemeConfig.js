@@ -1,66 +1,49 @@
-// Theme configuration for different game environments
-// Each theme has sky, ground, and obstacle colors
+export const DEFAULT_THEME = 'uofa';
+const char_path = `images/chars/`
+const theme_path = `images/themes/`
+
+// note: All images, chars, and backgrounds were generated using Canva AI
 
 export const THEMES = {
+    uofa: {
+        name: 'UofA',
+        backgroundImage: theme_path + 'uofa/background.jpg',
+        groundImage: theme_path + 'uofa/ground.png',
+        obstacleImage: theme_path + 'uofa/obstacle.png'
+    },
+    louvre: {
+        name: 'The Louvre',
+        backgroundImage: theme_path + 'louvre/background.jpg',
+        groundImage: theme_path + 'louvre/ground.png',
+        obstacleImage: theme_path + 'louvre/obstacle.png'
+    },
     forest: {
-        name: 'Mystic Forest',
-        skyColor: '#4a148c', // deep purple
-        groundColor: '#1b5e20', // dark green
-        obstacleColor: '#7b1fa2', // purple
-        playerColor: '#e91e63' // pink
-    },
-    garden: {
-        name: 'Cozy Garden',
-        skyColor: '#4fc3f7', // light blue
-        groundColor: '#66bb6a', // green
-        obstacleColor: '#1565c0', // dark blue
-        playerColor: '#ffeb3b' // yellow
-    },
-    beach: {
-        name: 'Sunset Beach',
-        skyColor: '#ff6f00', // orange
-        groundColor: '#d7ccc8', // sand
-        obstacleColor: '#ffb74d', // light orange
-        playerColor: '#263238' // dark blue-gray
-    },
-    peak: {
-        name: 'Alpine Peak',
-        skyColor: '#37474f', // dark gray
-        groundColor: '#b0bec5', // light gray
-        obstacleColor: '#546e7a', // medium gray
-        playerColor: '#ffffff' // white
-    },
-    park: {
-        name: 'Autumn Park',
-        skyColor: '#8d6e63', // brown
-        groundColor: '#d7ccc8', // light brown
-        obstacleColor: '#a1887f', // medium brown
-        playerColor: '#ffab00' // amber
-    },
-    night: {
-        name: 'Starry Night',
-        skyColor: '#0d47a1', // dark blue
-        groundColor: '#1565c0', // medium blue
-        obstacleColor: '#1976d2', // lighter blue
-        playerColor: '#ffd54f' // yellow
+        name: 'Forest',
+        backgroundImage: theme_path + 'forest/background.jpg',
+        groundImage: theme_path + 'forest/ground.png',
+        obstacleImage: theme_path + 'forest/obstacle.png'
     }
 };
 
-// Character emojis for player representation
 export const CHARACTERS = {
-    cat: '🐱',
-    dog: '🐶',
-    bear: '🐻',
-    fox: '🦊',
-    owl: '🦉',
-    frog: '🐸'
+  Hami: char_path + 'hami.png',
+  Hami_jump: char_path + 'hami_jump.png',
+  Guba: char_path + 'guba.png',
+  Guba_jump: char_path + 'guba_jump.png',
+  Killua: char_path + 'killua.png',
+  Killua_jump: char_path + 'killua_jump.png',
 };
 
 export function getTheme(themeName) {
-    return THEMES[themeName] || THEMES.forest;
+    return THEMES[themeName] || THEMES[DEFAULT_THEME];
 }
 
-export function getCharacter(characterName) {
-    return CHARACTERS[characterName] || CHARACTERS.cat;
+// Get the default theme object
+export function getDefaultTheme() {
+    return THEMES[DEFAULT_THEME];
 }
 
+// Get the default theme name
+export function getDefaultThemeName() {
+    return DEFAULT_THEME;
+}

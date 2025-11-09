@@ -1,4 +1,5 @@
-import { getApiUrl } from './config/apiConfig.js';
+import { getApiUrl } from './api/apiConfig.js';
+import { HandLandmarkVisualizer } from './landmarkVisualizer.js';
 
 /**
  * CameraStateManager, this manages camera state
@@ -50,8 +51,9 @@ class CameraStateManager {
  * CameraStream: handles video streaming and frame capture
  */
 class CameraStream {
-    constructor(apiUrl = null) {
+    constructor(apiUrl = null, videoElementId = 'video') {
         this.apiUrl = apiUrl || getApiUrl();
+        this.videoElementId = videoElementId;
         
         this.video = null;
         this.canvas = null;
@@ -64,11 +66,13 @@ class CameraStream {
         this.pendingRequest = false;
         this.predictionEndpoint = 'predict/base64'; // default to flute mode
         this.predictionMode = "flute";
+        this.landmarkVisualizer = null;
     }
     
     async initialize(videoElementId = 'video') {
         try {
             // allow specifying which video element to use bc different pages use different IDs
+            this.videoElementId = videoElementId;
             this.video = document.getElementById(videoElementId);
             if (!this.video) {
                 console.error(`Video element with id '${videoElementId}' not found`);
@@ -95,6 +99,11 @@ class CameraStream {
             // need canvas to match video size so we can capture frames without distortion
             this.canvas.width = this.video.videoWidth;
             this.canvas.height = this.video.videoHeight;
+            
+            // Initialize landmark visualizer
+            const canvasId = `${videoElementId}Canvas`;
+            this.landmarkVisualizer = new HandLandmarkVisualizer(videoElementId, canvasId);
+            await this.landmarkVisualizer.initialize();
             
             console.log('Camera initialized successfully');
             return true;
@@ -123,6 +132,9 @@ class CameraStream {
     // turn off camera completely (release hardware)
     turnOff() {
         this.stopStreaming();
+        if (this.landmarkVisualizer) {
+            this.landmarkVisualizer.cleanup();
+        }
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());
             this.stream = null;
@@ -139,6 +151,26 @@ class CameraStream {
         } else {
              this.predictionMode = "flute";
         }
+    }
+
+    enableLandmarkVisualization() {
+        if (this.landmarkVisualizer) {
+            return this.landmarkVisualizer.enable();
+        }
+        return false;
+    }
+
+    disableLandmarkVisualization() {
+        if (this.landmarkVisualizer) {
+            this.landmarkVisualizer.disable();
+        }
+    }
+
+    toggleLandmarkVisualization() {
+        if (this.landmarkVisualizer) {
+            return this.landmarkVisualizer.toggle();
+        }
+        return false;
     }
 
     // check if camera is available (hardware initialized)
@@ -215,7 +247,7 @@ class CameraStream {
 export class CameraController {
     constructor(videoElementId = 'video', apiUrl = null) {
         this.stateManager = new CameraStateManager();
-        this.stream = new CameraStream(apiUrl);
+        this.stream = new CameraStream(apiUrl, videoElementId);
         this.videoElementId = videoElementId;
         this.isInitialized = false;
     }
@@ -263,6 +295,18 @@ export class CameraController {
     toggleVisionMode() {
         this.stream.toggleVisionMode(); 
         console.log(`Prediction mode switched to: ${this.stream.predictionMode}`);
+    }
+
+    enableLandmarkVisualization() {
+        return this.stream.enableLandmarkVisualization();
+    }
+
+    disableLandmarkVisualization() {
+        this.stream.disableLandmarkVisualization();
+    }
+
+    toggleLandmarkVisualization() {
+        return this.stream.toggleLandmarkVisualization();
     }
 
     startStreaming(onPrediction) {

@@ -3,10 +3,11 @@ import { GameConstants } from '../../game/config/GameConstants';
 // rendering system - handles all drawing operations
 // separated bc rendering logic should be independent of game logic
 export class RenderSystem {
-    constructor(canvas, assetManager) {
+    constructor(canvas, imageManager) {
         this.canvas = canvas;
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
         this.ctx = canvas.getContext('2d');
-        this.assetManager = assetManager;
+        this.imageManager = imageManager;
         
         this.canvas.width = GameConstants.CANVAS_WIDTH;
         this.canvas.height = GameConstants.CANVAS_HEIGHT;
@@ -19,40 +20,29 @@ export class RenderSystem {
     }
     
     setTheme(theme) {
-        // Update rendering colors based on selected theme
+        // Update rendering colors and asset paths based on selected theme
         this.theme = {
-            skyColor: theme.skyColor,
-            groundColor: theme.groundColor,
-            obstacleColor: theme.obstacleColor,
-            playerColor: theme.playerColor
+            backgroundImage: theme.backgroundImage,
+            groundImage: theme.groundImage,
+            obstacleImage: theme.obstacleImage
         };
     }
     
     clear() {
-        const bgImage = this.assetManager.getImage('background');
+        // try to get theme-specific background image, fallback to 'background' key
+        const bgImage = this.imageManager.getImage(this.theme.backgroundImage) || 
+                       this.imageManager.getImage('background');
         
-        if (bgImage) {
-            // draw tiled background if custom image loaded
-            this.ctx.drawImage(bgImage, 0, 0, this.canvas.width, this.canvas.height);
-        } else {
-            // use theme sky color
-            this.ctx.fillStyle = this.theme.skyColor;
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        }
+        // draw background image stretched to canvas
+        this.ctx.drawImage(bgImage, 0, 0, this.canvas.width, this.canvas.height);
         
-        // ground - draw thick ground with theme color
-        const groundY = GameConstants.PLAYER_GROUND_Y + GameConstants.PLAYER_HEIGHT;
+        // Ground is drawn at PLAYER_GROUND_Y (where player's feet are)
+        const groundY = GameConstants.PLAYER_GROUND_Y;
         const groundHeight = this.canvas.height - groundY;
-        this.ctx.fillStyle = this.theme.groundColor;
-        this.ctx.fillRect(0, groundY, this.canvas.width, groundHeight);
         
-        // ground line on top for definition
-        this.ctx.strokeStyle = '#000000';
-        this.ctx.lineWidth = 3;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, groundY);
-        this.ctx.lineTo(this.canvas.width, groundY);
-        this.ctx.stroke();
+        const groundImage = this.imageManager.getImage(this.theme.groundImage)
+        this.ctx.drawImage(groundImage, 0, groundY, this.canvas.width, groundHeight);
+         
     }
     
     render(player, obstacles, isInvulnerable = false) {

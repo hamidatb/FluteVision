@@ -1,0 +1,11 @@
+---
+const {dataTest, isSelected, optionDisplayName, testIcon} = Astro.props
+
+let btnClass = isSelected == true ? "option-card selected" : "option-card"
+---
+
+<button class={btnClass} data-test={dataTest}>
+    <div class="option-icon">{testIcon}</div>
+    <div class="option-title">{optionDisplayName}</div>
+    <span class="check-mark">✓</span>
+</button>

@@ -2,6 +2,7 @@ import { Player } from '../../game/entities/Player';
 import { Obstacle } from '../../game/entities/Obstacle';
 import { GameConstants } from '../../game/config/GameConstants';
 import { gameSettings } from '../../game/config/GameSettings';
+import { getTheme, getDefaultTheme } from '../../game/config/ThemeConfig';
 import { RenderSystem } from '../../game/systems/RenderSystem';
 import { CollisionSystem } from '../../game/systems/CollisionSystem';
 import { ScoreManager } from '../../game/managers/ScoreManager';
@@ -9,19 +10,19 @@ import { ScoreManager } from '../../game/managers/ScoreManager';
 // core game loop and state - the heart of the game
 // handles update/render cycle and coordinates all systems
 export class GameEngine {
-    constructor(canvas, assetManager) {
-        this.assetManager = assetManager;
+    constructor(canvas, imageManager) {
+        this.imageManager = imageManager;
         
         // entities
         this.player = new Player(
             GameConstants.PLAYER_X,
             GameConstants.PLAYER_GROUND_Y,
-            assetManager
+            imageManager
         );
         this.obstacles = [];
         
         // systems
-        this.renderSystem = new RenderSystem(canvas, assetManager);
+        this.renderSystem = new RenderSystem(canvas, imageManager);
         this.collisionSystem = new CollisionSystem();
         this.scoreManager = new ScoreManager();
         
@@ -52,6 +53,11 @@ export class GameEngine {
         this.maxLives = 3;
         this.invulnerable = false;
         this.invulnerabilityTime = 2000; // 2 seconds of invulnerability after getting hit
+        
+        // theme assets
+        const themeName = gameSettings.get('theme');
+        const theme = getTheme(themeName) || getDefaultTheme();
+        this.currentObstacleImage = theme.obstacleImage;
         
         // callbacks
         this.onGameOver = null;
@@ -225,10 +231,18 @@ export class GameEngine {
     _createObstacle() {
         const obstacle = new Obstacle(
             GameConstants.CANVAS_WIDTH,
-            GameConstants.PLAYER_GROUND_Y + GameConstants.PLAYER_HEIGHT,
-            this.gameSpeed
+            GameConstants.PLAYER_GROUND_Y, // obstacles align with player's ground level
+            this.gameSpeed,
+            this.imageManager,
+            this.currentObstacleImage
         );
         this.obstacles.push(obstacle);
+    }
+    
+    setTheme(themeName) {
+        // update the obstacle image path when theme changes
+        const theme = getTheme(themeName) || getDefaultTheme();
+        this.currentObstacleImage = theme.obstacleImage;
     }
     
     _updateDifficulty() {
