@@ -92,13 +92,16 @@ export class Player {
     }
     
     getBounds() {
+        const paddingX = 40; // more padding means the obstacle has to be closer to be counted as "hitting" the char
+        const paddingY = 10;
         return {
-            x: this.x,
-            y: this.y,
-            width: this.width,
-            height: this.height
+            x: this.x + paddingX / 2,
+            y: this.y + paddingY / 2,
+            width: this.width - paddingX,
+            height: this.height - paddingY
         };
-    }
+        }
+
     
     reset() {
         this.y = this.groundY - this.height;
