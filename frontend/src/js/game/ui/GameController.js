@@ -215,6 +215,10 @@ class GameController {
         if (this.gestureChangeInterval) {
             clearInterval(this.gestureChangeInterval);
         }
+        if (this.inputManager) {
+            this.inputManager.stopMonitoring();
+            console.log('Prediction stream paused.');
+        }
     }
     
     _setupEventListeners() {
