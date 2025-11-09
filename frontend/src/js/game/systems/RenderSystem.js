@@ -42,13 +42,7 @@ export class RenderSystem {
         const groundImage = this.imageManager.getImage(this.theme.groundImage)
         this.ctx.drawImage(groundImage, 0, groundY, this.canvas.width, groundHeight);
         
-        // ground line on top for definition
-        // this.ctx.strokeStyle = '#000000';
-        // this.ctx.lineWidth = 3;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, groundY);
-        this.ctx.lineTo(this.canvas.width, groundY);
-        this.ctx.stroke();
+        
     }
     
     render(player, obstacles, isInvulnerable = false) {
