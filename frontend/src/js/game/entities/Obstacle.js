@@ -28,23 +28,29 @@ export class Obstacle {
     }
     
     render(ctx) {
-        // try to render witj theme-specific obstacle image
-        let obstacleImage = null;
-        if (this.imageManager && this.obstacleImagePath) {
-            obstacleImage = this.imageManager.getImage(this.obstacleImagePath);
-        }
-        
-        if (obstacleImage) {
-            // draw obstacle image stretched to fit obstacle dimensions
-            // TODO - Im not going to strecth this
-            ctx.drawImage(obstacleImage, this.x, this.y, this.width, this.height);
-        } else {
-            // fallback to solid color
-            ctx.fillStyle = gameSettings.get('obstacleColor');
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
+        // just aligning the top of the image to the top of the obstacle box
+        if (!this.imageManager || !this.obstacleImagePath) return;
+
+        const img = this.imageManager.getImage(this.obstacleImagePath);
+        if (!img) return;
+
+        // preserve aspect ratio
+        const aspect = img.width / img.height;
+
+        // fit the image to the obstacles width, not height
+        const targetWidth = this.width;
+        const targetHeight = targetWidth / aspect;
+
+        // align the TOP of the image with the TOP of the obstacle
+        const topY = this.y;
+
+        // draw the image anchored by its top
+        ctx.drawImage(img, this.x, topY, targetWidth, targetHeight);
+
+        //ctx.strokeStyle = 'rgba(255,0,0,0.5)';
+        //ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
-    
+
     isOffScreen() {
         return this.x + this.width < 0;
     }

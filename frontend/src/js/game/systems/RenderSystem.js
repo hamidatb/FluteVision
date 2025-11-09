@@ -5,6 +5,7 @@ import { GameConstants } from '../../game/config/GameConstants';
 export class RenderSystem {
     constructor(canvas, imageManager) {
         this.canvas = canvas;
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
         this.ctx = canvas.getContext('2d');
         this.imageManager = imageManager;
         
@@ -41,8 +42,7 @@ export class RenderSystem {
         
         const groundImage = this.imageManager.getImage(this.theme.groundImage)
         this.ctx.drawImage(groundImage, 0, groundY, this.canvas.width, groundHeight);
-        
-        
+         
     }
     
     render(player, obstacles, isInvulnerable = false) {
