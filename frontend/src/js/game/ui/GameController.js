@@ -436,9 +436,11 @@ class GameController {
             }
 
             const themeBgURL = themeConfig.backgroundImage;
-            const themeImage = this.imageManager.getImage(themeBgURL); 
-            img.src = themeImage.src;
-            img.style.display = 'block';
+            const themeImage = this.imageManager.getImage(themeBgURL);
+            if (themeImage) {
+                img.src = themeImage.src;
+                img.style.display = 'block';
+            }
         });
     }
     
