@@ -1,5 +1,4 @@
 import { Hands } from '@mediapipe/hands';
-import { HAND_CONNECTIONS } from '@mediapipe/hands';
 
 export class HandLandmarkVisualizer {
     constructor(videoElementId, canvasElementId) {

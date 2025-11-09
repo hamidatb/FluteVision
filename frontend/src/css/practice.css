@@ -142,7 +142,7 @@
     font-size: 1rem;
     color: #667eea;
     margin: 0;
-    flex: 1;
+    flex: 1; /* let the h3 element fill all available space in the flex container. */
 }
 
 .section-icon {

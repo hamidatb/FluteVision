@@ -29,7 +29,7 @@ const { selectedPage } = Astro.props;
         </a>
       </li>
       <!-- CSS sets the line div after the third child -->
-      <!-- cam button is hidden unless its the game or pracice pages -->
+      <!-- cam button is hidden unless its the game or practice pages -->
       <li>
         <button id="cameraToggleBtn" class="nav-btn camera-toggle" title="Toggle Camera" style={`display: ${(selectedPage === 'game') || selectedPage === 'practice' ? '' : 'none'};`}>
           <span class="icon" style="display: block;">📹</span> CAMERA

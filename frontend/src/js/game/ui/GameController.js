@@ -199,7 +199,7 @@ class GameController {
             // camera turned on
             this._updateStatus('Camera on - Ready to play!');
             
-            // enable landmark visualization by default when camera turns on - lowkey may remove the choice to even toggle eventually idk how much this slows me down
+            // TODO, evaluate performance impact (need tests) before making this mandatory
             const landmarkToggle = document.getElementById('gameLandmarkToggle');
             if (landmarkToggle && this.cameraController.enableLandmarkVisualization()) {
                 landmarkToggle.classList.add('active');
@@ -439,7 +439,6 @@ class GameController {
             const themeImage = this.imageManager.getImage(themeBgURL); 
             img.src = themeImage.src;
             img.style.display = 'block';
-            //console.log("Printed theme image successfully");
         });
     }
     

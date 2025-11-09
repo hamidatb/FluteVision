@@ -71,7 +71,7 @@ export class Player {
             const drawWidth = imgWidth * scale;
             const drawHeight = imgHeight * scale;
             
-            // aliggn image to bottom of player bounds, centered horizontally
+            // align image to bottom of player bounds, centered horizontally
             const drawX = this.x + (this.width - drawWidth) / 2;
             const drawY = this.y + this.height - drawHeight; // bottom-aligned
             

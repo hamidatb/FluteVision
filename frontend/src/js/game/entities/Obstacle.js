@@ -46,9 +46,6 @@ export class Obstacle {
 
         // draw the image anchored by its top
         ctx.drawImage(img, this.x, topY, targetWidth, targetHeight);
-
-        //ctx.strokeStyle = 'rgba(255,0,0,0.5)';
-        //ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 
     isOffScreen() {
