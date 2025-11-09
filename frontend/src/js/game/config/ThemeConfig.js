@@ -10,6 +10,18 @@ export const THEMES = {
         backgroundImage: theme_path + 'uofa/background.jpg',
         groundImage: theme_path + 'uofa/ground.png',
         obstacleImage: theme_path + 'uofa/obstacle.png'
+    },
+    louvre: {
+        name: 'The Louvre',
+        backgroundImage: theme_path + 'louvre/background.jpg',
+        groundImage: theme_path + 'louvre/ground.png',
+        obstacleImage: theme_path + 'louvre/obstacle.png'
+    },
+    forest: {
+        name: 'Forest',
+        backgroundImage: theme_path + 'forest/background.jpg',
+        groundImage: theme_path + 'forest/ground.png',
+        obstacleImage: theme_path + 'forest/obstacle.png'
     }
 };
 
