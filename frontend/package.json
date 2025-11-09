@@ -11,6 +11,8 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
+    "@mediapipe/drawing_utils": "^0.3.1675466124",
+    "@mediapipe/hands": "^0.4.1675469240",
     "astro": "^5.15.3",
     "express": "^4.18.2"
   },

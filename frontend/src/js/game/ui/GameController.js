@@ -199,6 +199,12 @@ class GameController {
             // camera turned on
             this._updateStatus('Camera on - Ready to play!');
             
+            // enable landmark visualization by default when camera turns on - lowkey may remove the choice to even toggle eventually idk how much this slows me down
+            const landmarkToggle = document.getElementById('gameLandmarkToggle');
+            if (landmarkToggle && this.cameraController.enableLandmarkVisualization()) {
+                landmarkToggle.classList.add('active');
+            }
+            
             // resume input monitoring if game is running
             if (this.gameEngine && this.gameEngine.isRunning) {
                 this.inputManager.startMonitoring((prediction) => {
@@ -320,6 +326,19 @@ class GameController {
         if (closeGameSettings) {
             closeGameSettings.addEventListener('click', () => {
                 this._closeGameSettings();
+            });
+        }
+
+        // landmark visualization toggle
+        const landmarkToggle = document.getElementById('gameLandmarkToggle');
+        if (landmarkToggle) {
+            landmarkToggle.addEventListener('click', () => {
+                const isEnabled = this.cameraController.toggleLandmarkVisualization();
+                if (isEnabled) {
+                    landmarkToggle.classList.add('active');
+                } else {
+                    landmarkToggle.classList.remove('active');
+                }
             });
         }
     }

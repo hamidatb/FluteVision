@@ -134,7 +134,7 @@
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 220px;
+    width: 280px;
     background: #f4a460;
     border: 6px solid #000;
     padding: 8px;
@@ -142,23 +142,38 @@
     box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
 }
 
-.rec-indicator {
+.game-landmark-toggle {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #ff0000;
-    color: white;
-    padding: 4px 8px;
-    font-size: 0.7rem;
-    font-weight: 900;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: 2px solid #000;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
     z-index: 101;
-    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.game-landmark-toggle:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+}
+
+.game-landmark-toggle:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+.game-landmark-toggle.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .camera-overlay #video {
     width: 100%;
-    height: 160px;
+    height: 158px;
     background: #000;
     border: 3px solid #000;
     display: block;
@@ -168,8 +183,8 @@
     background: #000;
     color: white;
     text-align: center;
-    padding: 8px;
-    font-size: 1.5rem;
+    padding: 6px;
+    font-size: 1.1rem;
     font-weight: 900;
     margin-top: 4px;
     border: 3px solid #000;
@@ -421,11 +436,15 @@
     }
     
     .camera-overlay {
-        width: 180px;
+        width: 220px;
     }
     
     .camera-overlay #video {
-        height: 130px;
+        height: 124px;
+    }
+    
+    .current-note {
+        font-size: 1rem;
     }
     
     .now-playing {
@@ -504,18 +523,18 @@
     }
     
     .camera-overlay {
-        width: 140px;
+        width: 180px;
         top: 15px;
         left: 15px;
     }
     
     .camera-overlay #video {
-        height: 100px;
+        height: 101px;
     }
     
     .current-note {
-        font-size: 1.2rem;
-        padding: 6px;
+        font-size: 0.95rem;
+        padding: 5px;
     }
     
     .now-playing {
@@ -631,23 +650,18 @@
     }
     
     .camera-overlay {
-        width: 120px;
+        width: 160px;
         top: 10px;
         left: 10px;
     }
     
     .camera-overlay #video {
-        height: 85px;
+        height: 90px;
     }
     
     .current-note {
-        font-size: 1rem;
-        padding: 5px;
-    }
-    
-    .rec-indicator {
-        font-size: 0.6rem;
-        padding: 3px 6px;
+        font-size: 0.85rem;
+        padding: 4px;
     }
     
     .now-playing {
@@ -747,11 +761,15 @@
     }
     
     .camera-overlay {
-        width: 130px;
+        width: 170px;
     }
     
     .camera-overlay #video {
-        height: 90px;
+        height: 96px;
+    }
+    
+    .current-note {
+        font-size: 0.9rem;
     }
     
     .start-screen, .game-over {

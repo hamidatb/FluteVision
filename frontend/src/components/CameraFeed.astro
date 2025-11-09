@@ -1,7 +1,7 @@
 ---
 /**
  * Camera video feed component
- * Displays the webcam video stream
+ * Displays the webcam video stream with optional landmark overlay
  * 
  * Props:
  * - videoId: ID for the video element (default: 'video')
@@ -12,16 +12,36 @@ interface Props {
 }
 
 const { videoId = 'video' } = Astro.props;
+const canvasId = `${videoId}Canvas`;
 ---
 
-<video id={videoId} autoplay playsinline muted></video>
+<div class="camera-container">
+    <video id={videoId} autoplay playsinline muted></video>
+    <canvas id={canvasId} class="landmark-overlay"></canvas>
+</div>
 
 <style>
+    .camera-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
     video {
         width: 100%;
         height: 100%;
         object-fit: cover;
         border-radius: 8px;
         background-color: #000;
+    }
+
+    .landmark-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        border-radius: 8px;
     }
 </style>
