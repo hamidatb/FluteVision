@@ -171,3 +171,8 @@ if (typeof window !== 'undefined') {
     });
 }
 
+window.toggleNavLinksForMobile = function() {
+  const navLinks = document.querySelector(".nav-list");
+  navLinks?.classList.toggle("open");
+};
+

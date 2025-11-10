@@ -388,17 +388,17 @@ class GameController {
         // Only show tests for flute mode
         if (visionMode !== 'flute') {
             const fluteTestOptions = document.getElementById("fluteTestOptions")
-            fluteTestOptions.style.display = "none";
+            fluteTestOptions.classList.add("hidden");
 
             const handTestOptions = document.getElementById("handTestOptions")
-            handTestOptions.style.display = "block";
+            handTestOptions.classList.remove("hidden");
             return;
         } else {
             const fluteTestOptions = document.getElementById("fluteTestOptions")
-            fluteTestOptions.style.display = "block";
+            fluteTestOptions.classList.remove("hidden");
 
             const handTestOptions = document.getElementById("handTestOptions")
-            handTestOptions.style.display = "none";
+            handTestOptions.classList.add("hidden");
         }
         
         // Get all available tests and filter to only show the 3 specified tests

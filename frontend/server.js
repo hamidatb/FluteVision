@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 3000;
 app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    script-src 'self' https://cdn.jsdelivr.net;
+    style-src 'self' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: blob:;
     connect-src 'self' https://flutevision-api-2aeac29f3245.herokuapp.com http://localhost:8000 https://cdn.jsdelivr.net;

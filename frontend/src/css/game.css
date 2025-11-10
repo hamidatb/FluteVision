@@ -1117,3 +1117,39 @@
         padding: 12px 25px;
     }
 }
+
+.button-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.testing-hint {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+.kbd-key {
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.last-section {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.hand-test-message {
+  color: #999;
+  padding: 1rem;
+  text-align: center;
+}
+
+.icon-block {
+  display: block;
+}

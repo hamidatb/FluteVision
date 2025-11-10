@@ -31,13 +31,13 @@ const { selectedPage } = Astro.props;
       <!-- CSS sets the line div after the third child -->
       <!-- cam button is hidden unless its the game or practice pages -->
       <li>
-        <button id="cameraToggleBtn" class="nav-btn camera-toggle" title="Toggle Camera" style={`display: ${(selectedPage === 'game') || selectedPage === 'practice' ? '' : 'none'};`}>
-          <span class="icon" style="display: block;">📹</span> CAMERA
+        <button id="cameraToggleBtn" class={`nav-btn camera-toggle ${(selectedPage === 'game' || selectedPage === 'practice') ? '' : 'hidden'}`} title="Toggle Camera">
+          <span class="icon icon-block">📹</span> CAMERA
         </button>
       </li>
       <li>
-        <button id="visionModeToggleBtn" class="nav-btn vision-mode-toggle" title="Toggle Vision Mode" style={`display: ${(selectedPage === 'game') || selectedPage === 'practice' ? '' : 'none'};`}>
-          <span class="icon" style="display: block;">🎵</span>
+        <button id="visionModeToggleBtn" class={`nav-btn vision-mode-toggle ${(selectedPage === 'game' || selectedPage === 'practice') ? '' : 'hidden'}`} title="Toggle Vision Mode">
+          <span class="icon icon-block">🎵</span>
         </button>
       </li>
       <li>
@@ -49,11 +49,5 @@ const { selectedPage } = Astro.props;
   </nav>
 </header>
 
-<script is:inline>
-  function toggleNavLinksForMobile() {
-    const navLinks = document.querySelector(".nav-list");
-    navLinks?.classList.toggle("open");
-  }
-</script>
 
 

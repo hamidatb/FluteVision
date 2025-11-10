@@ -62,11 +62,11 @@ import FluteTestCard from "./FluteTestCard.astro";
         </section>
 
         <!-- Game Test Section -->
-        <section class="settings-section" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+        <section class="settings-section last-section">
             <h3><span class="section-icon">🎮</span> Flute Tests:</h3>
             <div id="testOptionsContainer">
                 <!-- hidden tests options that only show if in flute mode -->
-            <section id="fluteTestOptions" class="option-grid four-col" style="display: none;">
+            <section id="fluteTestOptions" class="option-grid four-col">
                 <FluteTestCard 
                     dataTest="random"
                     isSelected="true"
@@ -103,7 +103,7 @@ import FluteTestCard from "./FluteTestCard.astro";
                 />
                 </section>
 
-                <section id="handTestOptions" style="color: #999; padding: 1rem; text-align: center;">
+                <section id="handTestOptions" class="hand-test-message">
                     <p>Tests are only available in Flute Mode.</p>
                 </section>
             </div>
