@@ -211,13 +211,16 @@ export class GameEngine {
         for (const note of notes) {
             // check if it's time to spawn this note's obstacle
             // spawn ahead of time so it reaches player at the correct moment
-            const spawnLeadTime = 2000; // spawn 2s before player should play the note
+            // calc based on actual travel distance and speed
+            const travelDistance = GameConstants.CANVAS_WIDTH - GameConstants.PLAYER_X;
+            const pixelsPerMs = this.gameSpeed / (1000 / 60); // speed per millisecond
+            const spawnLeadTime = travelDistance / pixelsPerMs;
             const spawnTime = note.time - spawnLeadTime;
             
             const noteId = `${note.gesture}-${note.time}`;
             
             if (this.elapsedTime >= spawnTime && !this.processedNotes.has(noteId)) {
-                this._createObstacle();
+                this._createObstacle(note.gesture); // passing gesture to display on obstacle
                 this.processedNotes.add(noteId);
                 
                 // notify UI to show this gesture as target
@@ -228,13 +231,14 @@ export class GameEngine {
         }
     }
     
-    _createObstacle() {
+    _createObstacle(gesture = null) {
         const obstacle = new Obstacle(
             GameConstants.CANVAS_WIDTH,
             GameConstants.PLAYER_GROUND_Y, // obstacles align with player's ground level
             this.gameSpeed,
             this.imageManager,
-            this.currentObstacleImage
+            this.currentObstacleImage,
+            gesture // gesture letter to display on obstacle
         );
         this.obstacles.push(obstacle);
     }
@@ -247,6 +251,11 @@ export class GameEngine {
     
     _updateDifficulty() {
         // gradually ramp up speed bc playing the same speed forever is boring
+        // if in test mode, dont change the speed. The timings are imperative here
+        if (this.testMode) {
+            return;
+        }
+        
         if (this.gameSpeed < this.difficultySettings.maxSpeed) {
             this.gameSpeed += this.difficultySettings.speedIncrease;
             

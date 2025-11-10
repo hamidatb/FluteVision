@@ -1,0 +1,835 @@
+{
+  "name": "Fairytail Theme",
+  "description": "Converted from MIDI file",
+  "notes": [
+    {
+      "gesture": "D",
+      "time": 3000,
+      "duration": 499.47916666666663
+    },
+    {
+      "gesture": "A",
+      "time": 5833,
+      "duration": 499.4791666666667
+    },
+    {
+      "gesture": "A",
+      "time": 7383,
+      "duration": 749.4791666666667
+    },
+    {
+      "gesture": "G",
+      "time": 8933,
+      "duration": 124.4791666666667
+    },
+    {
+      "gesture": "C",
+      "time": 10483,
+      "duration": 124.4791666666667
+    },
+    {
+      "gesture": "F",
+      "time": 12033,
+      "duration": 499.4791666666667
+    },
+    {
+      "gesture": "E",
+      "time": 13583,
+      "duration": 499.4791666666667
+    },
+    {
+      "gesture": "D",
+      "time": 15133,
+      "duration": 499.4791666666667
+    },
+    {
+      "gesture": "E",
+      "time": 16683,
+      "duration": 499.4791666666667
+    },
+    {
+      "gesture": "D",
+      "time": 18233,
+      "duration": 499.47916666666623
+    },
+    {
+      "gesture": "A",
+      "time": 19783,
+      "duration": 499.47916666666623
+    },
+    {
+      "gesture": "C",
+      "time": 21333,
+      "duration": 749.4791666666672
+    },
+    {
+      "gesture": "A",
+      "time": 22883,
+      "duration": 124.47916666666626
+    },
+    {
+      "gesture": "F",
+      "time": 24433,
+      "duration": 124.47916666666626
+    },
+    {
+      "gesture": "G",
+      "time": 25983,
+      "duration": 249.47916666666626
+    },
+    {
+      "gesture": "C",
+      "time": 27533,
+      "duration": 249.47916666666626
+    },
+    {
+      "gesture": "F",
+      "time": 29083,
+      "duration": 249.47916666666626
+    },
+    {
+      "gesture": "E",
+      "time": 30633,
+      "duration": 249.47916666666626
+    },
+    {
+      "gesture": "D",
+      "time": 32183,
+      "duration": 499.47916666666623
+    },
+    {
+      "gesture": "E",
+      "time": 33733,
+      "duration": 499.47916666666623
+    },
+    {
+      "gesture": "D",
+      "time": 35283,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 36833,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 38383,
+      "duration": 749.4791666666672
+    },
+    {
+      "gesture": "G",
+      "time": 39933,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 41483,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 43033,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 44583,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 46133,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 47683,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 49233,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 50783,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 52333,
+      "duration": 749.4791666666672
+    },
+    {
+      "gesture": "A",
+      "time": 53883,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 55433,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 56983,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 58533,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 60083,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 61633,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 63183,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 64733,
+      "duration": 499.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 66283,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 67833,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 69383,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 70933,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 72483,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 74033,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 75583,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 77133,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 78683,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 80233,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 81783,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 83333,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 84883,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 86433,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 87983,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 89533,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 91083,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 92633,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 94183,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 95733,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 97283,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 98833,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 100383,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 101933,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 103483,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 105033,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 106583,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 108133,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 109683,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 111233,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 112783,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 114333,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 115883,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 117433,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 118983,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 120533,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 122083,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 123633,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 125183,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 126733,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 128283,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 129833,
+      "duration": 374.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 131383,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 132933,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 134483,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 136033,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 137583,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 139133,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 140683,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 142233,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 143783,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 145333,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 146883,
+      "duration": 374.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 148433,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 149983,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 151533,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 153083,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 154633,
+      "duration": 374.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 156183,
+      "duration": 61.97916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 157733,
+      "duration": 61.97916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 159283,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 160833,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 162383,
+      "duration": 374.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 163933,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 165483,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 167033,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 168583,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 170133,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 171683,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 173233,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 174783,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 176333,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 177883,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 179433,
+      "duration": 374.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 180983,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 182533,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 184083,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 185633,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 187183,
+      "duration": 374.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 188733,
+      "duration": 61.97916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 190283,
+      "duration": 61.97916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 191833,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 193383,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 194933,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 196483,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 198033,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 199583,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 201133,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 202683,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 204233,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 205783,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 207333,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 208883,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 210433,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 211983,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 213533,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 215083,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 216633,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 218183,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 219733,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 221283,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 222833,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 224383,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 225933,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 227483,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 229033,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 230583,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 232133,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 233683,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 235233,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 236783,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 238333,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 239883,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 241433,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 242983,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 244533,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 246083,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 247633,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "G",
+      "time": 249183,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "A",
+      "time": 250733,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "C",
+      "time": 252283,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 253833,
+      "duration": 124.47916666666714
+    },
+    {
+      "gesture": "F",
+      "time": 255383,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "E",
+      "time": 256933,
+      "duration": 249.47916666666714
+    },
+    {
+      "gesture": "D",
+      "time": 258483,
+      "duration": 999.4791666666672
+    }
+  ],
+  "metadata": {
+    "tempo": 120,
+    "source": "MIDI import"
+  }
+}

@@ -122,6 +122,22 @@ export class TestLibrary {
             ],
             {difficulty: 'beginner', composer: 'Traditional'}
         ));
+        
+        this._loadFairytailTest();
+    }
+    
+    async _loadFairytailTest() {
+        try {
+            const response = await fetch('/fairytail-flute-midi_test.json');
+            if (!response.ok) {
+                console.warn('Failed to load fairytail test:', response.statusText);
+                return;
+            }
+            const jsonData = await response.json();
+            await this.loadFromJson(jsonData);
+        } catch (error) {
+            console.warn('Error loading fairytail test:', error);
+        }
     }
     
     addTest(test) {
@@ -138,13 +154,6 @@ export class TestLibrary {
     
     getTestNames() {
         return Array.from(this.tests.keys());
-    }
-    
-    // future: load from MIDI files
-    async loadFromMidi(midiFile) {
-        // TODO: parse MIDI and convert to MusicalTest
-        // using web-midi-api or tonejs/midi library
-        throw new Error('MIDI loading not yet implemented');
     }
     
     // future: load from JSON file
