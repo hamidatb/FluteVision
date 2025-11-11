@@ -1,6 +1,6 @@
 export const DEFAULT_THEME = 'uofa';
-const char_path = `images/chars/`
-const theme_path = `images/themes/`
+const char_path = `/images/chars/`
+const theme_path = `/images/themes/`
 
 // note: All images, chars, and backgrounds were generated using Canva AI
 
