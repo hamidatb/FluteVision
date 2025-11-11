@@ -13,7 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
-      name: frontend   
+      name: production-frontend   
 
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
