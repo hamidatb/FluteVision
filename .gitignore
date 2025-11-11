@@ -132,7 +132,6 @@ ml/experiments/
 ml/mlruns/
 ml/wandb/
 
-# Jupyter notebooks (optional - uncomment if you don't want to commit them)
 # ml/notebooks/*.ipynb
 
 # ============================================================================
