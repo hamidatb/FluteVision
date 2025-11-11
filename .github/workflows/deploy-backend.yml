@@ -13,7 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
-      name: production-backend   
+      name: backend   
     
     steps:
       - name: Checkout code
