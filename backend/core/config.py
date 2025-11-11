@@ -23,13 +23,16 @@ class Settings:
     # Paths
     PROJECT_ROOT: Path = Path(__file__).parent.parent  # backend folder
     SCRIPTS_PATH: Path = PROJECT_ROOT / "ml" / "scripts"
-    MODEL_PATH: Path = PROJECT_ROOT / "ml" / "models" / "landmark_model.pkl"
+    MODEL_PATH: Path = PROJECT_ROOT / "ml" / "models" / "landmark_model_flute.pkl"
     HAND_MODEL_PATH= PROJECT_ROOT / "ml" / "models" / "landmark_model_hand.pkl"
     SAVED_DATASETS_DIR = PROJECT_ROOT / "ml" / "datasets" / "raw"
     SAVED_HAND_DATASETS_DIR = PROJECT_ROOT / "ml" / "datasets" / "raw_hand"
     
     # odel Settings
-    CONFIDENCE_THRESHOLD: float = 0.5
+    """
+     python ml/scripts/capture_data.py --keys G --samples 100 --mode flute --output-dir "/Users/hami/Documents/Learning Coding/Coding/Personal Projects/FluteVision/backend/ml/datasets/calgary_raw"
+    """
+    CONFIDENCE_THRESHOLD: float = 0.3
 
 settings = Settings()
 

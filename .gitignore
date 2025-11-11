@@ -104,6 +104,7 @@ dmypy.json
 # ============================================================================
 
 # Raw datasets (too large for git) - ml is now in backend/ml
+*_raw/ 
 backend/ml/datasets/raw/
 backend/ml/datasets/raw_hand/
 backend/ml/datasets/processed/
