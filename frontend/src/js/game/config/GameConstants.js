@@ -7,10 +7,10 @@ export class GameConstants {
     // player physics, not that I'm the best at that. idk
     static PLAYER_WIDTH = 80;
     static PLAYER_HEIGHT = 120;
-    static PLAYER_X = 220; // fixed x position bc it's a runner game - moved to middle-left
+    static PLAYER_X = 350; // fixed x position bc it's a runner game - moved to middle-left
     static PLAYER_GROUND_Y = 320; // floor position - lower on canvas
-    static JUMP_VELOCITY = -16; // negative y increases downward 
-    static GRAVITY = 0.8; // less = more float
+    static JUMP_VELOCITY = -18; // negative y increases downward, increase just means a faster jump
+    static GRAVITY = 0.9; // less = more float
     
     // obstacle generation
     static OBSTACLE_MIN_WIDTH = 30;
