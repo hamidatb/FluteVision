@@ -17,7 +17,15 @@ const title = siteConfig.site_name;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title ? `${title} | FluteVision` : "FluteVision - AI-Powered Flute Training"}</title>
-</head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8Z7E1RKF4G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8Z7E1RKF4G');
+    </script>
+  </head>
 
 <body>
     <div class="floating-emoji">🎶</div>

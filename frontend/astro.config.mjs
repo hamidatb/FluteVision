@@ -15,7 +15,8 @@ export default defineConfig({
       scriptDirective: {
         resources: [
           "'self'", // keeping local scripts
-          "https://cdn.jsdelivr.net" // allow CDN JS
+          "https://cdn.jsdelivr.net", // allow CDN JS,
+          "https://www.googletagmanager.com" // analytics
         ]
       },
       styleDirective: {
