@@ -10,6 +10,10 @@ export class InputManager {
         this.onCorrectInput = null;
         this.isMonitoring = false;
         
+        // cooldown to prevent double-triggering from same gesture
+        this.lastTriggerTime = 0;
+        this.triggerCooldown = 300; // ms between allowed triggers
+        
         // add keyboard support for testing bc it's easier to debug without needing perfect gestures
         this._setupKeyboardInput();
     }
@@ -18,8 +22,16 @@ export class InputManager {
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && this.isMonitoring) {
                 e.preventDefault();
+                
+                // respect cooldown for keyboard too to prevent spam
+                const now = Date.now();
+                if (now - this.lastTriggerTime < this.triggerCooldown) {
+                    return;
+                }
+                
                 // trigger jump via callback, simulating a perfect gesture match
                 if (this.onCorrectInput) {
+                    this.lastTriggerTime = now;
                     this.onCorrectInput('keyboard', 1.0);
                 }
             }
@@ -47,6 +59,8 @@ export class InputManager {
     
     setTargetGesture(gesture) {
         this.targetGesture = gesture;
+        // reset cooldown when target changes so player can immediately respond to new note
+        this.lastTriggerTime = 0;
     }
     
     getCurrentPrediction() {
@@ -59,10 +73,32 @@ export class InputManager {
         if (!this.onCorrectInput) return;
         
         const threshold = gameSettings.get('confidenceThreshold');
+        // debugging
+        if (prediction.gesture === this.targetGesture) {
+            const meetsThreshold = prediction.confidence >= threshold;
+            console.log(meetsThreshold ? '✅ JUMP!' : '⚠️ TOO LOW CONFIDENCE:', {
+                gesture: prediction.gesture,
+                confidence: prediction.confidence.toFixed(3),
+                threshold: threshold,
+                diff: (prediction.confidence - threshold).toFixed(3)
+            });
+        }
+        
+        // check cooldown to prevent double-triggering
+        const now = Date.now();
+        const timeSinceLastTrigger = now - this.lastTriggerTime;
+        if (timeSinceLastTrigger < this.triggerCooldown) {
+            if (prediction.gesture === this.targetGesture && prediction.confidence >= threshold) {
+                console.log(`⏱️ COOLDOWN: ${timeSinceLastTrigger}ms since last trigger (need ${this.triggerCooldown}ms)`);
+            }
+            return;
+        }
         
         // correct gesture with high confidence triggers action
         if (prediction.gesture === this.targetGesture && 
             prediction.confidence >= threshold) {
+            console.log('✅ JUMP TRIGGERED!');
+            this.lastTriggerTime = now;
             this.onCorrectInput(prediction.gesture, prediction.confidence);
         }
     }

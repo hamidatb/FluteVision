@@ -5,13 +5,12 @@ export class MusicalTest {
         this.name = name;
         this.description = description;
         this.notes = notes; // array of {gesture, time, duration}
-        this.metadata = metadata; // composer, difficulty, etc
+        this.metadata = metadata; 
         
         this._validateNotes();
     }
     
     _validateNotes() {
-        // ensure notes are sorted by time bc the game needs them in order
         this.notes.sort((a, b) => a.time - b.time);
         
         // validate each note has required fields
@@ -73,71 +72,52 @@ export class TestLibrary {
         this.addTest(MusicalTest.fromSimpleFormat(
             'Beginner Pattern (Bb-C-D)',
             'Basic three-note pattern',
-            'Bb:0 C:1 D:2 Bb:3 C:4 D:5 Bb:6 C:7 D:8',
-            80 // slower tempo for beginners to have time between notes
+            'Bb:2 C:3 D:4 Bb:5 C:6 D:7 Bb:8 C:9 D:10',
+            45 
         ));
         
-        // simple scale - good for general practice
         this.addTest(MusicalTest.fromSimpleFormat(
             'C Major Scale',
             'Basic scale exercise',
-            'C:0 D:1 E:2 F:3 G:4 A:5 Bb:6',
-            90 // slower for comfortable practice
+            'C:2 D:3 E:4 F:5 G:6 A:7 Bb:8',
+            45 
         ));
         
-        // arpeggio pattern
         this.addTest(MusicalTest.fromSimpleFormat(
             'Simple Arpeggio',
             'Jump between notes',
-            'C:0 E:1 G:2 C:3 G:4 E:5 C:6',
-            100 // slower for accurate jumps
+            'C:2 E:3 G:4 C:5 G:6 E:7 C:8',
+            45 
         ));
         
-        // hot cross buns - classic beginner song
         this.addTest(MusicalTest.fromSimpleFormat(
             'Hot Cross Buns',
             'Traditional melody',
-            'E:0 D:1 C:2 E:4 D:5 C:6 C:8 C:8.5 C:9 C:9.5 D:10 D:10.5 D:11 D:11.5 E:12 D:13 C:14',
-            75 // much slower for rapid note sequences to be playable
+            'D:3 C:5 Bb:7 D:10 C:12 Bb:14 Bb:16 Bb:17 Bb:18 Bb:19 C:20 C:21 C:22 C:23 D:25 C:27 Bb:29',
+            40 
         ));
         
-        // mary had a little lamb
+        // mary had a little lamb 
         this.addTest(new MusicalTest(
             'Mary Had a Little Lamb',
             'Classic melody for practice',
             [
-                {gesture: 'E', time: 0, duration: 500},
-                {gesture: 'D', time: 500, duration: 500},
-                {gesture: 'C', time: 1000, duration: 500},
-                {gesture: 'D', time: 1500, duration: 500},
-                {gesture: 'E', time: 2000, duration: 500},
-                {gesture: 'E', time: 2500, duration: 500},
-                {gesture: 'E', time: 3000, duration: 1000},
-                {gesture: 'D', time: 4000, duration: 500},
-                {gesture: 'D', time: 4500, duration: 500},
-                {gesture: 'D', time: 5000, duration: 1000},
-                {gesture: 'E', time: 6000, duration: 500},
-                {gesture: 'G', time: 6500, duration: 500},
-                {gesture: 'G', time: 7000, duration: 1000}
+                {gesture: 'E', time: 2400, duration: 1200},    // start at beat 2
+                {gesture: 'D', time: 3600, duration: 1200},
+                {gesture: 'C', time: 4800, duration: 1200},
+                {gesture: 'D', time: 6000, duration: 1200},
+                {gesture: 'E', time: 7200, duration: 1200},
+                {gesture: 'E', time: 8400, duration: 1200},
+                {gesture: 'E', time: 9600, duration: 2400},    // held note
+                {gesture: 'D', time: 12000, duration: 1200},
+                {gesture: 'D', time: 13200, duration: 1200},
+                {gesture: 'D', time: 14400, duration: 2400},   // held note
+                {gesture: 'E', time: 16800, duration: 1200},
+                {gesture: 'G', time: 18000, duration: 1200},
+                {gesture: 'G', time: 19200, duration: 2400}    // held note
             ],
             {difficulty: 'beginner', composer: 'Traditional'}
         ));
-        
-        this._loadFairytailTest();
-    }
-    
-    async _loadFairytailTest() {
-        try {
-            const response = await fetch('/fairytail-flute-midi_test.json');
-            if (!response.ok) {
-                console.warn('Failed to load fairytail test:', response.statusText);
-                return;
-            }
-            const jsonData = await response.json();
-            await this.loadFromJson(jsonData);
-        } catch (error) {
-            console.warn('Error loading fairytail test:', error);
-        }
     }
     
     addTest(test) {
@@ -154,19 +134,6 @@ export class TestLibrary {
     
     getTestNames() {
         return Array.from(this.tests.keys());
-    }
-    
-    // future: load from JSON file
-    async loadFromJson(jsonData) {
-        const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
-        const test = new MusicalTest(
-            data.name,
-            data.description,
-            data.notes,
-            data.metadata
-        );
-        this.addTest(test);
-        return test;
     }
 }
 

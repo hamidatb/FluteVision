@@ -47,6 +47,7 @@ export class GameEngine {
         this.testMode = false;
         this.processedNotes = new Set(); // track which notes we've spawned obstacles for
         this.testCompleted = false;
+        this.currentTargetGesture = null; // track current target to avoid redundant updates
         
         // lives system
         this.lives = 3;
@@ -113,6 +114,7 @@ export class GameEngine {
         this.elapsedTime = 0;
         this.processedNotes.clear();
         this.testCompleted = false;
+        this.currentTargetGesture = null;
         this.lives = this.maxLives;
         this.invulnerable = false;
         
@@ -152,6 +154,11 @@ export class GameEngine {
         }
         
         this.obstacles.forEach(obstacle => obstacle.update());
+        
+        // update target gesture based on closest obstacle in front of player
+        if (this.testMode) {
+            this._updateTargetGesture();
+        }
         
         // remove off-screen obstacles
         this.obstacles = this.obstacles.filter(obstacle => {
@@ -223,10 +230,45 @@ export class GameEngine {
                 this._createObstacle(note.gesture); // passing gesture to display on obstacle
                 this.processedNotes.add(noteId);
                 
-                // notify UI to show this gesture as target
+                // NOTE: target gesture is now set by _updateTargetGesture() based on proximity
+            }
+        }
+    }
+    
+    _updateTargetGesture() {
+        // find the closest obstacle in front of the player that should be the current target
+        const playerX = GameConstants.PLAYER_X;
+        const maxTargetDistance = 400; // only consider obstacles within this range
+        
+        // find obstacles in front of player within range
+        const obstaclesInFront = this.obstacles.filter(obstacle => {
+            const obstacleRight = obstacle.x + obstacle.width;
+            return obstacleRight > playerX && obstacle.x < playerX + maxTargetDistance;
+        });
+        
+        if (obstaclesInFront.length === 0) {
+            // no obstacles in range - clear target
+            if (this.currentTargetGesture !== null) {
+                this.currentTargetGesture = null;
                 if (this.onNoteChange) {
-                    this.onNoteChange(note.gesture, note.time);
+                    this.onNoteChange(null, this.elapsedTime);
                 }
+            }
+            return;
+        }
+        
+        // find the closest obstacle
+        const closestObstacle = obstaclesInFront.reduce((closest, obstacle) => {
+            const distanceToPlayer = obstacle.x - playerX;
+            const closestDistance = closest.x - playerX;
+            return distanceToPlayer < closestDistance ? obstacle : closest;
+        });
+        
+        // update target gesture if it changed
+        if (closestObstacle.gesture && closestObstacle.gesture !== this.currentTargetGesture) {
+            this.currentTargetGesture = closestObstacle.gesture;
+            if (this.onNoteChange) {
+                this.onNoteChange(closestObstacle.gesture, this.elapsedTime);
             }
         }
     }

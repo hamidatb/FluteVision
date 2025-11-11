@@ -711,6 +711,7 @@ class GameController {
     
     _handleNoteChange(gesture, time) {
         // called by engine when playing musical test
+        console.log('🎵 Note changed - new target:', gesture, 'at time:', time);
         this.currentTargetGesture = gesture;
         this.inputManager.setTargetGesture(gesture);
         this._updateTargetDisplay(gesture);
@@ -739,6 +740,16 @@ class GameController {
             // green if matches target
             const isCorrect = prediction.gesture === this.currentTargetGesture;
             gestureEl.style.color = isCorrect ? '#00ff00' : '#ffffff';
+            
+            // debugging preds
+            // if (this.gameEngine.testMode) {
+            //     console.log('📊 Prediction received:', {
+            //         gesture: prediction.gesture,
+            //         confidence: prediction.confidence,
+            //         target: this.currentTargetGesture,
+            //         matches: isCorrect
+            //     });
+            // }
         } else {
             gestureEl.textContent = '-';
             gestureEl.style.color = '#ffffff';
