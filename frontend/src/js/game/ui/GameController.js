@@ -81,6 +81,23 @@ class GameController {
         } catch (err) {
             console.warn('Failed to preload theme images (will fallback to colors):', err);
         }
+        
+        // preload treble key images for flute mode
+        try {
+            const trebleKeyAssets = {
+                'A': '/images/treble_keys/A.png',
+                'Bb': '/images/treble_keys/Bb.png',
+                'C': '/images/treble_keys/C.png',
+                'D': '/images/treble_keys/D.png',
+                'E': '/images/treble_keys/E.png',
+                'F': '/images/treble_keys/E.png',
+                'G': '/images/treble_keys/E.png'
+            };
+            await this.imageManager.preloadImages(trebleKeyAssets);
+            console.log('Treble key images preloaded:', Object.keys(trebleKeyAssets));
+        } catch (err) {
+            console.warn('Failed to preload treble key images (will fallback to text):', err);
+        }
                 
         // create game engine
         const canvas = document.getElementById('gameCanvas');
@@ -729,7 +746,29 @@ class GameController {
     }
     
     _updateTargetDisplay(gesture) {
-        document.getElementById('targetGesture').textContent = gesture || '-';
+        const targetEl = document.getElementById('targetGesture');
+        const visionMode = gameSettings.get('visionMode');
+        
+        targetEl.textContent = '';
+        
+        // in flute mode, show treble key image instead of text
+        if (visionMode === 'flute' && gesture && gesture !== '-') {
+            const trebleKeyImage = this.imageManager.getImage(gesture);
+            
+            if (trebleKeyImage) {
+                // Create image element safely
+                const img = document.createElement('img');
+                img.src = trebleKeyImage.src;
+                img.alt = gesture;
+                targetEl.appendChild(img);
+            } else {
+                // fallback to text if image not available
+                targetEl.textContent = gesture;
+            }
+        } else {
+            // Hand mode or no gesture - show text
+            targetEl.textContent = gesture || '-';
+        }
     }
     
     _updateScore(score, highScore, combo) {
@@ -763,13 +802,27 @@ class GameController {
     _flashSuccess() {
         // visual feedback when correct gesture played
         const targetEl = document.getElementById('targetGesture');
-        targetEl.style.color = GameConstants.COLOR_SUCCESS;
-        targetEl.style.transform = 'scale(1.2)';
+        const visionMode = gameSettings.get('visionMode');
         
-        setTimeout(() => {
-            targetEl.style.color = '';
-            targetEl.style.transform = '';
-        }, 200);
+        // In flute mode with image, add green glow effect
+        if (visionMode === 'flute') {
+            targetEl.classList.add('success-glow');
+            targetEl.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                targetEl.classList.remove('success-glow');
+                targetEl.style.transform = '';
+            }, 200);
+        } else {
+            // if its handmode mode just using text color change
+            targetEl.style.color = GameConstants.COLOR_SUCCESS;
+            targetEl.style.transform = 'scale(1.2)';
+            
+            setTimeout(() => {
+                targetEl.style.color = '';
+                targetEl.style.transform = '';
+            }, 200);
+        }
     }
     
     _updateStatus(message) {

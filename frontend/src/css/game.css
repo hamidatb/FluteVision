@@ -218,6 +218,20 @@
     color: #000;
     line-height: 1.2;
     font-family: 'Press Start 2P', cursive;
+    transition: all 0.2s ease;
+}
+
+.now-note img {
+    width: 100px;
+    height: auto;
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.now-note.success-glow img {
+    box-shadow: 0 0 20px 5px #10b981, 0 0 40px 10px rgba(16, 185, 129, 0.5);
+    border: 3px solid #10b981;
+    border-radius: 8px;
 }
 
 #gameCanvas {
