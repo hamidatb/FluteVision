@@ -304,10 +304,6 @@
     font-weight: bold;
 }
 
-.hidden {
-    display: none !important;
-}
-
 .start-screen h2, .game-over h2 {
     background: linear-gradient(90deg, #667eea, #764ba2);
     -webkit-background-clip: text;

@@ -7,7 +7,7 @@ const { selectedPage } = Astro.props;
     🎵 <span>FLUTE VISION</span>
   </div>
 
-  <nav class="navbar">
+  <nav class={`navbar ${selectedPage}`}>
     <button class="nav-btn" id="navbar-toggle" aria-label="Toggle navigation">
       ☰
     </button>

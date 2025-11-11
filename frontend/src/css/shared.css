@@ -25,6 +25,11 @@
   --border: oklch(0.269 0 0);
 }
 
+.hidden {
+    display: none !important;
+}
+
+
 /* ============================================================
    BASE STYLES
 ============================================================ */
@@ -197,7 +202,8 @@ main {
 }
 
 /* --- Divider between sections --- */
-.nav-list li:nth-child(3)::after {
+.navbar.game .nav-list li:nth-child(3)::after,
+.navbar.practice .nav-list li:nth-child(3)::after {
   content: '';
   display: inline-block;
   height: 20px;
