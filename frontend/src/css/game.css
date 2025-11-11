@@ -134,7 +134,7 @@
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 280px;
+    width: 380px;
     background: #f4a460;
     border: 6px solid #000;
     padding: 8px;
@@ -172,8 +172,8 @@
 }
 
 .camera-overlay #video {
-    width: 100%;
-    height: 158px;
+    width: 350px;
+    height: 308px;
     background: #000;
     border: 3px solid #000;
     display: block;

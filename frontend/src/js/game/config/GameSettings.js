@@ -15,7 +15,16 @@ export class GameSettings {
     _loadSettings() {
         const saved = localStorage.getItem('flutevision_settings');
         if (saved) {
-            return { ...this._getDefaults(), ...JSON.parse(saved) };
+            const parsed = JSON.parse(saved);
+            const defaults = this._getDefaults();
+            
+            if (parsed.confidenceThreshold === 0.7 || parsed.confidenceThreshold > 0.5) {
+                parsed.confidenceThreshold = defaults.confidenceThreshold;
+                // Save the migrated value back to localStorage
+                localStorage.setItem('flutevision_settings', JSON.stringify({ ...defaults, ...parsed }));
+            }
+            
+            return { ...defaults, ...parsed };
         }
         return this._getDefaults();
     }
@@ -37,7 +46,7 @@ export class GameSettings {
             musicEnabled: false,
             
             // accessibility
-            confidenceThreshold: 0.7,
+            confidenceThreshold: 0.35,
             gestureChangeInterval: 5000
         };
     }
