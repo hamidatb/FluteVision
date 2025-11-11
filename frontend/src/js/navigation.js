@@ -166,13 +166,16 @@ if (typeof window !== 'undefined') {
         const navController = new NavigationController();
         navController.initialize();
         
-        // Make it globally accessible if needed
         window.navigationController = navController;
+        
+        // mobile nav toggle
+        const navbarToggle = document.getElementById('navbar-toggle');
+        if (navbarToggle) {
+            navbarToggle.addEventListener('click', () => {
+                const navLinks = document.querySelector(".nav-list");
+                navLinks?.classList.toggle("open");
+            });
+        }
     });
 }
-
-window.toggleNavLinksForMobile = function() {
-  const navLinks = document.querySelector(".nav-list");
-  navLinks?.classList.toggle("open");
-};
 

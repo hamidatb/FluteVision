@@ -30,7 +30,8 @@ class Settings:
     
     # odel Settings
     """
-     python ml/scripts/capture_data.py --keys G --samples 100 --mode flute --output-dir "/Users/hami/Documents/Learning Coding/Coding/Personal Projects/FluteVision/backend/ml/datasets/calgary_raw"
+    Example usage:
+     python ml/scripts/capture_data.py --keys G --samples 100 --mode flute --output-dir "backend/ml/datasets/raw"
     """
     CONFIDENCE_THRESHOLD: float = 0.3
 
