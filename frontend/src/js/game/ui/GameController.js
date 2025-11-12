@@ -246,6 +246,14 @@ class GameController {
     
     _setupEventListeners() {
         document.getElementById('startBtn').addEventListener('click', () => {
+            // if the gtag actually loaded yet
+            if (typeof gtag === 'function') {
+                gtag('event', 'play_button_click', {
+                    event_category: 'engagement',
+                    event_label: 'Game Start Button',
+                    value: 1
+                });
+            }
             this._startGame();
         });
         
