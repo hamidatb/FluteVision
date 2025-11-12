@@ -7,7 +7,7 @@ export default defineConfig({
       // fonts, images, and connections
       directives: [
         "default-src 'self'",
-        "connect-src 'self' https://flutevision-api-2aeac29f3245.herokuapp.com http://localhost:8000",
+        "connect-src 'self' https://flutevision-api-2aeac29f3245.herokuapp.com http://localhost:8000 https://www.google-analytics.com https://cdn.jsdelivr.net",
         "img-src 'self' data: blob:",
         "font-src 'self' https://fonts.gstatic.com"
       ],
@@ -16,7 +16,8 @@ export default defineConfig({
         resources: [
           "'self'", // keeping local scripts
           "https://cdn.jsdelivr.net", // allow CDN JS,
-          "https://www.googletagmanager.com" // analytics
+          "https://www.googletagmanager.com", // analytics
+          "https://www.google-analytics.com"
         ]
       },
       styleDirective: {
