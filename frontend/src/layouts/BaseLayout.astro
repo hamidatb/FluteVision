@@ -6,17 +6,18 @@ import Navbar from './Navbar.astro';
 
 interface Props {
     selectedPage?: string;
+    pageTitle?: string;
 }
 
-const { selectedPage = 'home' } = Astro.props;
-const title = siteConfig.site_name; 
+const { selectedPage = 'home', pageTitle } = Astro.props;
+const title = pageTitle ?? siteConfig.site_name; 
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title ? `${title} | FluteVision` : "FluteVision - AI-Powered Flute Training"}</title>
+    <title>{title} | FluteVision</title>
     <link rel="icon" type="image/x-icon" href="favicon.svg">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8Z7E1RKF4G"></script>
     <script>
