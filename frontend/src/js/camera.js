@@ -82,7 +82,7 @@ class CameraStream {
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
             
-            console.log('Requesting camera access...');
+            //console.log('Requesting camera access...');
             
             // using 640x480 bc it's a good balance between quality and performance for hand detection
             this.stream = await navigator.mediaDevices.getUserMedia({
@@ -105,7 +105,7 @@ class CameraStream {
             this.landmarkVisualizer = new HandLandmarkVisualizer(videoElementId, canvasId);
             await this.landmarkVisualizer.initialize();
             
-            console.log('Camera initialized successfully');
+            //console.log('Camera initialized successfully');
             return true;
         } catch (error) {
             console.error('Error accessing camera:', error);
@@ -117,7 +117,7 @@ class CameraStream {
         if (this.isStreaming) return;
         
         this.isStreaming = true;
-        console.log('Starting prediction stream...');
+        //console.log('Starting prediction stream...');
         this.captureFrame(onPrediction);
     }
 
@@ -126,7 +126,7 @@ class CameraStream {
         if (this.frameInterval) {
             clearTimeout(this.frameInterval);
         }
-        console.log('Streaming stopped');
+        //console.log('Streaming stopped');
     }
 
     // turn off camera completely (release hardware)
@@ -142,7 +142,7 @@ class CameraStream {
         if (this.video) {
             this.video.srcObject = null;
         }
-        console.log('Camera turned off');
+        //console.log('Camera turned off');
     }
 
     toggleVisionMode() {
@@ -294,7 +294,7 @@ export class CameraController {
 
     toggleVisionMode() {
         this.stream.toggleVisionMode(); 
-        console.log(`Prediction mode switched to: ${this.stream.predictionMode}`);
+        //console.log(`Prediction mode switched to: ${this.stream.predictionMode}`);
     }
 
     enableLandmarkVisualization() {

@@ -34,7 +34,7 @@ class PracticeMode {
         
         // filtering out 'neutral' - it's for CV detection only, not a practice target
         this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
-        console.log(`Loaded gestures for ${visionMode} mode:`, this.availableGestures);
+        //console.log(`Loaded gestures for ${visionMode} mode:`, this.availableGestures);
 
         if (this.availableGestures.length === 0) {
             this.updateStatus('No gestures available. Train the model first.', 'warning');

@@ -76,7 +76,7 @@ export class InputManager {
         // debugging
         if (prediction.gesture === this.targetGesture) {
             const meetsThreshold = prediction.confidence >= threshold;
-            console.log(meetsThreshold ? '✅ JUMP!' : '⚠️ TOO LOW CONFIDENCE:', {
+            console.log(meetsThreshold ? 'JUMP!' : '⚠️ TOO LOW CONFIDENCE TO JUMP:', {
                 gesture: prediction.gesture,
                 confidence: prediction.confidence.toFixed(3),
                 threshold: threshold,
@@ -89,7 +89,7 @@ export class InputManager {
         const timeSinceLastTrigger = now - this.lastTriggerTime;
         if (timeSinceLastTrigger < this.triggerCooldown) {
             if (prediction.gesture === this.targetGesture && prediction.confidence >= threshold) {
-                console.log(`⏱️ COOLDOWN: ${timeSinceLastTrigger}ms since last trigger (need ${this.triggerCooldown}ms)`);
+                console.log(`JUMP COOLDOWN: ${timeSinceLastTrigger}ms since last trigger`);
             }
             return;
         }
@@ -97,7 +97,7 @@ export class InputManager {
         // correct gesture with high confidence triggers action
         if (prediction.gesture === this.targetGesture && 
             prediction.confidence >= threshold) {
-            console.log('✅ JUMP TRIGGERED!');
+            //console.log('✅ JUMP TRIGGERED!');
             this.lastTriggerTime = now;
             this.onCorrectInput(prediction.gesture, prediction.confidence);
         }

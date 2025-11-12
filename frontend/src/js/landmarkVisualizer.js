@@ -38,7 +38,7 @@ export class HandLandmarkVisualizer {
 
         this.hands.onResults((r) => this.onResults(r));
         this.isReady = true;
-        console.log('🖐️ visualizer ready');
+        //console.log('🖐️ visualizer ready');
         return true;
     }
 
@@ -138,12 +138,14 @@ export class HandLandmarkVisualizer {
 
     async processFrame() {
         if (!this.isEnabled || !this.hands || !this.video) return;
-        try {
-            await this.hands.send({ image: this.video });
-        } catch (e) {
-            console.error('frame error', e);
-        }
-        if (this.isEnabled) this.frameId = requestAnimationFrame(() => this.processFrame());
+        // this wont work on remote unless unsafe eval is enabled and im not enabling it
+        // try {
+        //     //await this.hands.send({ image: this.video });
+            
+        // } catch (e) {
+        //     console.error('frame error', e);
+        // }
+        // //if (this.isEnabled) this.frameId = requestAnimationFrame(() => this.processFrame());
     }
 
     enable() {
@@ -154,7 +156,7 @@ export class HandLandmarkVisualizer {
         if (this.isEnabled) return true;
         this.isEnabled = true;
         this.processFrame();
-        console.log('✨ hand viz on');
+        //console.log('✨ hand viz on');
         return true;
     }
 
@@ -163,7 +165,7 @@ export class HandLandmarkVisualizer {
         this.isEnabled = false;
         if (this.frameId) cancelAnimationFrame(this.frameId);
         if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        console.log('💤 hand viz off');
+        //console.log('💤 hand viz off');
     }
 
     toggle() {
@@ -174,6 +176,6 @@ export class HandLandmarkVisualizer {
         this.disable();
         if (this.hands) this.hands.close();
         this.isReady = false;
-        console.log('Cleaned up');
+        //console.log('Cleaned up');
     }
 }

@@ -63,7 +63,7 @@ class GameController {
         try {
             this._updateStatus('Loading assets...');
             await this.imageManager.preloadImages(CHARACTERS);
-            console.log('Character PNGs preloaded:', Object.keys(CHARACTERS));
+            //console.log('Character PNGs preloaded:', Object.keys(CHARACTERS));
         } catch (err) {
             console.error('Failed to preload character images:', err);
         }
@@ -77,7 +77,7 @@ class GameController {
                 if (theme.obstacleImage) themeAssets[theme.obstacleImage] = theme.obstacleImage;
             });
             await this.imageManager.preloadImages(themeAssets);
-            console.log('Theme assets preloaded:', Object.keys(themeAssets).length);
+            //console.log('Theme assets preloaded:', Object.keys(themeAssets).length);
         } catch (err) {
             console.warn('Failed to preload theme images (will fallback to colors):', err);
         }
@@ -94,7 +94,7 @@ class GameController {
                 'G': '/images/treble_keys/E.png'
             };
             await this.imageManager.preloadImages(trebleKeyAssets);
-            console.log('Treble key images preloaded:', Object.keys(trebleKeyAssets));
+            //console.log('Treble key images preloaded:', Object.keys(trebleKeyAssets));
         } catch (err) {
             console.warn('Failed to preload treble key images (will fallback to text):', err);
         }
@@ -133,7 +133,7 @@ class GameController {
         const visionMode = gameSettings.get('visionMode');
         if (visionMode && this.cameraController.stream) {
             this.cameraController.stream.predictionMode = visionMode;
-            console.log(`Restored saved vision mode: ${visionMode}`);
+            //console.log(`Restored saved vision mode: ${visionMode}`);
         }
         
         // NOW initialize the UI so it shows the correct mode
@@ -145,13 +145,13 @@ class GameController {
         // Listen for vision mode changes from navbar toggle
         window.addEventListener('visionModeChanged', async (e) => {
             const newMode = e.detail.mode;
-            console.log('Vision mode changed to:', newMode);
+            //console.log('Vision mode changed to:', newMode);
             
             // Refresh available gestures for the new mode
             const gesturesData = await this.api.getAvailableGestures(newMode);
             const allGestures = gesturesData.fingerings || [];
             this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
-            console.log('Refreshed gestures for', newMode, ':', this.availableGestures);
+            //console.log('Refreshed gestures for', newMode, ':', this.availableGestures);
             
             // Update test options if settings modal is open
             const modal = document.getElementById('gameSettingsModal');
@@ -161,7 +161,7 @@ class GameController {
             
             // If game is running, restart it with new mode
             if (this.gameEngine && this.gameEngine.isRunning) {
-                console.log('Game is running - restarting with new mode');
+                //console.log('Game is running - restarting with new mode');
                 this._pauseGame();
                 
                 // Stop current input monitoring
@@ -240,20 +240,12 @@ class GameController {
         }
         if (this.inputManager) {
             this.inputManager.stopMonitoring();
-            console.log('Prediction stream paused.');
+            //console.log('Prediction stream paused.');
         }
     }
     
     _setupEventListeners() {
         document.getElementById('startBtn').addEventListener('click', () => {
-            // if the gtag actually loaded yet
-            if (typeof gtag === 'function') {
-                gtag('event', 'play_button_click', {
-                    event_category: 'engagement',
-                    event_label: 'Game Start Button',
-                    value: 1
-                });
-            }
             this._startGame();
         });
         
@@ -291,7 +283,7 @@ class GameController {
         if (gameSettingsBtn) {
             gameSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                console.log('Game settings button clicked');
+                //console.log('Game settings button clicked');
                 this._openGameSettings();
             });
         }
@@ -486,7 +478,7 @@ class GameController {
             currentTest = selectedTest;
         }
         
-        console.log('Saving game settings:', { visionMode, character, theme, musicMode, currentTest });
+        //console.log('Saving game settings:', { visionMode, character, theme, musicMode, currentTest });
         
         // Save to game settings
         gameSettings.setMultiple({
@@ -512,7 +504,7 @@ class GameController {
     _applyGameSettings() {
         // Apply vision mode to camera
         const visionMode = gameSettings.get('visionMode');
-        console.log('Applying vision mode:', visionMode);
+        //console.log('Applying vision mode:', visionMode);
         if (this.cameraController && this.cameraController.cameraStream) {
             this.cameraController.cameraStream.predictionMode = visionMode;
         }
@@ -520,7 +512,7 @@ class GameController {
         // Apply theme colors to render system and game settings
         const themeName = gameSettings.get('theme');
         const theme = getTheme(themeName) || getDefaultTheme();
-        console.log('Applying theme:', themeName, theme);
+        //console.log('Applying theme:', themeName, theme);
         
         if (this.gameEngine && this.gameEngine.renderSystem) {
             this.gameEngine.renderSystem.setTheme(theme);
@@ -532,7 +524,7 @@ class GameController {
         
         // Apply character
         const characterName = gameSettings.get('character');
-        console.log('Applying character:', characterName);
+        //console.log('Applying character:', characterName);
         
         if (this.gameEngine && this.gameEngine.player) {
             this.gameEngine.player.setCharacter(characterName);
@@ -614,7 +606,7 @@ class GameController {
         const allGestures = gesturesData.fingerings || [];
         
         this.availableGestures = allGestures.filter(g => g.toLowerCase() !== 'neutral');
-        console.log('Refreshed gestures for', visionMode, ':', this.availableGestures);
+        //console.log('Refreshed gestures for', visionMode, ':', this.availableGestures);
         
         // check camera state before starting gameplay
         if (!this.cameraController.isEnabled()) {
@@ -635,7 +627,7 @@ class GameController {
             
             if (test) {
                 this.gameEngine.setMusicalTest(test);
-                console.log(`Starting musical test: ${testName}`);
+                //console.log(`Starting musical test: ${testName}`);
             } else {
                 console.warn('Test not found, falling back to random mode');
                 this.gameEngine.setMusicalTest(null);
@@ -644,7 +636,7 @@ class GameController {
             // hand mode always uses random mode (tests are flute-only)
             this.gameEngine.setMusicalTest(null);
             if (mode === 'test' && visionMode === 'hand') {
-                console.log('Hand mode detected - using random mode (tests are flute-only)');
+                //console.log('Hand mode detected - using random mode (tests are flute-only)');
             }
         }
         
@@ -719,7 +711,7 @@ class GameController {
     
     _handleNoteChange(gesture, time) {
         // called by engine when playing musical test
-        console.log('🎵 Note changed - new target:', gesture, 'at time:', time);
+        //console.log('🎵 Note changed - new target:', gesture, 'at time:', time);
         this.currentTargetGesture = gesture;
         this.inputManager.setTargetGesture(gesture);
         this._updateTargetDisplay(gesture);
@@ -736,7 +728,7 @@ class GameController {
         this.currentTargetGesture = newGesture;
         this.inputManager.setTargetGesture(newGesture);
         this._updateTargetDisplay(newGesture);
-        console.log('Selected target gesture:', newGesture, 'from available:', this.availableGestures);
+        //console.log('Selected target gesture:', newGesture, 'from available:', this.availableGestures);
     }
     
     _updatePredictionDisplay(prediction) {
@@ -751,7 +743,7 @@ class GameController {
             
             // debugging preds
             // if (this.gameEngine.testMode) {
-            //     console.log('📊 Prediction received:', {
+            //     //console.log('📊 Prediction received:', {
             //         gesture: prediction.gesture,
             //         confidence: prediction.confidence,
             //         target: this.currentTargetGesture,
