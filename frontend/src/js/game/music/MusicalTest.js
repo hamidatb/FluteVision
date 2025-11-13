@@ -72,28 +72,28 @@ export class TestLibrary {
         this.addTest(MusicalTest.fromSimpleFormat(
             'Beginner Pattern (Bb-C-D)',
             'Basic three-note pattern',
-            'Bb:2 C:3 D:4 Bb:5 C:6 D:7 Bb:8 C:9 D:10',
+            'Bb:0 C:1 D:2 Bb:3 C:4 D:5 Bb:6 C:7 D:8',
             45 
         ));
         
         this.addTest(MusicalTest.fromSimpleFormat(
             'C Major Scale',
             'Basic scale exercise',
-            'C:2 D:3 E:4 F:5 G:6 A:7 Bb:8',
+            'C:0 D:1 E:2 F:3 G:4 A:5 Bb:6',
             45 
         ));
         
         this.addTest(MusicalTest.fromSimpleFormat(
             'Simple Arpeggio',
             'Jump between notes',
-            'C:2 E:3 G:4 C:5 G:6 E:7 C:8',
+            'C:0 E:1 G:2 C:3 G:4 E:5 C:6',
             45 
         ));
         
         this.addTest(MusicalTest.fromSimpleFormat(
             'Hot Cross Buns',
             'Traditional melody',
-            'D:3 C:5 Bb:7 D:10 C:12 Bb:14 Bb:16 Bb:17 Bb:18 Bb:19 C:20 C:21 C:22 C:23 D:25 C:27 Bb:29',
+            'D:0 C:2 Bb:4 D:7 C:9 Bb:11 Bb:13 Bb:14 Bb:15 Bb:16 C:17 C:18 C:19 C:20 D:22 C:24 Bb:26',
             40 
         ));
         

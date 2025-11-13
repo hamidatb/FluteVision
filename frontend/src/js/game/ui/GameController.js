@@ -418,9 +418,26 @@ class GameController {
             handTestOptions.classList.add("hidden");
         }
         
-        // Get all available tests and filter to only show the 3 specified tests
+        // get saved test choice
         const currentTest = gameSettings.get('currentTest');
         const musicMode = gameSettings.get('musicMode');
+        
+        // Determine which test should be selected in the UI
+        let selectedTest;
+        if (musicMode === 'test' && currentTest) {
+            // if they've already picked a test then no need to pick for them
+            selectedTest = currentTest;
+        } else if (musicMode === 'random' && !currentTest) {
+            // no explicit choice made so defaulting to the goat 
+            selectedTest = 'Hot Cross Buns';
+        } else {
+            selectedTest = 'random';
+        }
+        
+        // Update UI to reflect the selected test
+        document.querySelectorAll('[data-test]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.test === selectedTest);
+        });
     }
     
     _populateCharacterPreviews() {
@@ -619,10 +636,17 @@ class GameController {
         
         // extracted common gameplay start logic bc it's used by both start and restart
         // check if using musical test mode (only available in flute mode)
-        const mode = gameSettings.get('musicMode');
+        let mode = gameSettings.get('musicMode');
+        let currentTest = gameSettings.get('currentTest');
+        
+        // in flute mode if no choice was made, then doing Hot Cross Buns
+        if (visionMode === 'flute' && mode === 'random' && !currentTest) {
+            currentTest = 'Hot Cross Buns';
+            mode = 'test';
+        }
         
         if (mode === 'test' && visionMode === 'flute') {
-            const testName = gameSettings.get('currentTest');
+            const testName = currentTest;
             let test = this.testLibrary.getTest(testName);
             
             if (test) {
