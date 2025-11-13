@@ -34,13 +34,15 @@ export class GameEngine {
         // timing
         this.startTime = 0;
         this.elapsedTime = 0;
-        this.lastObstacleTime = 0;
         this.frameCount = 0;
         
-        // difficulty
+        // difficulty - users can't set this yet though, but it's something I'm planning on extending to
         const difficulty = gameSettings.get('difficulty');
         this.difficultySettings = GameConstants.getDifficultySettings(difficulty);
         this.gameSpeed = this.difficultySettings.speed;
+        
+        // initing lastObstacleTime to neg val so first obstacle spawns immediately
+        this.lastObstacleTime = -this.difficultySettings.spawnInterval;
         
         // musical test mode
         this.musicalTest = null;
@@ -110,7 +112,7 @@ export class GameEngine {
         this.scoreManager.reset();
         this.gameSpeed = this.difficultySettings.speed;
         this.frameCount = 0;
-        this.lastObstacleTime = 0;
+        this.lastObstacleTime = -this.difficultySettings.spawnInterval;
         this.elapsedTime = 0;
         this.processedNotes.clear();
         this.testCompleted = false;
