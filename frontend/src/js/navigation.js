@@ -153,9 +153,9 @@ export class VisionModeToggleUI {
     updateUI(mode) {
         if (!this.iconElement || !this.toggleButton) return;
         if (mode === 'flute') {
-            this.iconElement.textContent = '🎵  FLUTE MODE';
+            this.iconElement.textContent = '🎵 CURR MODE: FLUTE';
         } else {
-            this.iconElement.textContent = '🖐️ HAND MODE';
+            this.iconElement.textContent = '🖐️ CURR MODE: HAND';
         }
     }
 }
