@@ -138,7 +138,7 @@ export class GameEngine {
         this._update();
         this._render();
         
-        //this.animationFrameId = requestAnimationFrame(() => this._gameLoop());
+        this.animationFrameId = requestAnimationFrame(() => this._gameLoop());
     }
     
     _update() {
