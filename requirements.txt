@@ -1,6 +1,0 @@
-# Core dependencies for landmark-based flute recognition
-opencv-python==4.8.1.78
-mediapipe==0.10.7
-numpy==1.24.3
-scikit-learn==1.3.2
-click==8.1.7
